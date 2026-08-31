@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TOPIC — design spec</title>
+<style>
+  :root {
+    --bg: #09090B;
+    --surface: rgba(255,255,255,0.035);
+    --surface2: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.10);
+    --ink: #F4F4F5;
+    --muted: #A1A1AA;
+    --violet: #A78BFA;
+    --green: #34D399;
+    --red: #F87171;
+    --amber: #FBBF24;
+    --blue: #60A5FA;
+    --sans: -apple-system, "SF Pro Display", "Helvetica Neue", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 72px 24px 120px;
+    background: var(--bg); color: var(--ink);
+    font: 16px/1.65 var(--sans);
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none;
+    background: radial-gradient(600px 400px at 15% 0%, rgba(139,92,246,0.14), transparent 70%),
+                radial-gradient(500px 350px at 90% 20%, rgba(52,211,153,0.08), transparent 70%);
+  }
+  .wrap { position: relative; max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 40px; font-weight: 650; letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 12px; }
+  h1 .accent {
+    background: linear-gradient(90deg, var(--violet), var(--blue));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .meta { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 44px; }
+  .meta b { color: var(--ink); font-weight: 600; }
+  .meta code { background: none; padding: 0; }
+  h2 { font-size: 22px; font-weight: 650; letter-spacing: -0.02em; margin: 64px 0 16px; }
+  h2 .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 26px; height: 26px; border-radius: 999px; margin-right: 12px;
+    background: rgba(167,139,250,0.15); color: var(--violet);
+    font-family: var(--mono); font-size: 12px; font-weight: 500; vertical-align: 3px;
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 24px 28px; margin: 16px 0;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .tldr { border-color: rgba(167,139,250,0.4); }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14.5px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  th {
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+  }
+  code, .mono { font-family: var(--mono); font-size: 13.5px; }
+  code { background: var(--surface2); padding: 1px 7px; border-radius: 6px; }
+  .flow { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 18px 0; }
+  .fbox {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 10px 22px; text-align: center; min-width: 320px; font-size: 14.5px;
+  }
+  .fbox.hl { border-color: rgba(52,211,153,0.5); background: rgba(52,211,153,0.08); }
+  .fbox small { color: var(--muted); display: block; font-size: 12.5px; }
+  .arrow { color: var(--muted); font-size: 18px; line-height: 1.5; }
+  .pill {
+    display: inline-block; border-radius: 999px; padding: 3px 12px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em;
+    text-transform: uppercase; margin: 2px 4px 2px 0;
+  }
+  .pill.keep { background: rgba(52,211,153,0.12); color: var(--green); }
+  .pill.new { background: rgba(96,165,250,0.12); color: var(--blue); }
+  .pill.gone { background: rgba(248,113,113,0.12); color: var(--red); text-decoration: line-through; }
+  .callout { border-radius: 14px; padding: 16px 20px; margin: 14px 0; font-size: 14.5px; border: 1px solid; }
+  .callout::before {
+    display: block; font-family: var(--mono); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; margin-bottom: 4px;
+  }
+  .callout.warn { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.25); }
+  .callout.warn::before { content: "RISK"; color: var(--amber); }
+  .callout.info { background: rgba(96,165,250,0.06); border-color: rgba(96,165,250,0.25); }
+  .callout.info::before { content: "NOTE"; color: var(--blue); }
+  .callout.danger { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.25); }
+  .callout.danger::before { content: "SECURITY"; color: var(--red); }
+  ul { margin: 8px 0; padding-left: 22px; }
+  li { margin: 4px 0; }
+  .muted { color: var(--muted); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+  .approach {
+    padding: 20px 22px; border-radius: 16px; border: 1px solid var(--border);
+    background: var(--surface); font-size: 14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .approach.win { border-color: rgba(52,211,153,0.45); }
+  .approach h4 { margin: 0 0 6px; font-size: 15.5px; font-weight: 650; }
+  .approach.win h4::after {
+    content: "CHOSEN"; font-family: var(--mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.06em; color: var(--green); background: rgba(52,211,153,0.12);
+    border-radius: 999px; padding: 3px 9px; margin-left: 10px; vertical-align: 2px;
+  }
+  /* before/after system design */
+  .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 18px 0; }
+  @media (max-width: 760px) { .ba { grid-template-columns: 1fr; } }
+  .ba-col {
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 18px 16px; background: var(--surface);
+  }
+  .ba-col h3 {
+    margin: 0 0 14px; font-family: var(--mono); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; text-align: center;
+  }
+  .ba-col.before h3 { color: var(--red); }
+  .ba-col.after h3 { color: var(--green); }
+  .ba .fbox { min-width: 0; width: 100%; font-size: 13.5px; padding: 8px 12px; background: rgba(255,255,255,0.02); }
+  .ba .fbox.hl { background: rgba(52,211,153,0.08); }
+  .ba .flow { margin: 0; gap: 0; }
+  .fbox.dead { border-style: dashed; border-color: rgba(248,113,113,0.5); color: var(--muted); }
+  .fbox.dead small { color: var(--red); }
+  .ba-note { font-size: 12.5px; color: var(--muted); margin-top: 10px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>TOPIC — <span class="accent">short title</span></h1>
+<div class="meta"><b>TICKET-ID</b> · spec | plan · YYYY-MM-DD · canonical: <code>docs/superpowers/specs/YYYY-MM-DD-topic-design.md</code></div>
+
+<div class="card tldr">
+  <b>TL;DR</b> — one-paragraph summary of what changes and why.
+</div>
+
+<h2><span class="num">01</span>System design — before → after</h2>
+<!-- MANDATORY. Backend: component/data-flow diagram. Frontend: app-design view (UI structure mock). -->
+<div class="ba">
+  <div class="ba-col before">
+    <h3>Before — current state</h3>
+    <div class="flow">
+      <div class="fbox">Component A<small>role</small></div>
+      <div class="arrow">↓</div>
+      <div class="fbox dead">Component B (to be removed)<small>why it goes away</small></div>
+      <div class="arrow">↓</div>
+      <div class="fbox">Store</div>
+    </div>
+  </div>
+  <div class="ba-col after">
+    <h3>After — proposed</h3>
+    <div class="flow">
+      <div class="fbox">Component A<small>unchanged</small></div>
+      <div class="arrow">↓</div>
+      <div class="fbox hl">New Component<small>what it does</small></div>
+      <div class="arrow">↓</div>
+      <div class="fbox">Store</div>
+    </div>
+  </div>
+</div>
+<div class="ba-note">
+  <span class="pill keep">kept</span>
+  <span class="pill new">new</span>
+  <span class="pill gone">removed</span>
+</div>
+
+<h2><span class="num">02</span>Approaches considered</h2>
+<div class="two-col">
+  <div class="approach win">
+    <h4>Option A</h4>
+    <p>Why it wins.</p>
+  </div>
+  <div class="approach">
+    <h4>Option B</h4>
+    <p>Trade-off that ruled it out.</p>
+  </div>
+</div>
+
+<h2><span class="num">03</span>Details</h2>
+<div class="card">
+  <table>
+    <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+    <tr><td><code>example</code></td><td>string</td><td>—</td></tr>
+  </table>
+</div>
+
+<div class="callout warn">Risk or caveat worth flagging.</div>
+<div class="callout info">Neutral context note.</div>
+
+<h2><span class="num">04</span>Testing</h2>
+<ul>
+  <li>Test case one.</li>
+</ul>
+
+</div>
+</body>
+</html>

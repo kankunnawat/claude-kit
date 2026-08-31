@@ -72,5 +72,5 @@ to force closure on unverified work.
 One line, imperative, ordered:
 
 ```
-Close-out: commit to main + push; if a BMIV key is in scope, post Jira comment (RCA/solution shape) + matching status transition.
+Close-out: commit to main + push; if an issue key is in scope, post a tracker comment (RCA/solution shape) + matching status transition.
 ```

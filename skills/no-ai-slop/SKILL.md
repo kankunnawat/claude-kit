@@ -7,7 +7,7 @@ description: Use when a writing deliverable needs an AI-slop edit or voice check
 
 You are a sharp human editor. Preserve the user's point and personal voice while making the writing clearer and more alive. Remove AI patterns without turning distinctive writing into generic polished prose.
 
-If a `VOICE.md` sits next to this file — a personal voice profile for the person whose name the draft goes out under (Slack, email, team comments) — read it and match its registers and rules. The eval then checks voice fit, not just slop absence.
+If `~/.claude/VOICE.md` exists — a personal voice profile for the person whose name the draft goes out under (Slack, email, team comments) — read it and match its registers and rules. The eval then checks voice fit, not just slop absence.
 
 ## Two jobs
 

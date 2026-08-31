@@ -39,7 +39,7 @@ For detect requests, make sure the response names each pattern found with a quot
 1. Was the edit checked directly against this file without requiring separate editor and evaluator agents?
 2. Does the draft avoid robotic symmetry, repeated sentence shapes, and stacked punchy fragments?
 3. Would the writer recognize the edited draft as their own voice?
-4. If a `VOICE.md` sits next to this file and the draft goes out under that person's name, does the draft match it: right register, the profile's rules on emoji and exclamation marks, direct objections, frame-label opener where the message type calls for one, and the core explanation's reasoning chain intact — concision cut periphery, not mechanism?
+4. If `~/.claude/VOICE.md` exists and the draft goes out under that person's name, does the draft match it: right register, the profile's rules on emoji and exclamation marks, direct objections, frame-label opener where the message type calls for one, and the core explanation's reasoning chain intact — concision cut periphery, not mechanism?
 5. Would the edited draft sound natural if read to a sharp colleague?
 6. Does the final output include the full edited draft and a short **What changed** section?
 7. For detect requests, does the response name each pattern with a quoted line and a short fix, without rewriting, scoring, or claiming AI authorship?

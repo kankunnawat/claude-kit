@@ -26,10 +26,23 @@ Add one line to your cloud environment's setup script, for Claude Code on the
 web or for Codex cloud:
 
 ```bash
-git clone --depth 1 https://github.com/kankunnawat/claude-kit ~/.claude-kit && ~/.claude-kit/install.sh
+#!/bin/bash
+mkdir -p ~/.claude/skills
+git clone --depth 1 https://github.com/kankunnawat/claude-kit ~/.claude-kit \
+  && ~/.claude-kit/install.sh
+true
 ```
 
-This is configured once per environment, not once per repository.
+Configure this once per environment, not once per repository.
+
+The `mkdir` is load-bearing. A setup script runs as root before the agent
+launches, so the skills directory does not exist yet, and `install.sh` skips a
+target directory that is missing. Without it the script installs nothing and
+still reports success. The trailing `true` is also required: a setup script
+that exits non-zero fails the session, so an unguarded clone failure would stop
+sessions from starting at all.
+
+For a Codex cloud environment, substitute `~/.codex/skills` in the `mkdir`.
 
 ## Contributing
 

@@ -49,8 +49,10 @@ the clone path is temporary.
 
 ## Cloud sessions
 
-Add one line to your cloud environment's setup script, for Claude Code on the
-web or for Codex cloud:
+Two setup scripts, depending on how much you want.
+
+**Skills only.** Paste this into the environment's setup script field, for
+Claude Code on the web or for Codex cloud:
 
 ```bash
 #!/bin/bash
@@ -60,19 +62,46 @@ git clone --depth 1 https://github.com/kankunnawat/claude-kit ~/.claude-kit \
 true
 ```
 
-Configure this once per environment, not once per repository. Verified on
-Claude Code cloud on 2026-08-31: the session lists the skills by bare name,
-and the clone needs no repository attachment because the proxy serves
-anonymous git reads of public repositories.
-
-The `mkdir` is load-bearing. A setup script runs as root before the agent
-launches, so the skills directory does not exist yet, and `install.sh` skips a
-target directory that is missing. Without it the script installs nothing and
-still reports success. The trailing `true` is also required: a setup script
-that exits non-zero fails the session, so an unguarded clone failure would stop
-sessions from starting at all.
-
 For a Codex cloud environment, substitute `~/.codex/skills` in the `mkdir`.
+
+**Skills, superpowers, rules, and CLI tools.** `cloud-setup.sh` is the same
+script for both clouds. It creates the agent homes, installs the skills,
+installs the [superpowers](https://github.com/obra/superpowers) plugin through
+whichever agent CLI is on `PATH`, writes `CLOUD.md` as `~/.claude/CLAUDE.md`
+and `~/.codex/AGENTS.md` if those do not already exist, and installs `rg`,
+`fd`, and `ast-grep`:
+
+```bash
+#!/bin/bash
+git clone --depth 1 https://github.com/kankunnawat/claude-kit ~/.claude-kit \
+  && ~/.claude-kit/cloud-setup.sh
+true
+```
+
+Every step is non-fatal and the script always exits 0. A setup script that
+exits non-zero fails the session, so an unguarded failure would stop sessions
+from starting at all. Read its log lines in the provisioning output to see
+which steps landed.
+
+`CLOUD.md` is a portable subset of a local ruleset: response shape, workflow,
+philosophy, code quality, testing, security, commits. It carries nothing
+machine-specific, and a project's own CLAUDE.md or AGENTS.md overrides it.
+
+Configure this once per environment, not once per repository.
+
+Verified on 2026-08-31, on Claude Code cloud and on Codex cloud. The clone
+needs no repository attachment, because both proxies serve anonymous git reads
+of public repositories. Codex checks out your repository first and then runs
+the setup script with internet access, so the clone never races the checkout.
+
+If your Codex environment has **Post setup caching** on, hit **Reset cache**
+after changing the setup script. A cached container will not rerun it.
+
+The `mkdir` in the skills-only script is load-bearing. A setup script runs as
+root before the agent launches, so the skills directory does not exist yet,
+and `install.sh` skips a target directory that is missing. Without it the
+script installs nothing and still reports success. `cloud-setup.sh` does its
+own `mkdir`, which is why its setup script is one line shorter.
 
 ## Contributing
 

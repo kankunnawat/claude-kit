@@ -56,16 +56,13 @@ if [ ! -d "$HOME/.superpowers" ]; then
 fi
 
 if [ -d "$HOME/.superpowers/skills" ]; then
-  # Codex sessions never fan out, so the dispatch skills are not installed
-  # there at all. Claude gets everything, and only when the plugin path failed.
+  # Codex gets every skill. Its ruleset expects delegation — the execution
+  # chain names subagent-driven-development, and the fan-out rule caps nesting
+  # and rate rather than banning it. Claude is linked only when the plugin path
+  # failed.
   for skill in "$HOME/.superpowers"/skills/*/; do
     name=$(basename "$skill")
-    case "$name" in
-      dispatching-parallel-agents|requesting-code-review|subagent-driven-development)
-        codex_ok=0 ;;
-      *) codex_ok=1 ;;
-    esac
-    [ "$codex_ok" = 1 ] && ln -sfn "${skill%/}" "$HOME/.codex/skills/$name"
+    ln -sfn "${skill%/}" "$HOME/.codex/skills/$name"
     [ "$sp_installed" = 0 ] && ln -sfn "${skill%/}" "$HOME/.claude/skills/$name"
   done
   log "superpowers linked into codex skills$([ "$sp_installed" = 0 ] && echo ' and claude skills')"

@@ -87,10 +87,8 @@ Superpowers goes in two ways. Claude gets the plugin, so its skills keep the
 Codex gets a plain clone of `obra/superpowers` symlinked into
 `~/.codex/skills`, because `codex plugin add` needs a marketplace snapshot that
 a fresh container does not have, and the CLI may not be on `PATH` at all when
-the setup script runs. The three dispatch skills —
-`dispatching-parallel-agents`, `requesting-code-review`, and
-`subagent-driven-development` — are left out of Codex, which never fans out.
-The clone is also Claude's fallback if the plugin install fails.
+the setup script runs. Both agents get every skill. The clone is also Claude's
+fallback if the plugin install fails.
 
 `CLOUD.md` is a portable subset of a local ruleset: response shape, workflow,
 philosophy, code quality, testing, security, commits. It carries nothing

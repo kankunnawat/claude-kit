@@ -32,25 +32,43 @@ for f in "$HOME/.claude/CLAUDE.md" "$HOME/.codex/AGENTS.md"; do
   fi
 done
 
+# Superpowers. Claude keeps the plugin path so skills stay `superpowers:`-
+# prefixed, matching a local install and the references inside `ship`. Codex
+# uses a plain clone: `codex plugin add` needs a marketplace snapshot a fresh
+# container does not have, and the CLI may not even be on PATH here, since the
+# setup script runs as root before the agent launches.
+sp_installed=0
 if command -v claude >/dev/null 2>&1; then
   claude plugin marketplace add anthropics/claude-plugins-official >/dev/null 2>&1
   if claude plugin install -y superpowers@claude-plugins-official >/dev/null 2>&1; then
-    log "superpowers installed for claude"
+    log "superpowers installed for claude, prefixed"
+    sp_installed=1
   else
-    log "superpowers FAILED for claude"
+    log "superpowers plugin install FAILED for claude, falling back to a clone"
   fi
 else
-  log "claude not on PATH, skipping its plugin install"
+  log "claude not on PATH, falling back to a clone"
 fi
 
-if command -v codex >/dev/null 2>&1; then
-  if codex plugin add superpowers@claude-plugins-official >/dev/null 2>&1; then
-    log "superpowers installed for codex"
-  else
-    log "superpowers FAILED for codex"
-  fi
-else
-  log "codex not on PATH, skipping its plugin install"
+if [ ! -d "$HOME/.superpowers" ]; then
+  git clone --depth 1 https://github.com/obra/superpowers "$HOME/.superpowers" >/dev/null 2>&1 \
+    || log "superpowers clone FAILED"
+fi
+
+if [ -d "$HOME/.superpowers/skills" ]; then
+  # Codex sessions never fan out, so the dispatch skills are not installed
+  # there at all. Claude gets everything, and only when the plugin path failed.
+  for skill in "$HOME/.superpowers"/skills/*/; do
+    name=$(basename "$skill")
+    case "$name" in
+      dispatching-parallel-agents|requesting-code-review|subagent-driven-development)
+        codex_ok=0 ;;
+      *) codex_ok=1 ;;
+    esac
+    [ "$codex_ok" = 1 ] && ln -sfn "${skill%/}" "$HOME/.codex/skills/$name"
+    [ "$sp_installed" = 0 ] && ln -sfn "${skill%/}" "$HOME/.claude/skills/$name"
+  done
+  log "superpowers linked into codex skills$([ "$sp_installed" = 0 ] && echo ' and claude skills')"
 fi
 
 # ripgrep and fd. `trash` is macOS-only and has no cloud equivalent.

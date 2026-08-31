@@ -66,10 +66,9 @@ For a Codex cloud environment, substitute `~/.codex/skills` in the `mkdir`.
 
 **Skills, superpowers, rules, and CLI tools.** `cloud-setup.sh` is the same
 script for both clouds. It creates the agent homes, installs the skills,
-installs the [superpowers](https://github.com/obra/superpowers) plugin through
-whichever agent CLI is on `PATH`, writes `CLOUD.md` as `~/.claude/CLAUDE.md`
-and `~/.codex/AGENTS.md` if those do not already exist, and installs `rg`,
-`fd`, and `ast-grep`:
+installs [superpowers](https://github.com/obra/superpowers), writes `CLOUD.md`
+as `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md` if those do not already
+exist, and installs `rg`, `fd`, and `ast-grep`:
 
 ```bash
 #!/bin/bash
@@ -82,6 +81,16 @@ Every step is non-fatal and the script always exits 0. A setup script that
 exits non-zero fails the session, so an unguarded failure would stop sessions
 from starting at all. Read its log lines in the provisioning output to see
 which steps landed.
+
+Superpowers goes in two ways. Claude gets the plugin, so its skills keep the
+`superpowers:` prefix that a local install and the `ship` skill both expect.
+Codex gets a plain clone of `obra/superpowers` symlinked into
+`~/.codex/skills`, because `codex plugin add` needs a marketplace snapshot that
+a fresh container does not have, and the CLI may not be on `PATH` at all when
+the setup script runs. The three dispatch skills —
+`dispatching-parallel-agents`, `requesting-code-review`, and
+`subagent-driven-development` — are left out of Codex, which never fans out.
+The clone is also Claude's fallback if the plugin install fails.
 
 `CLOUD.md` is a portable subset of a local ruleset: response shape, workflow,
 philosophy, code quality, testing, security, commits. It carries nothing

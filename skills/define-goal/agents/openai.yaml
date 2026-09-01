@@ -1,0 +1,4 @@
+interface:
+  display_name: "Define Goal"
+  short_description: "Shape clear measurable completion goals"
+  default_prompt: "Use $define-goal to turn this intention into a measurable completion goal."

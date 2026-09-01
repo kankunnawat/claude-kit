@@ -24,7 +24,7 @@ you don't, most of them still stand alone.
 | `worktrees` | Where worktrees live, how they get created, and when they get cleaned up. |
 | `rendering-specs-as-html` | Keeps every spec and plan as a synced `.md` + `.html` pair. |
 | `no-ai-slop` | Edits or audits a draft for AI writing patterns without flattening the voice. |
-| `define-goal` | Turns a fuzzy objective into a completion condition a judge can score. |
+| `define-goal` | Defines measurable completion goals for Claude Code and Codex. |
 | `semantic-computer-use` | Drives native macOS apps through the accessibility tree instead of pixel clicking. |
 | `quiz` | Comprehension check, only when you ask for one. |
 

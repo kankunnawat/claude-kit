@@ -104,6 +104,12 @@ the setup script with internet access, so the clone never races the checkout.
 If your Codex environment has **Post setup caching** on, hit **Reset cache**
 after changing the setup script. A cached container will not rerun it.
 
+Claude Code cloud caches too: after the first run, the filesystem is
+snapshotted and reused for later sessions. The setup script reruns only when
+the script or the environment's network config changes, or when the snapshot
+expires after about seven days — so a pushed kit change can take up to a week
+to reach Claude cloud sessions unless you touch the setup script.
+
 The `mkdir` in the skills-only script is load-bearing. A setup script runs as
 root before the agent launches, so the skills directory does not exist yet,
 and `install.sh` skips a target directory that is missing. Without it the

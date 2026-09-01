@@ -16,10 +16,11 @@ included for completeness.
   `~/.claude-kit`. Edit a skill there, not through the symlink.
 - The setup script is the only phase with internet on Codex. Fetch what you
   need then, not during the run.
-- Codex caches the container after setup. A changed setup script does nothing
-  until the environment's cache is reset.
-- Rules naming plan mode, subagents, or worktrees are Claude-only. Codex
-  sessions never fan out.
+- Both clouds cache the container after setup. Codex reruns the setup script
+  only after a cache reset; Claude Code only when the script or network config
+  changes, or when the snapshot expires after about seven days.
+- Rules naming plan mode, subagents, or worktrees are Claude-only. Codex has
+  no subagent tool; its dispatch skills run their process serially.
 
 ## Response shape
 

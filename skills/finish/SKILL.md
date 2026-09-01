@@ -29,7 +29,12 @@ to force closure on unverified work.
 
 3. **Preflight.** Run the project's tests/linters for the touched area if the
    ritual or repo rules require green-before-commit. Review the full diff —
-   check nothing unrelated or secret is staged.
+   check nothing unrelated or secret is staged; unrelated work gets unstaged,
+   not shipped along.
+   A fix in a repo with a test suite carries at least one regression check for
+   the fixed path. Scripts written to prove the fix get committed or folded
+   into the suite, never discarded. A new check must fail when the fix is
+   reverted — a check that can only pass proves nothing.
 
 4. **Prove frontend changes visually.** If the shipped diff changes a
    user-facing frontend, the PR must carry visual evidence before merge.

@@ -96,7 +96,8 @@ machine-specific, and a project's own CLAUDE.md or AGENTS.md overrides it.
 
 Configure this once per environment, not once per repository.
 
-Verified on 2026-08-31, on Claude Code cloud and on Codex cloud. The clone
+Verified in full on 2026-09-01 — skills, rules, CLI tools, superpowers — on
+Claude Code cloud and on Codex cloud. The clone
 needs no repository attachment, because both proxies serve anonymous git reads
 of public repositories. Codex checks out your repository first and then runs
 the setup script with internet access, so the clone never races the checkout.

@@ -21,6 +21,9 @@ brainstorm inside /ship.
 
 ## The chain
 
+Prefix note: where superpowers is installed bare (no plugin), these skills
+resolve without the `superpowers:` prefix — same skills, same order.
+
 1. **superpowers:writing-plans** — write the implementation plan from the spec
    (with `rendering-specs-as-html` for the md+html pair, if your global rules
    call for one).

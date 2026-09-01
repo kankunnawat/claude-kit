@@ -10,19 +10,20 @@
 set -u
 
 kit="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+claude_dir="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 log() { printf 'cloud-setup: %s\n' "$*"; }
 
 # Create both agent homes and let install.sh populate whichever one the
 # container actually runs. The directories do not exist yet at setup time.
-mkdir -p "$HOME/.claude/skills" "$HOME/.codex/skills" "$HOME/.agents/skills"
+mkdir -p "$claude_dir/skills" "$HOME/.codex/skills" "$HOME/.agents/skills"
 
-if "$kit/install.sh" >/dev/null 2>&1; then
-  log "skills installed"
+if out="$("$kit/install.sh" 2>&1)"; then
+  log "skills: $(printf '%s\n' "$out" | tail -n 1)"
 else
-  log "skills FAILED"
+  log "skills FAILED: $out"
 fi
 
-for f in "$HOME/.claude/CLAUDE.md" "$HOME/.codex/AGENTS.md"; do
+for f in "$claude_dir/CLAUDE.md" "$HOME/.codex/AGENTS.md"; do
   if [ -e "$f" ]; then
     log "rules: $f already exists, left alone"
   elif cp "$kit/CLOUD.md" "$f" 2>/dev/null; then
@@ -63,9 +64,9 @@ if [ -d "$HOME/.superpowers/skills" ]; then
   for skill in "$HOME/.superpowers"/skills/*/; do
     name=$(basename "$skill")
     ln -sfn "${skill%/}" "$HOME/.codex/skills/$name"
-    [ "$sp_installed" = 0 ] && ln -sfn "${skill%/}" "$HOME/.claude/skills/$name"
+    [ "$sp_installed" = 0 ] && ln -sfn "${skill%/}" "$claude_dir/skills/$name"
   done
-  log "superpowers linked into codex skills$([ "$sp_installed" = 0 ] && echo ' and claude skills')"
+  log "superpowers linked into codex skills$([ "$sp_installed" = 0 ] && echo ' and claude skills (bare names, no superpowers: prefix)')"
 fi
 
 # ripgrep and fd. `trash` is macOS-only and has no cloud equivalent.

@@ -13,7 +13,8 @@ included for completeness.
 
 - `trash` does not exist here. Delete with `rm`, and read the target first.
 - Skills under `~/.claude/skills` and `~/.codex/skills` are symlinks into
-  `~/.claude-kit`. Edit a skill there, not through the symlink.
+  `~/.claude-kit` (the superpowers set under `~/.codex/skills` points into
+  `~/.superpowers`). Edit a skill at its source, not through the symlink.
 - The setup script is the only phase with internet on Codex. Fetch what you
   need then, not during the run.
 - Both clouds cache the container after setup. Codex reruns the setup script

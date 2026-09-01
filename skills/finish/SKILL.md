@@ -64,7 +64,18 @@ to force closure on unverified work.
    step; say so). After merge, re-read the tracker state and checklist; reopen
    an umbrella that was auto-closed with unchecked work and report the repair.
 
-6. **Report** what was done in one short block: commit hash, branch/PR, tracker
+6. **Post-merge tail.** Rituals with steps *after* the merge — deploy
+   verification, live smoke, tracker → Done, worktree cleanup — are the part a
+   cleared session loses: the merge feels like the end, and only bookkeeping
+   is left. Treat the tail as its own phase.
+   - Before merging, list the outstanding tail steps in your report so they
+     survive into the next context.
+   - /finish is re-entrant: invoked on an already-merged branch, skip to the
+     tail and run only what is outstanding.
+   - Never report the close-out complete while a tail step is outstanding —
+     name what remains.
+
+7. **Report** what was done in one short block: commit hash, branch/PR, tracker
    actions taken or skipped and why.
 
 ## Declaring a ritual (for CLAUDE.md authors)

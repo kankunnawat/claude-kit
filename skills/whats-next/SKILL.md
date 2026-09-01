@@ -20,10 +20,14 @@ an existing tracker declaration (JQL, Plane project, tracker file). No
 declaration → fall back to: newest handoff/resume file, `git log` since last
 session — and say the repo has no declared tracker.
 
-Always, tracker or not, also check git-side state in the same turn: `gh pr
-list`, unpushed branches, `git worktree list`. A PR parked awaiting the user's
-review/verification (the /ship → review → /finish gap) outranks the tracker's
-next ticket as the next action — the tracker won't show it.
+Always, tracker or not, also check git-side state in the same turn, and start
+with `git fetch` — every local ref you are about to read is stale until you do,
+and a stale `main` makes merged work look unshipped. Then: `gh pr list --state
+all` (an empty *open* list means nothing on its own — the branch may have a
+merged PR), unpushed commits (`git log origin/main..HEAD`), `git worktree
+list`. A PR parked awaiting the user's review/verification (the /ship → review
+→ /finish gap) outranks the tracker's next ticket as the next action — the
+tracker won't show it.
 
 ## Rules
 
@@ -33,6 +37,9 @@ next ticket as the next action — the tracker won't show it.
   subagents, unpushed commits, open worktrees).
 - Tracker/git disagreement is a finding, not noise: tracker says In Progress
   but the PR is merged → a skipped /finish close-out is the next action.
+- Never report work as unshipped on local refs alone. Check merged PRs for its
+  branch name, then `git diff --stat origin/main <branch>` — empty means it
+  landed and only the close-out tail is missing.
 
 ## Answer shape
 

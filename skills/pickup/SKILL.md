@@ -7,6 +7,10 @@ description: Use when the user says /pickup, "continue where we left off", "pick
 
 Venue-agnostic verb for resuming work from persistent state. Counterpart of the `park` skill.
 
+## Argument
+
+`/pickup <text>` — first match the text against candidates (branch, worktree, handoff title) and resume that one without asking. Text left over after selection, or all of it when it names no candidate, is a focus override for the handoff's next step: state it in the plan line (step 4) and follow it instead. No text → the steps below unchanged.
+
 ## Steps
 
 1. **Gather candidates from ALL of these sources** — work often lives in a worktree the cwd scan can't see:

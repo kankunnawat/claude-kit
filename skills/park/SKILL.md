@@ -11,6 +11,10 @@ Freeze a mid-execution session so a fresh one resumes without re-deriving anythi
 
 Finish the smallest in-flight unit whose result exists only in this session — an awaited subagent verdict, an unresolved review, an uncommitted edit. Subagents die with the session; a verdict not yet written to the tracker is lost. A worker minutes from reporting: wait for it, then freeze. A long-running worker: record in the handoff that its task must be **re-dispatched** (its brief/prompt path), never "wait for" a dead agent.
 
+## Argument
+
+`/park <note>` — the note is the user's directive for the next session. Write it verbatim as the first line under **RESUME HERE** in the handoff, above the derived next dispatch; it wins over the chain's mechanical position. No note → derive the next step from the chain as usual.
+
 ## Required elements — all six, every park
 
 1. **Tracker closed to a boundary.** The ledger/progress file records every completed unit, every ruling, every deferred finding. Nothing load-bearing lives only in conversation.

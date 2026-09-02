@@ -26,6 +26,8 @@ One line: `Driver: <interactive|goal|loop> — <reason>.` Then, for goal, the pa
 
 ## Goal line
 
+**A goal exists to buy autonomy over MANY turns. If interactive mode would finish the same work in one or two turns, do not set a goal; just do it.** Scope the goal to the outcome the user would call done, never to the next internal unit. Spec reviewed, plan written, one task green: those are checkpoints inside a goal, not goals. A feature's goal ends at the PR open with gate evidence (or the repo's close-out boundary); pre-implementation chores (allowlists, merge-forwards, decision-file edits) ride inside the same goal as ordered steps.
+
 One paragraph, under 4,000 chars, four parts:
 1. Outcome + threshold (binary or numeric, never an activity).
 2. Evidence: ``shown by `<command>` output in the conversation``. The judge reads ONLY the transcript, so the proof command must run inline, never only into a report file.

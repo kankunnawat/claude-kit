@@ -1,6 +1,6 @@
 ---
 name: define-goal
-description: Use when the user asks to define or refine a measurable completion goal, requests /goal, $define-goal, the native goal tool, or explicit persistent goal-backed execution. Ordinary implementation does not trigger it.
+description: Use when the user asks to DRAFT or REFINE a measurable completion goal line, or asks for $define-goal. NOT a trigger - a message that already carries a complete `/goal <condition>` line (pasted as text, often after other words) is a failed activation, not a drafting request; do not invoke this skill, tell the user to resend the line as its own message starting with `/goal`. Ordinary implementation does not trigger it either.
 ---
 
 # Define Goal
@@ -42,6 +42,8 @@ Do not create a goal for ordinary multi-step implementation.
 
 Return one paste-ready `/goal <condition>` line.
 Drafting the line does not activate persistence unless the user explicitly asks Claude to set it.
+
+**Claude cannot activate the goal.** Only the harness does, and only when the user sends `/goal <condition>` as the FIRST line of its own message. A `/goal …` line that arrives inside a longer message ("confirm all\n/goal …") reached Claude as plain text and activated nothing. That is not a request to draft: do not invoke this skill, do not start the work as if the goal were live. Say in one line that the goal is not active and ask the user to resend the line by itself.
 
 The condition must be one paragraph under 4,000 characters.
 The judge sees only the conversation transcript, so require named evidence "shown by `<command>` output in the conversation."

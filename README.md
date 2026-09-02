@@ -25,6 +25,7 @@ you don't, most of them still stand alone.
 | `rendering-specs-as-html` | Keeps every spec and plan as a synced `.md` + `.html` pair. |
 | `no-ai-slop` | Edits or audits a draft for AI writing patterns without flattening the voice. |
 | `define-goal` | Defines measurable completion goals for Claude Code and Codex. |
+| `pick-driver` | Decides who drives a task: interactive turns, a `/goal`, or a `/loop` prompt file. Drafts the goal line or loop file when one wins. |
 | `semantic-computer-use` | Drives native macOS apps through the accessibility tree instead of pixel clicking. |
 | `quiz` | Comprehension check, only when you ask for one. |
 

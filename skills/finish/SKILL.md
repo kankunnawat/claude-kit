@@ -38,9 +38,11 @@ to force closure on unverified work.
 
 4. **Prove frontend changes visually.** If the shipped diff changes a
    user-facing frontend, the PR must carry visual evidence before merge.
-   First check what's already attached (e.g. by /ship): if it matches the
-   final diff and renders, verify and move on — don't recapture. If evidence
-   is missing or stale (the diff changed since capture), capture the final
+   First check what images are already attached (e.g. by /ship): if they
+   match the final diff and render, verify and move on — don't recapture.
+   Text-only evidence (measurement tables, smoke counts, audit output) never
+   satisfies this step; capture before merge. If images are missing or stale
+   (the diff changed since capture), capture the final
    implemented app itself with representative synthetic/test data. Generated
    images, mockups, and design references do not satisfy this proof. Cover
    desktop, mobile, and each materially changed state needed for review (for

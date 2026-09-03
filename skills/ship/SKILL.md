@@ -31,7 +31,8 @@ resolve without the `superpowers:` prefix — same skills, same order.
 3. **superpowers:subagent-driven-development** — execute. Never
    superpowers:executing-plans (main-loop implementation is banned). Implementer
    dispatch follows the repo's model routing; every spawn carries an explicit
-   model pin.
+   model pin and the reporting contract: every claim points at a tool result
+   from the session, unverified items named as such.
 4. **Self review** — `/code-review` at medium effort on the full branch diff
    (`git diff <base>...HEAD`); apply confirmed fixes.
 5. **Verification evidence** — capture proof the change works (screenshots /

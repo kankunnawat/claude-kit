@@ -1,6 +1,6 @@
 ---
 name: finish
-description: Use when the user confirms a fix/feature works, or says /finish, "ship it", "wrap it up", or "commit push [and post jira]" — executes this project's declared definition-of-done ritual (commit, push, and whatever the "Close-out:" line in CLAUDE.md/AGENTS.md specifies).
+description: Use when the user confirms the work is good and wants it closed out (/finish, "ship it", "commit and push") — runs the project's declared Close-out ritual: commit, push, and whatever the "Close-out:" line in CLAUDE.md/AGENTS.md specifies. Not for unverified work.
 ---
 
 # finish

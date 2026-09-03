@@ -1,6 +1,6 @@
 ---
 name: park
-description: Use when the user wants to freeze the session before clearing context mid-execution — /park, "create a checkpoint", "checkpoint before we clear", "context is getting long", "let's clear and continue in a fresh session" — while a multi-step chain (ship, SDD, plan execution, long debug) is still in flight. Not the built-in /rewind checkpoint; this writes resume state to disk. Counterpart of the pickup skill.
+description: Use when the user wants to freeze a mid-flight session before /clear — /park, or any ask for a handoff or checkpoint while a multi-step chain (ship, SDD, plan execution, long debug) is still in flight. Writes resume state to disk; not the built-in /rewind checkpoint. Counterpart of the pickup skill.
 ---
 
 # park
@@ -22,7 +22,7 @@ Finish the smallest in-flight unit whose result exists only in this session — 
 3. **Durable without committing the handoff.** The handoff file stays uncommitted — `.handoffs/` is globally gitignored, and committing personal scratch onto a feature branch leaks into the PR diff. Durability = the tracker (element 1, committed on the feature branch/worktree — never push main) plus the memory pointer (element 4). Only a repo that declares a tracked resume location gets the handoff committed there.
 4. **Memory pointer — only if an auto-memory store exists** (a container without one skips this element). Update the auto-memory pointer file and its MEMORY.md line with `RESUME FROM: <handoff path>` (absolute path, or repo-relative with the worktree named). Memory loads regardless of cwd — this is what routes a fresh session into a worktree that a cwd-only scan of the main checkout would miss. The `pickup` skill reads exactly this string.
 5. **Resume verb.** Tell the user exactly what to type after /clear: `/pickup`, `/ship <plan>`, or the chain's own skill.
-6. **Downloads paste file — only if the user says they'll drive the next session by hand.** `~/Downloads/<slug>.md` per house paste rules: one unwrapped line per paragraph, no em dashes.
+6. **Downloads paste file — only if the user will drive the next session by hand or under a different Claude account** (another account cannot read this one's memory pointer). `~/Downloads/<slug>.md` per house paste rules: one unwrapped line per paragraph, no em dashes.
 
 Then say: "safe to /clear" plus the resume verb. Nothing else.
 

@@ -7,7 +7,7 @@ AGENTS.md overrides anything here.
 Every rule below is here because a model does not do it by default. Nothing is
 included for completeness.
 
-<!-- Distilled-from: dotfiles CLAUDE.shared.md @ 655c550 -->
+<!-- Distilled-from: dotfiles CLAUDE.shared.md @ b97c504 -->
 
 ## This container
 
@@ -25,7 +25,8 @@ included for completeness.
 
 ## Response shape
 
-Outcome first. No preamble, no recap, no closing pleasantry.
+Outcome first. No preamble, no recap, no closing pleasantry. The final
+message stands alone for a reader who saw nothing else.
 
 First line is the next concrete action: a command, a path, or a snippet.
 Multi-step work is a numbered list of at most five bounded steps. Every turn
@@ -63,6 +64,10 @@ Incident work inverts this: mitigate first, root-cause afterward.
 plan, take the conservative option, log it under "Deviations", and keep going.
 Review reads deviations first.
 
+**Approval gates.** Two things wait for explicit approval: a comment on
+someone else's pull request, and any artifact created under the user's name
+in an external tracker. Show the text and confirm scope first.
+
 **Unknowns.** Answer architecture-changing questions before starting. Taste
 questions get several genuinely different prototypes, never a spec. Never pay
 for the same unknown twice — each one becomes a rule or a skill.
@@ -70,6 +75,8 @@ for the same unknown twice — each one becomes a rule or a skill.
 **Delegation.** (Claude only.) Subagents that modify files work in their own
 worktree, never the main checkout. Read-only subagents need none. Subagents
 never spawn subagents. Don't spawn for work that finishes in about a minute.
+Pin the working directory in every delegated brief (`cd <path> &&` on each
+command); the harness resets cwd between calls.
 
 Every spawn carries an explicit model pin. An unpinned spawn silently inherits
 the main loop's model, which is the expensive one. Route recon and mechanical
@@ -115,6 +122,8 @@ Never hand-edit generated files — changelogs, lockfiles, generated code.
 Change the source or the generator.
 
 Delete commented-out code rather than keeping it. Never swallow an exception.
+A fix commit runs its verification before any success claim, and the check
+that proved the fix ships in the commit. Never write, pass, discard.
 Google-style docstrings on non-trivial public APIs.
 
 Many small files over few large ones, organized by feature rather than by

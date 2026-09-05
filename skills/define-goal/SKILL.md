@@ -1,6 +1,7 @@
 ---
 name: define-goal
-description: Use when the user asks to DRAFT or REFINE a measurable completion goal line, or asks for $define-goal. NOT a trigger - a message that already carries a complete `/goal <condition>` line (pasted as text, often after other words) is a failed activation, not a drafting request; do not invoke this skill, tell the user to resend the line as its own message starting with `/goal`. Ordinary implementation does not trigger it either.
+description: >-
+  Use when the user asks to DRAFT or REFINE a measurable completion goal line, or asks for $define-goal. NOT a trigger - a message that already carries a complete `/goal <condition>` line (pasted as text, often after other words) is a failed activation, not a drafting request; do not invoke this skill, tell the user to resend the line as its own message starting with `/goal`. Ordinary implementation does not trigger it either.
 ---
 
 # Define Goal

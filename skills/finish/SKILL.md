@@ -1,6 +1,7 @@
 ---
 name: finish
-description: Use when the user confirms the work is good and wants it closed out (/finish, "ship it", "commit and push") — runs the project's declared Close-out ritual: commit, push, and whatever the "Close-out:" line in CLAUDE.md/AGENTS.md specifies. Not for unverified work.
+description: >-
+  Use when the user confirms the work is good and wants it closed out (/finish, "ship it", "commit and push") — runs the project's declared Close-out ritual: commit, push, and whatever the "Close-out:" line in CLAUDE.md/AGENTS.md specifies. Not for unverified work.
 ---
 
 # finish

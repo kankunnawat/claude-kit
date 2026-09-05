@@ -13,7 +13,8 @@ If the configured required reviewer is unavailable, report that blocker before i
 
 In Claude Code, return a paste-ready `/goal <condition>` line.
 The harness activates it only when the user sends that line first in its own message.
-`/goal` shows status; `/goal clear` and `/clear` stop it.
+`/goal` shows status, and `/goal clear` clears the goal.
+In Claude Code, `/clear` clears both the goal and loop.
 Non-interactive Claude may use `claude -p "/goal <condition>"` only when that sanctioned interface is available.
 Keep the condition one paragraph under 4,000 characters.
 The Claude goal judge reads only the conversation transcript, so the proof command must run inline rather than only into a report file.

@@ -62,8 +62,9 @@ class PortabilityTest(unittest.TestCase):
         self.assertIn("blocks integration", driver)
         self.assertNotIn("judge reads ONLY the transcript", driver)
         self.assertIn("judge reads only the conversation transcript", runtime)
-        for obligation in ("4,000", "wall-clock", "max-wakes", "one repair round", "never edits its own program", "1200", "480", "`/clear`"):
+        for obligation in ("4,000", "wall-clock", "max-wakes", "one repair round", "never edits its own program", "1200", "480"):
             self.assertIn(obligation, runtime)
+        self.assertIn("In Claude Code, `/clear` clears both the goal and loop", runtime)
 
     def test_ship_self_review_and_required_independent_review_stay_distinct(self):
         ship = read(SKILLS["ship"])

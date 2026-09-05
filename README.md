@@ -97,20 +97,17 @@ machine-specific, and a project's own CLAUDE.md or AGENTS.md overrides it.
 
 Configure this once per environment, not once per repository.
 
-Verified in full on 2026-09-01 — skills, rules, CLI tools, superpowers — on
-Claude Code cloud and on Codex cloud. The clone
-needs no repository attachment, because both proxies serve anonymous git reads
-of public repositories. Codex checks out your repository first and then runs
-the setup script with internet access, so the clone never races the checkout.
+Verified in the tested 2026-09-01 Claude Code cloud and Codex cloud profiles:
+skills, rules, CLI tools, and superpowers installed successfully. Those profiles
+allowed anonymous public-repository reads during setup. Verify the active
+environment's network and checkout order before relying on that behavior.
 
-If your Codex environment has **Post setup caching** on, hit **Reset cache**
-after changing the setup script. A cached container will not rerun it.
+If the active Codex profile exposes **Post setup caching**, use **Reset cache**
+after changing the setup script. Verify the control exists before relying on it.
 
-Claude Code cloud caches too: after the first run, the filesystem is
-snapshotted and reused for later sessions. The setup script reruns only when
-the script or the environment's network config changes, or when the snapshot
-expires after about seven days — so a pushed kit change can take up to a week
-to reach Claude cloud sessions unless you touch the setup script.
+The tested Claude Code cloud profile cached the filesystem after its first run.
+It reran setup when the script or network configuration changed, or after its
+snapshot expired. Verify current cache behavior before estimating propagation.
 
 The `mkdir` in the skills-only script is load-bearing. A setup script runs as
 root before the agent launches, so the skills directory does not exist yet,

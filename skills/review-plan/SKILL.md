@@ -34,4 +34,4 @@ This skill's rubrics grade plans and specs. When the artifact is a **diff, branc
 - Evaluate in order: **architecture > correctness > code quality > tests > performance.** The order is the priority: an architectural defect outranks a naming nit, always.
 - For each issue: describe it concretely with `file:line` references, present the options with their tradeoffs, and recommend one. In review-only mode, ask before changing code. An explicitly requested self-review or review-and-fix, or an approved review-then-execute chain, permits confirmed in-scope fixes. Ask for unresolved product, architecture, scope, or authority decisions. A finding that names a problem without a concrete failure scenario isn't finished.
 
-For a final verdict with fresh context, dispatch the Fable-pinned `reviewer` agent rather than reviewing in the main loop.
+For a final verdict with fresh context, use the configured independent reviewer through a supported runtime mechanism. If that reviewer is unavailable, the missing review blocks progression; self-review is not a substitute.

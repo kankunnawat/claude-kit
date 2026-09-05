@@ -55,53 +55,12 @@ manual audit below. It also leaves unregistered orphan dirs alone by design
 
 ## Auditing a pile of worktrees before a bulk cleanup
 
-When worktrees have accumulated and the user wants space back, produce a
-**keep / stale / remove report first** and let them approve it. The classification
-rests on one fact:
-
-> `git worktree remove` deletes the **checkout**, not the branch. Every commit
-> survives in `.git`. **Only uncommitted files are losable** — sort on that, not
-> on merge status.
-
-Merge status decides whether you'd ever want the checkout *back*, not whether
-removing it destroys anything. That distinction turns a scary bulk delete into a
-routine one.
-
-**1. Merge state — ask GitHub, never patch-id.** In a squash-merging repo
-`git cherry` / `git branch --merged` / patch-id report every landed branch as
-unlanded, because the squash commit shares no patch-id with the originals.
-
-```bash
-gh pr list --head "$branch" --state all --json number,state,mergedAt
-```
-
-A branch with no PR isn't automatically unlanded — it may have fed a collector
-branch that shipped. Confirm by checking the collector's merge commit is an
-ancestor of the trunk (`git merge-base --is-ancestor <mergeSha> origin/dev`) plus
-a marker string from the work in the trunk's copy of a touched file.
-
-**2. Uncommitted work — the only real risk.** `git -C <wt> status --porcelain`.
-Non-empty ⇒ **stale bucket, user's call**, and list the files in the report.
-Offer: keep as-is · trash only `node_modules` (most of the size, zero risk to the
-dirty files) · commit+push so it becomes removable.
-
-**3. Live sessions — check the lease, not just the process list.** A process
-roster shows who's running; if the repo has its own lock/lease/claim ledger, that
-is the authority over who owns a path. Check both and cite the lease.
-
-**4. Re-read the registry immediately before removing.** Other sessions may be
-sweeping concurrently — a list built minutes ago can be stale, and a removal you
-didn't perform is indistinguishable from one you did. Build the removal list from
-`git worktree list --porcelain` at execution time, and assert the protected paths
-are absent from it before running anything.
-
-Beware measurement artifacts: `git -C <dir>` on a directory that is *not* a
-registered worktree silently falls through to the parent repo and reports **its**
-status. Cross-check any dir against `git worktree list` before believing a dirty
-count.
-
-Finish with `git worktree prune`, `trash` (never `rm -rf`) for unregistered
-leftover dirs, and `git worktree list` to confirm what remains.
+Before bulk audit, recovery, or cleanup, read `references/bulk-cleanup.md`.
+If the reference is missing, that blocks the bulk operation; routine creation and
+a separately authorized single-worktree removal remain available.
+A keep/stale/remove report and approval come before bulk mutation.
+Uncommitted work, live leases, a fresh registry, protected paths, and commit
+retention remain mandatory guards.
 
 ### Deleting the branch refs afterwards is a separate, riskier job
 

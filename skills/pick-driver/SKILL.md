@@ -10,47 +10,38 @@ One workflow, three drivers. The workflow is always the normal chain: brainstorm
 | Driver | Advances | Done judged by | Workflow inside |
 |---|---|---|---|
 | **interactive** (default) | the agent within the user's authorized scope | evidence against the requested outcome | full chain; pause only at explicit approval gates or unresolved blocking decisions |
-| **goal** (`/goal <condition>`) | Claude, until the condition holds | a judge model reading the transcript | same chain; every gate pre-decided |
-| **loop** (`/loop` + a prompt file) | the prompt file, re-read every wake | stop conditions in the file | same chain per unit |
+| **goal** | the supported goal runtime, until the condition holds | evidence against the goal | same chain; every gate pre-decided |
+| **loop** | the supported scheduler, re-reading its prompt each wake | stop conditions in the prompt | same chain per unit |
 
 Decision order:
 1. Interactive unless the user asks for unattended execution ("run this unattended", "as a goal", "I'm going to bed"). Multi-step or vague work is not a reason to leave interactive.
 2. Unattended but any gating decision or taste call is still open → interactive until it is decided. Name the open decision and propose a default, so one reply unlocks the driver.
-3. Unattended and pre-decided: waits between steps (CI, deploy, subagents, a human) or more than one unit → loop. Otherwise → goal. A unit is one independently provable end state: one PR, one merge, one deploy. A campaign is a loop whose units are goal-shaped.
+3. Unattended and pre-decided: waits between steps (CI, deploy, delegated work, a human) or more than one unit → loop. Otherwise → goal. A unit is one independently provable end state: one PR, one merge, one deploy. A campaign is a loop whose units are goal-shaped.
 
-Both goal and loop die on `/clear`; context is the ceiling. A campaign ends each session at a boundary with a handoff (`park`) and relaunches with `pickup`.
+Before any goal, loop, or scheduled operation, read `references/runtime-routing.md`.
+Detect the runtime from sanctioned runtime metadata and observable tools, then use only mechanisms verified there.
+A missing reference or persistence capability blocks that unattended operation; continue authorized interactive work.
+An unavailable required reviewer blocks integration; self-review is not a substitute.
+
+Every driver preserves the requested outcome and evidence, the allowed scope and authority, approval gates, and blocker semantics.
+Never broaden authority to make an unattended driver fit.
 
 ## Output at task start
 
-One line: `Driver: <interactive|goal|loop> — <reason>.` Then, for goal, the paste-ready line; for loop, confirm the prompt file exists or draft it; for interactive, proceed into the workflow.
+One line: `Driver: <interactive|goal|loop> — <reason>.`
+Then follow the selected runtime route, or proceed into the interactive workflow.
 
 ## Goal line
 
 **A goal exists to buy autonomy over MANY turns. If interactive mode would finish the same work in one or two turns, do not set a goal; just do it.** Scope the goal to the outcome the user would call done, never to the next internal unit. Spec reviewed, plan written, one task green: those are checkpoints inside a goal, not goals. A feature's goal ends at the PR open with gate evidence (or the repo's close-out boundary); pre-implementation chores (allowlists, merge-forwards, decision-file edits) ride inside the same goal as ordered steps.
 
-One paragraph, under 4,000 chars, four parts:
+One paragraph with four parts:
 1. Outcome + threshold (binary or numeric, never an activity).
 2. Evidence: ``shown by `<command>` output in the conversation``. The judge reads ONLY the transcript, so the proof command must run inline, never only into a report file.
 3. Scope: allowed paths / systems, which workflow steps run (spec, plan, review), and where their artifacts land.
 4. Stop condition: report a blocker and options when the outcome cannot be reached without new authority or a blocking decision. A blocked or awaiting-approval report is not success.
 
 Reject "make progress on X". Enumerate bounded "every X" sets inline. Anchor counts to a baseline captured before the first edit; "suite passes" is true of a suite that collects zero tests.
-
-## Loop prompt file
-
-The file is the program; the transcript is scratch. Sections, in order:
-1. **Mission** as an outcome.
-2. **Canonical inputs** read every wake, fixed order.
-3. **State detection, derived only** from disk / git / tracker. Never store position in the file; a hand-written "current position" line drifts. The loop writes handoffs; it never edits its own program.
-4. **Pre-decided rulings**, numbered and dated, never re-asked. Every park is a missing ruling: harvest it into this section before relaunch.
-5. **Per-unit procedure**, one idempotent unit per wake: every step checks before it creates (claim, worktree, PR).
-6. **Per-wake output contract**: advanced one unit or proved it is waiting; evidence written to a file; one-line position stated; then `ScheduleWakeup`.
-7. **Caps**: context, wall clock, max wakes, repair rounds (one, then park).
-8. **Stop and report**: done / blocked-on-owner / out-of-lane, each with what to write where.
-
-Pacing: workers notify on completion, so the wakeup delay is a fallback (1200s+). Poll external state at its real cadence (one ~480s CI check, not eight 60s ones).
-
-Workers write reports to files; the loop reads verdicts from files, never from agent replies. Judge (review) and worker (implement) are different agents.
 
 ## When asked to choose between options
 

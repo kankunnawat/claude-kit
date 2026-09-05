@@ -15,13 +15,14 @@ included for completeness.
 - Skills under `~/.claude/skills` and `~/.codex/skills` are symlinks into
   `~/.claude-kit` (the superpowers set under `~/.codex/skills` points into
   `~/.superpowers`). Edit a skill at its source, not through the symlink.
-- The setup script is the only phase with internet on Codex. Fetch what you
-  need then, not during the run.
-- Both clouds cache the container after setup. Codex reruns the setup script
-  only after a cache reset; Claude Code only when the script or network config
-  changes, or when the snapshot expires after about seven days.
-- Rules naming plan mode, subagents, or worktrees are Claude-only. Codex has
-  no subagent tool; its dispatch skills run their process serially.
+- In the cloud profiles verified on 2026-09-01, Codex exposed internet during
+  setup and not during the run. Verify the active environment before relying on
+  network access.
+- Those profiles cached the container after setup. Verify current cache state
+  and reset controls before claiming a setup change has propagated.
+- Goal, scheduling, delegation, and worktree tools vary by runtime and profile.
+  Use sanctioned runtime metadata and observed capabilities. Desktop tools do
+  not prove that a cloud profile supports them.
 
 ## Response shape
 

@@ -9,7 +9,7 @@ One workflow, three drivers. The workflow is always the normal chain: brainstorm
 
 | Driver | Advances | Done judged by | Workflow inside |
 |---|---|---|---|
-| **interactive** (default) | the user, each turn | the user | full chain; the user sees step N before N+1 |
+| **interactive** (default) | the agent within the user's authorized scope | evidence against the requested outcome | full chain; pause only at explicit approval gates or unresolved blocking decisions |
 | **goal** (`/goal <condition>`) | Claude, until the condition holds | a judge model reading the transcript | same chain; every gate pre-decided |
 | **loop** (`/loop` + a prompt file) | the prompt file, re-read every wake | stop conditions in the file | same chain per unit |
 
@@ -32,7 +32,7 @@ One paragraph, under 4,000 chars, four parts:
 1. Outcome + threshold (binary or numeric, never an activity).
 2. Evidence: ``shown by `<command>` output in the conversation``. The judge reads ONLY the transcript, so the proof command must run inline, never only into a report file.
 3. Scope: allowed paths / systems, which workflow steps run (spec, plan, review), and where their artifacts land.
-4. Ends with: `OR Claude has posted a blocked summary naming the obstacle and options.`
+4. Stop condition: report a blocker and options when the outcome cannot be reached without new authority or a blocking decision. A blocked or awaiting-approval report is not success.
 
 Reject "make progress on X". Enumerate bounded "every X" sets inline. Anchor counts to a baseline captured before the first edit; "suite passes" is true of a suite that collects zero tests.
 

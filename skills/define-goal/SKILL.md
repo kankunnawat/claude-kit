@@ -47,7 +47,7 @@ Drafting the line does not activate persistence unless the user explicitly asks 
 
 The condition must be one paragraph under 4,000 characters.
 The judge sees only the conversation transcript, so require named evidence "shown by `<command>` output in the conversation."
-End with `OR Claude has posted a blocked summary naming the obstacle and options.`
+End with a stop condition that reports the blocker and options when the outcome cannot be reached without new authority or a blocking decision. Blocked and awaiting approval are distinct from successful completion.
 
 `/goal` shows status, `/goal clear` stops it, and `/clear` also clears it.
 For non-interactive use, `claude -p "/goal <condition>"` runs the loop in one invocation.

@@ -44,13 +44,20 @@ resolve without the `superpowers:` prefix — same skills, same order.
    reason (blast radius, surfaces touched) — so the reviewer's depth can match
    it:
    low = evidence check only, high = full diff read.
-6. **Stop at the PR/merge boundary** — open the PR per repo convention with the
-   evidence attached, then stop. Merge/tracker close-out stays with the
-   `finish` skill.
+6. **Stop at the PR/merge boundary by default** — open the PR per repo
+   convention with the evidence attached. Merge/tracker close-out stays with
+   the `finish` skill unless the user already authorized it for this task. A
+   skill endpoint is a checkpoint, not proof that the requested task is done;
+   continue any already-authorized close-out in the same task.
 
 Steps run end to end without per-step approval; stop only for destructive
 actions, decision-required gaps, or genuine scope changes (deviation protocol
 applies throughout).
+
+Diagnose and repair in-scope failures from required checks. Do not integrate
+until every required check passes. Implementation authority does not grant
+deployment authority. If repair needs new authority or a real blocker remains,
+report the task as incomplete and name what is needed.
 
 ## Checkpoint override
 

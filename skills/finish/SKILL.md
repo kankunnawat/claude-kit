@@ -54,9 +54,13 @@ to force closure on unverified work.
    the repo's usual harness and attach as GitHub user-attachments. Either
    way, verify every image/video actually renders in the PR.
 
-5. **Execute in order**, confirming before each outward-facing step (anything
-   leaving the machine besides `git push` to the usual remote — Jira/issue
-   comments, status transitions, PR creation, notifications).
+5. **Execute in order.** An approval for an exact action, target, and scope
+   persists through matching close-out steps; do not ask again. Otherwise ask
+   once before the first outward-facing step (anything leaving the machine
+   besides `git push` to the usual remote). `/finish` alone does not authorize
+   every external action. Comments on another person's PR and artifacts or
+   transitions created under the user's name in an external tracker always
+   need content-and-scope approval (count, targets, and owner).
    Complete all close-out bookkeeping — tracker edits, ledger/status-doc
    updates — *before* the first PR push, so it rides the same commit set.
    Never trigger another full CI run solely for tracker or ledger edits; rerun
@@ -81,6 +85,13 @@ to force closure on unverified work.
      tail and run only what is outstanding.
    - Never report the close-out complete while a tail step is outstanding —
      name what remains.
+   - A workflow checkpoint is not the requested task's completion boundary.
+     Continue an already-authorized tail in the same task. Stop and report the
+     incomplete state only when new authority or a real blocker is required.
+
+   Required check failures trigger diagnosis and an in-scope repair. Do not
+   integrate until every required check passes. Implementation authority does
+   not grant deployment authority.
 
 7. **Report** what was done in one short block: commit hash, branch/PR, tracker
    actions taken or skipped and why.

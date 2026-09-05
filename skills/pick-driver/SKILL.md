@@ -37,7 +37,7 @@ Then follow the selected runtime route, or proceed into the interactive workflow
 
 One paragraph with four parts:
 1. Outcome + threshold (binary or numeric, never an activity).
-2. Evidence: ``shown by `<command>` output in the conversation``. The judge reads ONLY the transcript, so the proof command must run inline, never only into a report file.
+2. Evidence: name the exact command, read-back, metric, or review available to the selected runtime's completion judge.
 3. Scope: allowed paths / systems, which workflow steps run (spec, plan, review), and where their artifacts land.
 4. Stop condition: report a blocker and options when the outcome cannot be reached without new authority or a blocking decision. A blocked or awaiting-approval report is not success.
 

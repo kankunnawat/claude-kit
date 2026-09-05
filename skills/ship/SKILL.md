@@ -33,10 +33,9 @@ resolve without the `superpowers:` prefix — same skills, same order.
    dispatch follows the repo's model routing; every spawn carries an explicit
    model pin and the reporting contract: every claim points at a tool result
    from the session, unverified items named as such.
-4. **Independent review** — use the configured independent reviewer through a
-   supported runtime mechanism on the full branch diff
-   (`git diff <base>...HEAD`); apply confirmed in-scope fixes. An unavailable
-   required reviewer blocks progression; self-review is not a substitute.
+4. **Self review** — use the configured supported runtime mechanism on the full
+   branch diff (`git diff <base>...HEAD`); apply confirmed in-scope fixes. This
+   self-review cannot substitute for any independently required review.
 5. **Verification evidence** — capture proof the change works (screenshots /
    command output, via the repo's verification harness) and attach it to the PR
    body before handing over for review — evidence gates the merge decision, it

@@ -99,15 +99,20 @@ Configure this once per environment, not once per repository.
 
 Verified in the tested 2026-09-01 Claude Code cloud and Codex cloud profiles:
 skills, rules, CLI tools, and superpowers installed successfully. Those profiles
-allowed anonymous public-repository reads during setup. Verify the active
-environment's network and checkout order before relying on that behavior.
+allowed anonymous public-repository reads during setup. The known Codex profile
+permits network access during setup only; do not use it during the run. Tool
+presence or reachability does not grant permission. Verify another active
+environment's network policy and checkout order before using its capabilities.
 
 If the active Codex profile exposes **Post setup caching**, use **Reset cache**
-after changing the setup script. Verify the control exists before relying on it.
+after changing the setup script. A cached container does not rerun setup until
+that reset in the known profile.
 
 The tested Claude Code cloud profile cached the filesystem after its first run.
-It reran setup when the script or network configuration changed, or after its
-snapshot expired. Verify current cache behavior before estimating propagation.
+It reran setup only when the script or network configuration changed, or after
+its snapshot expired in about seven days. A pushed kit change can take that long
+to propagate unless the setup script changes. Verify current profile behavior
+before estimating propagation.
 
 The `mkdir` in the skills-only script is load-bearing. A setup script runs as
 root before the agent launches, so the skills directory does not exist yet,

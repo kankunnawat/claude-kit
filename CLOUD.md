@@ -15,11 +15,13 @@ included for completeness.
 - Skills under `~/.claude/skills` and `~/.codex/skills` are symlinks into
   `~/.claude-kit` (the superpowers set under `~/.codex/skills` points into
   `~/.superpowers`). Edit a skill at its source, not through the symlink.
-- In the cloud profiles verified on 2026-09-01, Codex exposed internet during
-  setup and not during the run. Verify the active environment before relying on
-  network access.
-- Those profiles cached the container after setup. Verify current cache state
-  and reset controls before claiming a setup change has propagated.
+- This known Codex cloud profile permits network access during setup only.
+  Do not use network during the run.
+  Tool presence or reachability does not grant permission.
+  Verify another environment profile's policy before using its capabilities.
+- With Post setup caching enabled, Codex reruns setup only after **Reset cache**.
+  The known Claude Code profile reruns setup when its script or network config
+  changes, or when its snapshot expires after about seven days.
 - Goal, scheduling, delegation, and worktree tools vary by runtime and profile.
   Use sanctioned runtime metadata and observed capabilities. Desktop tools do
   not prove that a cloud profile supports them.
@@ -50,7 +52,8 @@ Any writing deliverable runs through the `no-ai-slop` skill before delivery.
 
 ## Workflow
 
-**Plan first, then execute.** (Claude only.) Start complex work in plan mode.
+**Plan first, then execute.** Start complex work through the runtime's supported
+planning mechanism.
 Once a plan is approved, run it end to end without pausing for per-step
 approval. Stop only at destructive actions or genuine scope changes. On minor
 choices — naming, formatting, defaults, two equivalent approaches — pick one
@@ -73,9 +76,10 @@ in an external tracker. Show the text and confirm scope first.
 questions get several genuinely different prototypes, never a spec. Never pay
 for the same unknown twice — each one becomes a rule or a skill.
 
-**Delegation.** (Claude only.) Subagents that modify files work in their own
-worktree, never the main checkout. Read-only subagents need none. Subagents
-never spawn subagents. Don't spawn for work that finishes in about a minute.
+**Delegation.** In any runtime with authorized delegation, delegated workers
+that modify files work in their own worktree, never the main checkout. Read-only
+workers need none. Delegated workers never spawn more workers. Don't delegate
+work that finishes in about a minute.
 Pin the working directory in every delegated brief (`cd <path> &&` on each
 command); the harness resets cwd between calls.
 

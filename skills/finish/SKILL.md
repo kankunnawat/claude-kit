@@ -57,11 +57,11 @@ to force closure on unverified work.
 
 5. **Execute in order.** An approval for an exact action, target, and scope
    persists through matching close-out steps; do not ask again. Otherwise ask
-   once before the first outward-facing step (anything leaving the machine
-   besides `git push` to the usual remote). `/finish` alone does not authorize
-   every external action. Comments on another person's PR and artifacts or
-   transitions created under the user's name in an external tracker always
-   need content-and-scope approval (count, targets, and owner).
+   once for that action before it leaves the machine. Apply this check to each
+   outward-facing action except `git push` to the usual remote. `/finish` alone
+   does not authorize every external action. Comments on another person's PR
+   and artifacts or transitions created under the user's name in an external
+   tracker always need content-and-scope approval (count, targets, and owner).
    Complete all close-out bookkeeping — tracker edits, ledger/status-doc
    updates — *before* the first PR push, so it rides the same commit set.
    Never trigger another full CI run solely for tracker or ledger edits; rerun

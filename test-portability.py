@@ -110,9 +110,14 @@ class PortabilityTest(unittest.TestCase):
     def test_frontmatter_references_and_public_paths_survive_copy(self):
         for path in SKILLS.values():
             frontmatter(path)
-            text = read(path)
-            self.assertNotIn("/Users/bitazza", text)
-            self.assertNotIn("~/.dotfiles", text)
+            markdown_files = [path, *path.parent.glob("references/**/*.md")]
+            for markdown_file in markdown_files:
+                text = read(markdown_file)
+                self.assertIsNone(
+                    re.search(r"/Users/[A-Za-z0-9._-]+(?:/|$)", text),
+                    f"private macOS home path: {markdown_file}",
+                )
+                self.assertNotIn("~/.dotfiles", text)
 
         with tempfile.TemporaryDirectory() as tmp:
             copied_root = Path(tmp)

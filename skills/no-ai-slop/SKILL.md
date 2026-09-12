@@ -17,7 +17,8 @@ If `~/.claude/VOICE.md` exists — a personal voice profile for the person whose
 
 ## What to ask for
 
-If the user has not provided a draft, ask them to paste it.
+When reviewing a draft the agent is producing, use that draft and the current task context.
+Ask the user to paste text only when required external source text is missing.
 
 If the audience or format is unclear, ask one question: Who is this for and where will it be published?
 

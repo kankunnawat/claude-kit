@@ -27,6 +27,7 @@ you don't, most of them still stand alone.
 | `define-goal` | Defines measurable completion goals for Claude Code and Codex. |
 | `pick-driver` | Decides who drives a task: interactive turns, a `/goal`, or a `/loop` prompt file. Drafts the goal line or loop file when one wins. |
 | `semantic-computer-use` | Drives native macOS apps through the accessibility tree instead of pixel clicking. |
+| `build-landing` | Phased method for a marketing landing page: context, guideline, three directions, browser prototype, linted plan, build, verify, deliver, lessons. Scripts for contrast, plan lint, browser verification, and Vercel delivery. |
 | `quiz` | Comprehension check, only when you ask for one. |
 
 Skill names are deliberately unprefixed, so a skill can refer to another by

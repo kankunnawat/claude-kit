@@ -65,3 +65,7 @@ One line each, portable across sites and frameworks. The phase number is the che
 - Platform facts cost round trips until written down. Verify team, permissions, and public response per project.
 - Rules match team size. One owner and one agent commit to main.
 - A CLI's domain inspection can lie about a serving domain. Verify with an unsigned request and hash parity.
+
+## Phase 8, lessons
+
+- The ledger has one writer; the row travels with the lesson.

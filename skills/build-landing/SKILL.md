@@ -36,7 +36,7 @@ One todo per checklist item. The exit artifact must exist before the next phase 
 | 4 | Plan | `superpowers:writing-plans` as an md and html pair; run the lint; fix the plan, not the implementations | `plan-lint.mjs` | plan reviewed by `review-plan`, lint clean |
 | 5 | Build | `superpowers:subagent-driven-development`; UI tasks through `codex-first` at medium effort; every dispatch names its report file first and the controller reads the file, not the return value; every ruling goes to the ledger as it happens; before exit, read every page's copy against the copy bar and rewrite to it, one page at a time | `verify.mjs --phrase` | final review clean, copy bar met on every page |
 | 6 | Verify | production build served at an explicit address whose asset hash matches the build; desktop and mobile viewport-pinned; walk the page at mobile width as a first-time reader; the checks the context adds | `verify.mjs` | checks JSON all true, screenshots |
-| 7 | Deliver | merge, push, deploy, public address, unsigned request, hash parity, ledger row per the context's convention | `deploy.sh` | public URL with evidence lines |
+| 7 | Deliver | merge, push, deploy, public address, unsigned request, hash parity, ledger row in the lesson file when the context uses an inbox | `deploy.sh` | public URL with evidence lines |
 | 8 | Lessons | write lessons from `templates/lesson.md` and file them where the context says; each lesson becomes a checklist line or a script here, never a paragraph | none | lessons filed |
 
 Phases 1 to 3 are taste and stay with the top-tier model. Phase 5 is where Codex builds. Phases 6 and 7 are scripts either harness runs.

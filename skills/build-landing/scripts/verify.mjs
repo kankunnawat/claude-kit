@@ -48,10 +48,14 @@ const pause = page => page.waitForTimeout(650);
 const settle = async page => { await page.evaluate(() => document.fonts.ready).catch(() => {}); await pause(page); };
 const scroll = async (page, y) => { await page.evaluate(y => scrollTo(0, y), y); await pause(page); };
 const overflow = page => page.evaluate(() => ({ scrollWidth: document.scrollingElement.scrollWidth, innerWidth, scrollY }));
-const box = (page, selector) => page.locator(selector).first().evaluate(el => {
-  const r = el.getBoundingClientRect();
-  return { top: r.top, bottom: r.bottom, height: r.height, position: getComputedStyle(el).position };
-});
+const box = async (page, selector) => {
+  const el = page.locator(selector).first();
+  if (await el.count() === 0) return { missing: selector, top: NaN, bottom: NaN, height: NaN, position: 'none' };
+  return el.evaluate(el => {
+    const r = el.getBoundingClientRect();
+    return { top: r.top, bottom: r.bottom, height: r.height, position: getComputedStyle(el).position };
+  });
+};
 const shoot = async (page, name, fullPage = false) => {
   const path = resolve(out, name);
   await page.screenshot({ path, fullPage });
@@ -106,7 +110,7 @@ try {
       const header = await box(page, headerSelector);
       const pinned = Math.abs(header.top) <= 1;
       const hidden = header.bottom <= 0 && ['sticky', 'fixed'].includes(header.position);
-      record(`stickyHeader:${tag}`, pinned || hidden, { mode: pinned ? 'pinned' : hidden ? 'hides on scroll' : 'scrolled away', ...header });
+      record(`stickyHeader:${tag}`, pinned || hidden, { mode: header.missing ? 'selector not found' : pinned ? 'pinned' : hidden ? 'hides on scroll' : 'scrolled away', ...header });
     }
 
     if (anchor) {
@@ -115,8 +119,8 @@ try {
       await pause(page); await pause(page);
       const target = await box(page, `#${anchor}`);
       const header = headerSelector ? await box(page, headerSelector) : { bottom: 0 };
-      const floor = Math.max(0, header.bottom);
-      record(`anchorOffset:${tag}`, target.top >= floor - 1, { targetTop: target.top, headerBottom: header.bottom, floor });
+      const floor = Math.max(0, header.bottom || 0);
+      record(`anchorOffset:${tag}`, !target.missing && target.top >= floor - 1, { targetTop: target.top, headerBottom: header.bottom, floor, missing: target.missing ?? null });
     }
 
     if (outbound) {

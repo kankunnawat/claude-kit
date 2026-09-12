@@ -18,11 +18,11 @@ t "ship linked into claude"  '[ -L "$SANDBOX/.claude/skills/ship" ]'
 t "ship linked into codex"   '[ -L "$SANDBOX/.codex/skills/ship" ]'
 t "ship linked into agents"  '[ -L "$SANDBOX/.agents/skills/ship" ]'
 t "link is a whole dir"      '[ -d "$SANDBOX/.claude/skills/ship" ] && [ -f "$SANDBOX/.claude/skills/ship/SKILL.md" ] && [ ! -L "$SANDBOX/.claude/skills/ship/SKILL.md" ]'
-t "all thirteen installed"     '[ "$(ls "$SANDBOX/.claude/skills" | wc -l | tr -d " ")" = "13" ]'
+t "all kit skills installed" '[ "$(ls "$SANDBOX/.claude/skills" | wc -l)" = "$(ls "$KIT/skills" | wc -l)" ]'
 
 echo "case: rerun is idempotent"
 HOME="$SANDBOX" "$KIT/install.sh" >/dev/null
-t "still thirteen"             '[ "$(ls "$SANDBOX/.claude/skills" | wc -l | tr -d " ")" = "13" ]'
+t "still all kit skills"     '[ "$(ls "$SANDBOX/.claude/skills" | wc -l)" = "$(ls "$KIT/skills" | wc -l)" ]'
 t "exit 0 on rerun"          'HOME="$SANDBOX" "$KIT/install.sh" >/dev/null'
 
 echo "case: a stale symlink from another source is replaced"

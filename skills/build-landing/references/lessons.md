@@ -41,6 +41,11 @@ One line each, portable across sites and frameworks. The phase number is the che
 - Review reports do not survive transit. Name the report file first; read the file, not the return value.
 - The ledger is the only thing that survives compaction. Rulings go to the ledger as they happen; the resume pointer is rewritten last.
 - Rules read at session start are gone by the sixth task. Re-read the phase row before entering the phase.
+- Copy written inside the build gets read after deploy, and a copy fix then costs a redeploy and a recapture. Read every page against the copy bar before the build exits.
+- A copy review that ends in a findings list ships nothing. The bar is met by the rewrite; findings are the owner's approval step, not the deliverable.
+- Absolute and frequency words ("most", "every time", "almost always") stand in for measurements the page cannot show. The context names the words for its language; the script counts them; a person judges each.
+- The search phrase belongs where a reader and a crawler both look first: title, primary heading, description, first paragraph, one subheading. Only the title and heading get checked by habit; name all five.
+- A call-to-action heading is read against its own body. A heading that asks for a call above a body that says "look first" contradicts the page's tone.
 
 ## Phase 6, verify
 

@@ -13,6 +13,8 @@ const usage = `Usage:
   --anchor <id>                  in-page anchor id, without the '#'
   --outbound <host>              every link to this host must carry utm_source
   --article </path/>             second page to load for console errors
+  --phrase <text>                the page's search phrase; asserts it sits in title, h1, meta description, first paragraph, one h2
+  --absolutes <w1,w2,...>        words the context forbids as stand-ins for measurements; counted, warning only
 
 Writes checks.json and screenshots to --out. Exits 1 if any check fails.
 reducedMotion sees CSS and Web Animations only; a requestAnimationFrame loop needs a site-specific check.
@@ -32,6 +34,8 @@ const headerSelector = flag('--header');
 const anchor = flag('--anchor');
 const outbound = flag('--outbound');
 const article = flag('--article');
+const phrase = flag('--phrase');
+const absolutes = (flag('--absolutes') ?? '').split(',').filter(Boolean);
 mkdirSync(out, { recursive: true });
 
 const localRequire = createRequire(resolve(process.cwd(), 'package.json'));
@@ -77,6 +81,28 @@ try {
     await settle(page);
     const overflowTop = await overflow(page);
     await shoot(page, `top-${tag}.png`);
+
+    if (phrase && width === viewports[0].width) {
+      const placement = await page.evaluate(p => {
+        const has = s => (s ?? '').toLowerCase().includes(p.toLowerCase());
+        const main = document.querySelector('main') ?? document.body;
+        return {
+          title: has(document.title),
+          h1: has(document.querySelector('h1')?.innerText),
+          description: has(document.querySelector('meta[name="description"]')?.content),
+          firstParagraph: has(main.querySelector('p')?.innerText),
+          h2: [...document.querySelectorAll('h2')].some(h => has(h.innerText)),
+        };
+      }, phrase);
+      record('phrasePlacement', Object.values(placement).every(Boolean), { phrase, ...placement });
+    }
+    if (absolutes.length && width === viewports[0].width) {
+      const counts = await page.evaluate(words => {
+        const text = document.body.innerText;
+        return Object.fromEntries(words.map(w => [w, text.split(w).length - 1]));
+      }, absolutes);
+      record('absoluteWords', true, { ...counts, note: 'warning only; a person judges each occurrence against the copy bar' });
+    }
 
     // Tab first: setting the hash or scrolling moves the sequential focus start point.
     await page.keyboard.press('Tab');

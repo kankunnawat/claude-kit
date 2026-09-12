@@ -13,7 +13,7 @@ Method and lessons for building a landing page.
 The project context supplies the site: audience, copy, allowed claims, SEO, framework choice, delivery target.
 This skill never hardcodes a product, language, keyword, framework, or host.
 
-Scripts are plain Node 22 and bash with no install step. Each answers `--help`.
+Scripts are plain Node 22 and bash with no install step, except that `verify.mjs` needs Playwright (local or global) and Chrome. Each answers `--help`.
 
 ## Context resolution (phase 0, before anything else)
 

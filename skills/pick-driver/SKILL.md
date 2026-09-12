@@ -1,6 +1,6 @@
 ---
 name: pick-driver
-description: Use before non-trivial or multi-step work, before any step runs, to decide who drives it (interactive, goal, or loop). Also use when the user asks "goal or loop?", "how should we run this", or wants a goal line or loop prompt written.
+description: Use when the user asks to choose an execution mode, configure a goal or loop, or run work unattended.
 ---
 
 # pick-driver

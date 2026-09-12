@@ -46,6 +46,8 @@ One line each, portable across sites and frameworks. The phase number is the che
 - Absolute and frequency words ("most", "every time", "almost always") stand in for measurements the page cannot show. The context names the words for its language; the script counts them; a person judges each.
 - The search phrase belongs where a reader and a crawler both look first: title, primary heading, description, first paragraph, one subheading. Only the title and heading get checked by habit; name all five.
 - A call-to-action heading is read against its own body. A heading that asks for a call above a body that says "look first" contradicts the page's tone.
+- The first-paragraph check reads the first `<p>` inside `<main>`. An eyebrow or kicker is a label, not a paragraph; mark it up as a `div` or `span`.
+- A phrase in a shared component heading passes every page at once and hides which pages still miss it. Put the phrase in each page's own content subheading.
 
 ## Phase 6, verify
 
@@ -65,6 +67,8 @@ One line each, portable across sites and frameworks. The phase number is the che
 - Platform facts cost round trips until written down. Verify team, permissions, and public response per project.
 - Rules match team size. One owner and one agent commit to main.
 - A CLI's domain inspection can lie about a serving domain. Verify with an unsigned request and hash parity.
+- Asset-hash parity cannot tell a copy-only deploy from the stale build. Prove a copy change live with the phrase check per page.
+- A team's display name and its CLI scope slug differ. Record the slug in the project context and pass the slug.
 
 ## Phase 8, lessons
 

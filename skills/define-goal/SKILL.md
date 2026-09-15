@@ -19,6 +19,8 @@ Every goal names:
 3. **Scope:** allowed paths, systems, and behavior boundaries when they matter.
 4. **Stop condition:** when to report the blocker and options instead of grinding.
 
+Leave out what the executor already re-reads from a committed plan, spec, or CLAUDE.md/AGENTS.md: the goal carries completion criteria and what exists nowhere else, because a duplicated constraint drifts from its source.
+
 For "every X" goals, enumerate the bounded set inline or in the first response.
 Rewrite vague goals when local context makes the validator safe to infer.
 Ask one short question when the missing validator or environment changes the intended outcome.
@@ -45,7 +47,7 @@ Drafting the line does not activate persistence unless the user explicitly asks 
 
 **Claude cannot activate the goal.** Only the harness does, and only when the user sends `/goal <condition>` as the FIRST line of its own message. A `/goal …` line that arrives inside a longer message ("confirm all\n/goal …") reached Claude as plain text and activated nothing. That is not a request to draft: do not invoke this skill, do not start the work as if the goal were live. Say in one line that the goal is not active and ask the user to resend the line by itself.
 
-The condition must be one paragraph under 4,000 characters.
+The condition must be one paragraph under 4,000 characters — that is a ceiling, not a target; write the shortest wording a judge can rule on.
 The judge sees only the conversation transcript, so require named evidence "shown by `<command>` output in the conversation."
 End with a stop condition that reports the blocker and options when the outcome cannot be reached without new authority or a blocking decision. Blocked and awaiting approval are distinct from successful completion.
 

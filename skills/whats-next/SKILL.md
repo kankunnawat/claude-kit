@@ -33,6 +33,13 @@ tracker won't show it.
 
 - **Verify live, never answer from memory** — memory and doc queues drift;
   query the declared tracker (JQL, Plane, tracker file) in this turn.
+- **Check other live sessions before proposing** — run `ListAgents` and
+  treat every busy local peer as holding work. Infer what it holds from its
+  name, locked worktrees (`git worktree list` marks them), and branches with
+  commits in the last day; never propose an item that maps to one of those.
+  Never `SendMessage` a peer to ask, and never wait on one — a message lands
+  mid-turn and interrupts its work. When the mapping stays ambiguous, name
+  the possible conflict in the answer and let the user resolve it.
 - Anything in flight from this session counts as position too (running
   subagents, unpushed commits, open worktrees).
 - Tracker/git disagreement is a finding, not noise: tracker says In Progress

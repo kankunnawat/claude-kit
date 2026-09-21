@@ -8,7 +8,7 @@ Every rule below is here because a model does not do it by default. Nothing is
 included for completeness.
 
 <!-- Distilled-from: dotfiles CLAUDE.shared.md @ e0a9eb09a9618c8299c0086185eb7d621dd23b0e -->
-<!-- Review-status: pending independent task review; refresh source marker after source amendments. -->
+<!-- Review-status: independent source review complete; runtime validation is separate. -->
 
 ## This container
 

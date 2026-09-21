@@ -13,7 +13,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent
 SKILLS = {
     name: ROOT / "skills" / name / "SKILL.md"
-    for name in ("define-goal", "pick-driver", "ship", "review-plan", "worktrees")
+    for name in ("define-goal", "pick-driver", "ship", "review-plan", "worktrees", "park", "pickup", "build-landing", "whats-next", "semantic-computer-use", "no-ai-slop")
 }
 DRIVER_RUNTIME = ROOT / "skills/pick-driver/references/runtime-routing.md"
 WORKTREE_BULK = ROOT / "skills/worktrees/references/bulk-cleanup.md"
@@ -86,7 +86,10 @@ class PortabilityTest(unittest.TestCase):
         self.assertIn("references/bulk-cleanup.md", skill)
         self.assertIn("missing", skill)
         self.assertIn("blocks the bulk operation", skill)
-        self.assertIn("git branch -D <branch>", skill)
+        self.assertNotIn("git branch -D <branch>", skill)
+        self.assertIn("git branch -d <branch>", skill)
+        self.assertIn("block that writer", skill)
+        self.assertIn("selected path is ignored", skill)
         self.assertIn("`git branch -D` is what can orphan them", skill)
         self.assertIn("Measured per-branch, decided per-set.", skill)
         self.assertNotIn("**1. Merge state", skill)
@@ -106,6 +109,48 @@ class PortabilityTest(unittest.TestCase):
         self.assertNotIn("**Delegation.** (Claude only.)", cloud)
         self.assertNotIn("Codex has no subagent tool", cloud)
         self.assertNotIn("both proxies serve anonymous git reads", readme)
+
+    def test_handoff_without_memory_and_authorized_delivery(self):
+        park = read(SKILLS["park"])
+        pickup = read(SKILLS["pickup"])
+        self.assertIn("explicit memory authorization", park)
+        self.assertIn("git worktree list --porcelain", park)
+        self.assertIn("git worktree list --porcelain", pickup)
+        self.assertIn("without a memory pointer", pickup)
+        self.assertNotIn("never push main", park)
+        self.assertIn("supported question tool", pickup)
+        landing = read(SKILLS["build-landing"])
+        for guard in ("authorized delivery", "configured roles", "explicitly authorized", "unsigned 200", "production build"):
+            self.assertIn(guard, landing)
+        self.assertNotIn("codex-first` at medium", landing)
+        self.assertIn("Vercel only", landing)
+        for guard in ("Phase 2 blocks without three directions", "Phase 3 blocks phase 4", "reduced motion", "permitted claims verbatim", "asset hash matches"):
+            self.assertIn(guard, landing)
+
+    def test_portable_status_and_ui_capabilities(self):
+        status = read(SKILLS["whats-next"])
+        for guard in ("forge", "base branch", "available peer tools", "read-only", "unavailable"):
+            self.assertIn(guard, status)
+        self.assertNotIn("origin/main", status)
+        self.assertNotIn("run `ListAgents`", status)
+        ui = read(SKILLS["semantic-computer-use"])
+        for guard in ("cua_repl", "current tool schema", "policy denial", "credentials", "third-party", "hand off"):
+            self.assertIn(guard, ui)
+        self.assertNotIn("semantic-cu` MCP (this skill)", ui)
+
+    def test_cloud_preserves_authority_and_completion(self):
+        cloud = read(ROOT / "CLOUD.md")
+        for guard in ("exact content-and-scope approval", "review-only", "required reviewer", "explicit user request", "configured roles", "activation", "authorized endpoint", "Required-gate failures block integration"):
+            self.assertIn(guard, cloud)
+        self.assertNotIn("each one becomes a rule or a skill", cloud)
+        self.assertNotIn("which is the expensive one", cloud)
+
+    def test_no_ai_slop_scopes_edit_summary(self):
+        skill = read(SKILLS["no-ai-slop"])
+        evaluation = read(ROOT / "skills/no-ai-slop/eval.md")
+        self.assertIn("explicit draft-edit requests", skill)
+        self.assertIn("ordinary authored answers", skill)
+        self.assertIn("explicit draft-edit requests", evaluation)
 
     def test_frontmatter_references_and_public_paths_survive_copy(self):
         for path in SKILLS.values():

@@ -34,12 +34,12 @@ One todo per checklist item. The exit artifact must exist before the next phase 
 | 2 | Directions | three genuinely different static references on one `design` canvas, desktop and mobile each, one tradeoff each, one recommendation; compare each with the benchmark before the owner sees them; the owner picks | none | chosen reference named in the guideline |
 | 3 | Prototype | working browser prototype of scroll, hero or key motion, header, and the first interaction at desktop and mobile widths; run it with reduced motion on; the owner reviews it in a browser | `verify.mjs` | prototype address and its checks JSON |
 | 4 | Plan | `superpowers:writing-plans` as an md and html pair; run the lint; fix the plan, not the implementations | `plan-lint.mjs` | plan reviewed by `review-plan`, lint clean |
-| 5 | Build | `superpowers:subagent-driven-development`; UI tasks through `codex-first` at medium effort; every dispatch names its report file first and the controller reads the file, not the return value; every ruling goes to the ledger as it happens; before exit, read every page's copy against the copy bar and rewrite to it, one page at a time | `verify.mjs --phrase` | final review clean, copy bar met on every page |
+| 5 | Build | `superpowers:subagent-driven-development`; UI tasks through the current runtime's authorized configured roles; preserve required high-taste roles and explicit model selections; every dispatch names its report file first and the controller reads the file, not the return value; every ruling goes to the ledger as it happens; before exit, read every page's copy against the copy bar and rewrite to it, one page at a time | `verify.mjs --phrase` | final review clean, copy bar met on every page |
 | 6 | Verify | production build served at an explicit address whose asset hash matches the build; desktop and mobile viewport-pinned; walk the page at mobile width as a first-time reader; the checks the context adds | `verify.mjs` | checks JSON all true, screenshots |
-| 7 | Deliver | merge, push, deploy, public address, unsigned request, hash parity, ledger row in the lesson file when the context uses an inbox | `deploy.sh` | public URL with evidence lines |
-| 8 | Lessons | write lessons from `templates/lesson.md` and file them where the context says; each lesson becomes a checklist line or a script here, never a paragraph | none | lessons filed |
+| 7 | Deliver | complete the project's authorized delivery endpoint; merge, push, or deploy only within that authority; when publishing, verify the public address with an unsigned request and hash parity; record evidence in the declared ledger | chosen host tooling; `deploy.sh` for Vercel only | requested artifact or URL with applicable evidence |
+| 8 | Lessons | write lessons from `templates/lesson.md` and file them where the context says; record local lessons; change shared skills or scripts only when explicitly authorized | none | lessons filed |
 
-Phases 1 to 3 are taste and stay with the top-tier model. Phase 5 is where Codex builds. Phases 6 and 7 are scripts either harness runs.
+Phases 1 to 3 retain approved visual gates and the required taste role. Phase 5 uses configured roles; either runtime can run supported verification and authorized delivery tools.
 
 ## Gates that block
 
@@ -49,7 +49,7 @@ Phases 1 to 3 are taste and stay with the top-tier model. Phase 5 is where Codex
 - Phase 4 blocks on lint output. A px value under the floor in the plan costs one ruling per task that carries it.
 - Phase 5 blocks on copy nobody has read against the bar. The bar is principle, the context fills it in: the page's search phrase in the places the context names (title, primary heading, description, first paragraph, one subheading by default); the context's permitted claims verbatim and nothing beyond them; no absolute or frequency word standing in for a measurement the page cannot show; one term per concept across every page; every call-to-action heading matching its own body; every generated summary or result qualitative unless the context permits a score. A findings list is not the exit; the rewrite is.
 - Phase 6 blocks on dev-mode evidence. Serve the built output.
-- Phase 7 blocks on a signed-in response. Public means an unsigned 200.
+- When phase 7 includes publishing, a signed-in response fails public verification. Public means an unsigned 200.
 
 ## Scripts
 
@@ -58,7 +58,7 @@ Phases 1 to 3 are taste and stay with the top-tier model. Phase 5 is where Codex
 | `scripts/contrast.mjs fg bg [fg bg ...]` or `--file pairs.txt`, `--min 4.5` | WCAG ratio per pair, non-zero exit under the minimum | contrast fails on state changes, not on the palette |
 | `scripts/plan-lint.mjs plan.md --body 17 --min 12 [--astro]` | px values under the floors, `grep -c` on built HTML, compound selectors without `:global()`, dispatches without a report file | the plan carried the same floor violation three times |
 | `scripts/verify.mjs --url http://127.0.0.1:4403 --out evidence/ [--viewports 1440x900,390x844 --header header --anchor faq --outbound example.com --article /path/ --phrase "search phrase" --absolutes w1,w2]` | overflow, console, sticky header, anchor offset, keyboard focus, `details`, reduced motion, JS off, outbound attribution, screenshots; `--phrase` asserts placement on the page at `--url` (one run per page), `--absolutes` counts context-named words as a warning for a person to judge | dev mode hides build-only bugs; headless Chrome cannot capture 390px; copy written inside the build was read only after deploy |
-| `scripts/deploy.sh <project> <public-host> [--scope team] [--check-only]` | build, deploy, project domain, unsigned check, stylesheet hash parity; `--check-only` verifies a live host without the two remote writes | `vercel domains inspect` lies; a plain alias stays behind sign-in |
+| `scripts/deploy.sh <project> <public-host> [--scope team] [--check-only]` | Vercel only: build, deploy, project domain, unsigned check, stylesheet hash parity; `--check-only` verifies a live host without the two remote writes | `vercel domains inspect` lies; a plain alias stays behind sign-in |
 
 Read the evidence, not the verdict. The first run of any harness reports harness bugs as site failures.
 

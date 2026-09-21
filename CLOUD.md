@@ -7,7 +7,8 @@ AGENTS.md overrides anything here.
 Every rule below is here because a model does not do it by default. Nothing is
 included for completeness.
 
-<!-- Distilled-from: dotfiles CLAUDE.shared.md @ b97c504 -->
+<!-- Distilled-from: dotfiles CLAUDE.shared.md @ 1727374b6eb0e944b70bb027ed3c97e9848d6cc0 -->
+<!-- Review-status: pending independent task review; refresh source marker after source amendments. -->
 
 ## This container
 
@@ -70,11 +71,13 @@ Review reads deviations first.
 
 **Approval gates.** Two things wait for explicit approval: a comment on
 someone else's pull request, and any artifact created under the user's name
-in an external tracker. Show the text and confirm scope first.
+in an external tracker. Show the text and confirm scope (count, targets, owner) first.
+A tracker declaration identifies required workflow, not permission to post.
+Reuse exact content-and-scope approval across checkpoints; ask only when scope or authority changes.
 
 **Unknowns.** Answer architecture-changing questions before starting. Taste
-questions get several genuinely different prototypes, never a spec. Never pay
-for the same unknown twice — each one becomes a rule or a skill.
+questions get distinct prototypes before a spec. Record discoveries in task notes.
+Write memory only after an explicit user request; change durable rules or skills only within explicit authorization.
 
 **Delegation.** In any runtime with authorized delegation, delegated workers
 that modify files work in their own worktree, never the main checkout. Read-only
@@ -83,10 +86,21 @@ work that finishes in about a minute.
 Pin the working directory in every delegated brief (`cd <path> &&` on each
 command); the harness resets cwd between calls.
 
-Every spawn carries an explicit model pin. An unpinned spawn silently inherits
-the main loop's model, which is the expensive one. Route recon and mechanical
-sweeps cheap. Route judgment, taste, review, and implementation strong —
-including anything user-facing, even when it looks mechanical.
+Use the session's configured model and configured roles; preserve explicit model,
+effort, provider, isolation, and required reviewer constraints.
+Use explicit model pins where supported and required; follow current tool schemas for role overrides and fork inheritance.
+Never infer authority from model names.
+User-facing work retains its required high-taste role.
+If required isolation fails, block that writer; never use the shared checkout as fallback.
+
+Required independent review uses the configured supported reviewer.
+An unavailable required reviewer blocks integration; self-review cannot substitute.
+For review-only requests, return findings without edits; authorized review-and-fix includes confirmed in-scope repairs.
+Required-gate failures block integration even when a retry cap stops repairs.
+Complete the authorized endpoint, including approved close-out; do not reopen settled integration choices.
+Verify unattended activation through supported runtime state before claiming persistence.
+Unconfirmed activation blocks only that unattended operation; continue independent authorized work.
+Load skills on actual task matches and reuse unchanged content already read.
 
 **Protect the main loop.** Every tool call there re-reads the whole
 accumulated context. Keep it for judgment: planning, review, decisions.
@@ -111,7 +125,7 @@ passing API call proves reachability, not authority.
 - **No defensive code for impossible scenarios.** Validate at system boundaries. Don't wrap internal calls in try/catch for branches that cannot fail.
 - **Simplify aggressively.** If you wrote 200 lines and it could be 50, rewrite it.
 - **Don't weight development cost.** Models inherit human effort estimates and pick flimsy designs to save time an agent does not spend. Choose on quality, simplicity, robustness, maintainability.
-- **Ask before coding.** When multiple interpretations exist, surface them with tradeoffs instead of picking silently. Move without asking only on trivial, reversible edits.
+- **Resolve material ambiguity.** Use the request, approved decisions, and project context first. Ask only about unresolved product, architecture, scope, or authority decisions; choose routine implementation details.
 - **Answer pushback before editing.** When your work is questioned, that is a discussion turn. Answer it and let the user confirm before changing files.
 - **Surgical changes.** Every changed line traces to the request. Don't refactor what isn't broken or improve adjacent code, comments, or formatting. Match the existing style even if you would do it differently. Flag unrelated issues; don't fix them uninvited.
 - **Don't delete unfamiliar code.** Flag it. Delete only when it is the target of your task, or an orphan your own change created.

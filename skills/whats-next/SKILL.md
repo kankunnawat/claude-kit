@@ -20,33 +20,22 @@ an existing tracker declaration (JQL, Plane project, tracker file). No
 declaration → fall back to: newest handoff/resume file, `git log` since last
 session — and say the repo has no declared tracker.
 
-Always, tracker or not, also check git-side state in the same turn, and start
-with `git fetch` — every local ref you are about to read is stale until you do,
-and a stale `main` makes merged work look unshipped. Then: `gh pr list --state
-all` (an empty *open* list means nothing on its own — the branch may have a
-merged PR), unpushed commits (`git log origin/main..HEAD`), `git worktree
-list`. A PR parked awaiting the user's review/verification (the /ship → review
-→ /finish gap) outranks the tracker's next ticket as the next action — the
-tracker won't show it.
+Resolve the forge, remote, and base branch from repository declarations and Git configuration.
+Fetch the relevant remote before comparing refs when network access is authorized.
+If fetch or a live source is unavailable, label the stale evidence; do not claim live verification.
+Use the forge's available read-only connector or CLI to inspect both merged and open pull requests.
+Compare unpushed commits against the resolved upstream/base ref, and inspect `git worktree list`.
+A pull request awaiting review or verification outranks the next tracker ticket.
 
 ## Rules
 
-- **Verify live, never answer from memory** — memory and doc queues drift;
-  query the declared tracker (JQL, Plane, tracker file) in this turn.
-- **Check other live sessions before proposing** — run `ListAgents` and
-  treat every busy local peer as holding work. Infer what it holds from its
-  name, locked worktrees (`git worktree list` marks them), and branches with
-  commits in the last day; never propose an item that maps to one of those.
-  Never `SendMessage` a peer to ask, and never wait on one — a message lands
-  mid-turn and interrupts its work. When the mapping stays ambiguous, name
-  the possible conflict in the answer and let the user resolve it.
-- Anything in flight from this session counts as position too (running
-  subagents, unpushed commits, open worktrees).
-- Tracker/git disagreement is a finding, not noise: tracker says In Progress
-  but the PR is merged → a skipped /finish close-out is the next action.
-- Never report work as unshipped on local refs alone. Check merged PRs for its
-  branch name, then `git diff --stat origin/main <branch>` — empty means it
-  landed and only the close-out tail is missing.
+- Query the declared tracker in this turn; memory and document queues may be stale.
+- Check available peer tools from the current runtime before proposing work. If unavailable, report that limit.
+- Treat busy peers, locked worktrees, and recent branch activity as possible ownership. Do not propose work that maps to an active owner. Do not message or wait on peers for this status check.
+- If ownership remains ambiguous, name the possible conflict for the user to resolve.
+- Include this task's running workers, unpushed commits, and open worktrees.
+- Report tracker/git disagreement. Merged work with an open tracker item may need authorized close-out.
+- Do not call work unshipped from local refs alone. Check the branch's merged pull requests and compare against the resolved base branch.
 
 ## Answer shape
 

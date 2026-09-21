@@ -41,5 +41,5 @@ For detect requests, make sure the response names each pattern found with a quot
 3. Would the writer recognize the edited draft as their own voice?
 4. If `~/.claude/VOICE.md` exists and the draft goes out under that person's name, does the draft match it: right register, the profile's rules on emoji and exclamation marks, direct objections, frame-label opener where the message type calls for one, and the core explanation's reasoning chain intact — concision cut periphery, not mechanism?
 5. Would the edited draft sound natural if read to a sharp colleague?
-6. Does the final output include the full edited draft and a short **What changed** section?
+6. For explicit draft-edit requests, does the output include the edited draft and a short **What changed** section? For ordinary authored answers, does it follow the host and requested format without an edit summary?
 7. For detect requests, does the response name each pattern with a quoted line and a short fix, without rewriting, scoring, or claiming AI authorship?

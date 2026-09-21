@@ -5,36 +5,35 @@ description: Use when creating a git worktree, asking where worktrees should liv
 
 # worktrees
 
-Parallel worktrees are the biggest throughput unlock — each one runs its own
-session. This skill is the *housekeeping*: where they live, how to make one,
-and the cleanup that keeps them from filling the disk.
+Use this skill for worktree placement, ownership checks, and cleanup.
 
 ## Path convention
 
-Worktrees live **inside the repo** at `<repo>/.claude/worktrees/<branch-keyword>/`
-— never as siblings of the main repo. Sibling layout pollutes the parent
-directory as branches multiply.
-
-Prefer Claude Code's native worktree tooling (`EnterWorktree`, or
-`isolation: "worktree"` on an Agent spawn), which uses this layout
-automatically. For manual creation, run from the main repo:
+Prefer the current runtime's supported managed worktree tool; its returned path is authoritative.
+For manual creation, use the repository's declared location, otherwise `<repo>/.claude/worktrees/<branch-keyword>/`.
+Check the selected path is ignored before creation inside a repository; do not assume a directory name makes it ignored.
+Run manual creation from the main repository:
 
 ```bash
+git check-ignore .claude/worktrees/<branch-keyword>
 git worktree add .claude/worktrees/<branch-keyword> <branch>
 ```
 
-`.claude/` should already be gitignored. To migrate existing sibling worktrees
-into the convention, use `git worktree move` — don't re-clone. A parent
-directory filling up with stray checkouts is the symptom of ignoring this.
+If required isolation fails, block that writer and continue independent authorized work.
+Never fall back to writing in the shared checkout after a denial.
+Move existing worktrees only when authorized, with `git worktree move` rather than re-cloning.
 
 ## Cleanup discipline
 
-**Clean up worktrees when done.** Once a worktree's work is merged (or
-abandoned), remove it in the same session:
+Clean up completed worktrees in the same session unless explicitly parked.
+Before removal, verify a fresh worktree registry, clean status, no live owner or lease, and the approved target.
+Keep uncommitted or unretained work pending a decision.
+Branch deletion requires separate authority and proof that its tip is reachable from a ref you are keeping.
+Only after those checks:
 
 ```bash
 git worktree remove <path>
-git branch -D <branch>
+git branch -d <branch>
 ```
 
 Leftover worktrees carry gigabytes of build products (SPM checkouts,
@@ -69,7 +68,7 @@ it only on request, and verify against a ref you are **keeping** — the trunk, 
 the collector branch that shipped the work:
 
 ```bash
-git merge-base --is-ancestor "$tip" origin/dev        # or the surviving collector
+git merge-base --is-ancestor "$tip" <retained-ref>     # resolved trunk or surviving collector
 ```
 
 `rev-list --count "$tip" --not --exclude=refs/heads/"$b" --branches --remotes`

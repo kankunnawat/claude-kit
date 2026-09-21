@@ -11,7 +11,7 @@ If `~/.claude/VOICE.md` exists — a personal voice profile for the person whose
 
 ## Two jobs
 
-**Edit (default).** The user shares a draft to fix. Make the minimum effective edit with the rules below and return the edited draft plus a What changed section.
+**Edit (default).** The user shares a draft to fix. Make the minimum effective edit with the rules below and return the edited draft plus a What changed section for explicit draft-edit requests. For ordinary authored answers, apply this pass silently and follow the requested output format.
 
 **Detect.** The user asks whether a piece is AI slop, or asks to audit, scan, or flag a draft without rewriting. Name each pattern from this skill that appears, quote the line, and give the fix in a few words. Do not rewrite, score the draft, or guess whether AI wrote it. AI detectors guess. Named patterns are evidence the user can check. Offer to edit the draft after.
 
@@ -42,7 +42,7 @@ If the goal is unclear, ask what the reader should think, feel, or do after read
 - **Make verbs do the work.** Replace weak verb phrases with direct verbs. "Made a decision" becomes "decided." "Has the ability to" becomes "can."
 - **Know the job.** Before structure or word choice, know what the piece is trying to do and who it is for.
 - **Preserve useful edge and character.** Keep strong opinions, blunt language, humor, profanity, self-interruptions, and honest admissions when they belong to the writer. Don't replace them with safer or more professional wording.
-- **Keep structure unless it's hurting the piece.** Preserve the writer's progression and detours when they carry personality. If you reorganize, say why in the What changed section.
+- **Keep structure unless it's hurting the piece.** Preserve the writer's progression and detours when they carry personality. For explicit draft-edit requests, explain any reorganization in the What changed section.
 
 ## Words to cut
 
@@ -97,4 +97,4 @@ Often-empty phrases: it's worth noting, it's important to note, at the end of th
 3. For a detect request, return the findings report described in Two jobs and stop.
 4. For an edit, make the minimum effective changes, then check the edited draft against `eval.md` yourself.
 5. If any check fails, fix the draft and run the checks again.
-6. Output the full edited draft and a short **What changed** section.
+6. For explicit draft-edit requests, output the edited draft and a short **What changed** section. For ordinary authored answers, follow the host and requested output format without adding an edit summary.

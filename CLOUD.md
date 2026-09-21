@@ -7,7 +7,7 @@ AGENTS.md overrides anything here.
 Every rule below is here because a model does not do it by default. Nothing is
 included for completeness.
 
-<!-- Distilled-from: dotfiles CLAUDE.shared.md @ 1727374b6eb0e944b70bb027ed3c97e9848d6cc0 -->
+<!-- Distilled-from: dotfiles CLAUDE.shared.md @ e0a9eb09a9618c8299c0086185eb7d621dd23b0e -->
 <!-- Review-status: pending independent task review; refresh source marker after source amendments. -->
 
 ## This container

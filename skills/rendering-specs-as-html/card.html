@@ -48,12 +48,12 @@
   .risk-row div:first-child { font-weight: 500; }
   .risk-row div:last-child { color: var(--ink2); }
   .strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
-  .tag { border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; font-size: 16px; }
-  .tag small { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+  .tag { border-radius: 14px; padding: 16px 18px; font-size: 16px; }
+  .tag small { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
   .done { border: 1px solid var(--green-line); background: var(--green-soft); } .done small { color: var(--green); }
   .open { border: 1px solid var(--amber-line); background: var(--amber-bg); } .open small { color: var(--amber); }
   .fog { border: 1px dashed var(--line); background: var(--card); } .fog small { color: var(--muted); }
-  .reply { background: var(--ink); color: var(--bg); justify-content: center; } .reply small { color: var(--faint); } .reply b { font-size: 17px; }
+  .reply { background: var(--ink); color: var(--bg); display: flex; flex-direction: column; justify-content: center; } .reply small { color: var(--faint); } .reply b { font-size: 17px; }
   .out { font-size: 15px; color: var(--muted); margin: 0; }
   .foot { font: 13px var(--mono); color: var(--faint); overflow-wrap: anywhere; }
   code { font: 13.5px var(--mono); background: var(--chip); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
@@ -85,7 +85,7 @@
 <section class="strip">
   <div class="tag done"><small>Decided</small>[settled choice]</div>
   <div class="tag open"><small>Open &middot; recommend [x]</small>[question]</div>
-  <div class="tag fog"><small>Not yet specified</small>[item, as the .md states it]</div>
+  <div class="tag fog"><small>Not yet specified</small>[item from the .md's Not yet specified section]</div>
   <div class="tag reply"><small>Your reply</small><b>"approved" or what to change</b></div>
 </section>
 

@@ -35,29 +35,72 @@
   .chips { display: flex; flex-wrap: wrap; gap: 8px; font: 13px var(--mono); color: var(--muted); }
   .chips span { padding: 4px 10px; border-radius: 999px; background: var(--chip); }
   .chips .ask { background: var(--amber-bg); color: var(--amber); }
-  h1 { margin: 14px 0 12px; font-size: clamp(32px, 4.4vw, 46px); line-height: 1.12; font-weight: 700; letter-spacing: -0.02em; }
+  h1 { margin: 14px 0 12px; font-size: clamp(30px, 4.4vw, 46px); line-height: 1.12; font-weight: 700; letter-spacing: -0.02em; }
   .lede { margin: 0; font-size: 20px; color: var(--ink2); max-width: 900px; }
   .panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 18px; }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
   .kicker { font: 14px var(--mono); }
   .today .kicker { color: var(--red); } .fix .kicker { color: var(--accent); }
   .flow .kicker { color: var(--green); } .reach .kicker { color: var(--muted); }
   .panel h2 { margin: 0; font-size: 26px; line-height: 1.2; font-weight: 700; }
   .panel p { margin: 0; color: var(--ink2); }
   .panel p.small { font-size: 15px; color: var(--muted); }
+  .pic, .words { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+
+  /* SVG pictures: color only through these classes, never fill/stroke hex attributes. */
   svg { width: 100%; height: auto; display: block; }
   svg text { fill: var(--ink); font: 14px var(--sans); }
-  svg .mono { font-family: var(--mono); } svg .muted { fill: var(--muted); } svg text.bad { fill: var(--red); }
+  svg .mono { font-family: var(--mono); } svg .muted { fill: var(--muted); }
+  svg text.bad { fill: var(--red); } svg text.good { fill: var(--green); } svg text.fix { fill: var(--accent); }
+  svg text.halo { paint-order: stroke; stroke: var(--card); stroke-width: 5px; stroke-linejoin: round; }
   svg .node { fill: var(--card); stroke: var(--line); } svg .node-bad { fill: var(--red-bg); stroke: var(--red); }
   svg .node-new { fill: var(--green-bg); stroke: var(--green); } svg .node-fix { fill: var(--accent-bg); stroke: var(--accent); }
-  svg .edge { stroke: var(--muted); fill: none; } svg .edge-bad { stroke: var(--red); fill: none; stroke-dasharray: 6 5; }
-  .box { border: 1px solid var(--accent-line); background: var(--accent-bg); border-radius: 14px; padding: 14px 18px; }
+  svg .edge, svg .edge-bad, svg .edge-new { fill: none; stroke-width: 2; }
+  svg .edge { stroke: var(--muted); } svg .edge-bad { stroke: var(--red); stroke-dasharray: 6 5; } svg .edge-new { stroke: var(--green); }
+  svg .edge-ret { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  svg .lifeline { stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  svg .ah { fill: var(--muted); } svg .ah.new { fill: var(--green); } svg .ah.bad { fill: var(--red); }
+
+  /* Miniature screens: wireframes drawn from the tokens. Real labels, skeleton bars for data. */
+  .mini { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); overflow: hidden; font-size: 12px; line-height: 1.35; }
+  .url { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 10px; background: var(--card); border-bottom: 1px solid var(--line); font: 12px var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+  .url b { color: var(--ink); font-weight: 400; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; padding: 6px 8px; background: var(--card); border-bottom: 1px solid var(--line); }
+  .pill { padding: 2px 8px; border-radius: 999px; color: var(--muted); }
+  .pill.on { background: var(--chip); color: var(--ink); font-weight: 600; }
+  .pill.click { outline: 2px solid var(--ink2); outline-offset: 1px; color: var(--ink); }
+  .scr { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .sk { display: block; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--faint) 30%, transparent); }
+  .mini del { color: var(--red); background: var(--red-bg); border-radius: 4px; padding: 0 4px; }
+  .mini ins { color: var(--green); background: var(--green-bg); border-radius: 4px; padding: 0 4px; text-decoration: none; }
+  .spot { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 4px 6px; border-radius: 8px; }
+  .spot.bad { border: 1.5px dashed var(--red); background: var(--red-bg); }
+  .spot.good { border: 1.5px solid var(--green); background: var(--green-bg); }
+  .spot .note { margin-left: auto; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .spot.bad .note { color: var(--red); } .spot.good .note { color: var(--green); }
+  .hop { display: flex; align-items: center; gap: 12px; padding: 6px 0 6px 12px; font-size: 14px; }
+  .hop::before { content: "\2193"; font-size: 24px; line-height: 1; }
+  .hop b { display: block; }
+  .hop.bad::before, .hop .bad { color: var(--red); } .hop.good::before, .hop .good { color: var(--green); }
+
   .steps { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
   .steps li { display: flex; gap: 14px; align-items: center; }
   .n { flex: none; width: 34px; height: 34px; border-radius: 10px; background: var(--green-bg); color: var(--green); font-weight: 700; display: flex; align-items: center; justify-content: center; }
-  .group { background: var(--green-soft); border-radius: 12px; padding: 12px 16px; }
-  .group b { display: block; font-size: 16px; }
-  .group span { font-size: 15px; color: var(--ink2); }
+
+  /* Block map: one row per kind of thing the change touches. */
+  .map { display: flex; flex-direction: column; gap: 14px; }
+  .kind { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; align-items: start; }
+  .kind > b { font-size: 14px; line-height: 1.3; padding-top: 5px; }
+  .kind > b span { display: block; font: 12px var(--mono); color: var(--muted); font-weight: 400; }
+  .blocks { display: flex; flex-wrap: wrap; gap: 6px; }
+  .blk { font-size: 13.5px; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); }
+  .blk::before { font: 600 13px var(--mono); margin-right: 6px; }
+  .blk.new { border-color: var(--green); background: var(--green-bg); } .blk.new::before { content: "+"; color: var(--green); }
+  .blk.hit { border-color: var(--accent); background: var(--accent-bg); } .blk.hit::before { content: "~"; color: var(--accent); }
+  .blk.gone { border-color: var(--red); background: var(--red-bg); text-decoration: line-through; } .blk.gone::before { content: "\2212"; color: var(--red); }
+  .blk.same { color: var(--faint); border-style: dashed; } .blk.same::before { content: "="; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font: 12.5px var(--mono); color: var(--muted); }
+
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 28px 32px; }
   .card h2 { margin: 0 0 8px; font-size: 22px; font-weight: 600; }
   .risk-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding: 13px 0; border-bottom: 1px solid var(--line2); }
@@ -65,19 +108,33 @@
   .risk-row div:first-child { font-weight: 500; }
   .risk-row div:last-child { color: var(--ink2); }
   .strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
-  .tag { border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; font-size: 16px; }
-  .tag small { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+  .tag { border-radius: 14px; padding: 16px 18px; font-size: 16px; }
+  .tag small { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
   .done { border: 1px solid var(--green-line); background: var(--green-soft); } .done small { color: var(--green); }
   .open { border: 1px solid var(--amber-line); background: var(--amber-bg); } .open small { color: var(--amber); }
   .fog { border: 1px dashed var(--line); background: var(--card); } .fog small { color: var(--muted); }
-  .reply { background: var(--ink); color: var(--bg); justify-content: center; } .reply small { color: var(--faint); } .reply b { font-size: 17px; }
+  .reply { background: var(--ink); color: var(--bg); display: flex; flex-direction: column; justify-content: center; } .reply small { color: var(--faint); } .reply b { font-size: 17px; }
   .out { font-size: 15px; color: var(--muted); margin: 0; }
   .foot { font: 13px var(--mono); color: var(--faint); overflow-wrap: anywhere; }
   code { font: 13.5px var(--mono); background: var(--chip); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
-  @media (max-width: 820px) { .panels { grid-template-columns: 1fr; } .risk-row { grid-template-columns: 1fr; gap: 4px; } }
+  /* Panels 1 and 2 share row heights, so their pictures start on the same line. */
+  @media (min-width: 821px) { .today, .fix { display: grid; grid-row: span 4; grid-template-rows: subgrid; align-content: start; } }
+  @media (max-width: 820px) {
+    .page { padding: 40px 16px 72px; }
+    .panels { grid-template-columns: 1fr; } .panel { padding: 22px; }
+    .risk-row { grid-template-columns: 1fr; gap: 4px; }
+    .kind { grid-template-columns: 1fr; gap: 6px; } .kind > b { padding-top: 0; }
+  }
 </style>
 </head>
 <body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+    <marker id="ah-new" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah new" d="M0,0 L10,5 L0,10 z"/></marker>
+    <marker id="ah-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah bad" d="M0,0 L10,5 L0,10 z"/></marker>
+  </defs>
+</svg>
 <main class="page">
 
 <header>
@@ -90,27 +147,67 @@
   <article class="panel today">
     <div class="kicker">1 &middot; Today</div>
     <h2>[What goes wrong now]</h2>
-    <svg viewBox="0 0 480 240" role="img" aria-label="[what the diagram shows]">
-      <!-- Before picture. Color only through the svg classes above, never fill/stroke hex attributes. -->
-      <rect class="node" x="8" y="90" width="150" height="64" rx="12"/>
-      <text class="mono" x="83" y="127" text-anchor="middle">[component]</text>
-      <line class="edge-bad" x1="158" y1="122" x2="300" y2="122"/>
-      <rect class="node-bad" x="300" y="90" width="150" height="64" rx="12"/>
-      <text class="bad" x="375" y="127" text-anchor="middle">[what fails]</text>
+    <!-- Keep exactly four children: kicker, h2, .pic, .words. In .pic keep the .mini screen
+         for a change the user sees, the svg for anything else; stack more of them if needed.
+         Draw it here, copy it into panel 2, then change only what the change changes.
+         A flow across screens stacks .mini blocks with a hop between them:
+         <div class="hop bad"><div><b>[action]</b><span class="bad">[what goes wrong]</span></div></div> -->
+    <div class="pic">
+    <div class="mini" role="img" aria-label="[what the screen shows]">
+      <div class="url"><b>/[route]</b><del>?[state that gets lost]</del></div>
+      <div class="bar"><span class="pill on">[tab]</span><span class="pill">[tab]</span><span class="pill">[tab]</span></div>
+      <div class="scr">
+        <div class="spot bad"><span>[the control or row that fails]</span><span class="note">[what fails]</span></div>
+        <span class="sk" style="width:60%"></span>
+        <span class="sk" style="width:40%"></span>
+      </div>
+    </div>
+    <svg viewBox="0 0 480 160" role="img" aria-label="[what the diagram shows]">
+      <rect class="node" x="8" y="48" width="150" height="64" rx="12"/>
+      <text class="mono" x="83" y="85" text-anchor="middle">[component]</text>
+      <path class="edge-bad" d="M158,80 H296" marker-end="url(#ah-bad)"/>
+      <rect class="node-bad" x="300" y="48" width="150" height="64" rx="12"/>
+      <text class="bad" x="375" y="85" text-anchor="middle">[what fails]</text>
     </svg>
-    <p>[Why, in plain words.]</p>
+    </div>
+    <div class="words">
+      <p>[Why, in plain words: what the picture can't show.]</p>
+    </div>
   </article>
 
   <article class="panel fix">
     <div class="kicker">2 &middot; The change</div>
     <h2>[What is different after]</h2>
-    <div class="box">[After picture: an svg, a small table, or the new component.]</div>
-    <p class="small">Names: <code>[identifier]</code></p>
+    <!-- Panel 1's picture, copied, with only the changed parts marked. -->
+    <div class="pic">
+    <div class="mini" role="img" aria-label="[the same screen after the change]">
+      <div class="url"><b>/[route]</b><ins>?[state that is kept]</ins></div>
+      <div class="bar"><span class="pill on">[tab]</span><span class="pill">[tab]</span><span class="pill">[tab]</span></div>
+      <div class="scr">
+        <div class="spot good"><span>[the same control, now working]</span><span class="note">[what changed]</span></div>
+        <span class="sk" style="width:60%"></span>
+        <span class="sk" style="width:40%"></span>
+      </div>
+    </div>
+    <svg viewBox="0 0 480 160" role="img" aria-label="[the same diagram after the change]">
+      <rect class="node" x="8" y="48" width="150" height="64" rx="12"/>
+      <text class="mono" x="83" y="85" text-anchor="middle">[component]</text>
+      <path class="edge-new" d="M158,80 H296" marker-end="url(#ah-new)"/>
+      <rect class="node-new" x="300" y="48" width="150" height="64" rx="12"/>
+      <text class="good" x="375" y="85" text-anchor="middle">[what works now]</text>
+    </svg>
+    </div>
+    <div class="words">
+      <p>[What the picture can't show.]</p>
+      <p class="small">Names: <code>[identifier]</code></p>
+    </div>
   </article>
 
   <article class="panel flow">
     <div class="kicker">3 &middot; How it runs</div>
     <h2>[The flow in a few steps]</h2>
+    <!-- Three or more separate parts passing messages: replace the list with a swimlane
+         (a node per part, lifeline, edge / edge-new / edge-ret arrows, halo labels). -->
     <ol class="steps">
       <li><span class="n">1</span>[step]</li>
     </ol>
@@ -119,8 +216,11 @@
   <article class="panel reach">
     <div class="kicker">4 &middot; Where it goes</div>
     <h2>[What the change touches]</h2>
-    <div class="group"><b>[count and kind]</b><span>[which ones]</span></div>
-    <p class="small">Unchanged: [what stays].</p>
+    <div class="map" role="img" aria-label="[what the change touches and what stays]">
+      <div class="kind"><b>[kind]<span>[count]</span></b><div class="blocks"><span class="blk new">[added]</span><span class="blk hit">[changed]</span></div></div>
+      <div class="kind"><b>Unchanged<span>[count]</span></b><div class="blocks"><span class="blk same">[stays]</span></div></div>
+      <div class="legend"><span>+ new</span><span>~ changed</span><span>&minus; removed</span><span>= unchanged</span></div>
+    </div>
   </article>
 </section>
 
@@ -132,7 +232,7 @@
 <section class="strip">
   <div class="tag done"><small>Decided</small>[settled choice]</div>
   <div class="tag open"><small>Open &middot; recommend [x]</small>[question]</div>
-  <div class="tag fog"><small>Not yet specified</small>[item, as the .md states it]</div>
+  <div class="tag fog"><small>Not yet specified</small>[item from the .md's Not yet specified section]</div>
   <div class="tag reply"><small>Your reply</small><b>"approved" or what to change</b></div>
 </section>
 

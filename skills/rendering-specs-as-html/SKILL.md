@@ -34,7 +34,8 @@ Plain words in headings and body; identifiers appear only in small `code` next t
 
 - **Base tokens follow the project.** If the project has a design system or design skill (Hausback: `hausback-design-taste`, tokens in `packages/ui`), copy its background, surface, line, ink, muted, accent and font values into the template's base `:root` block. No project tokens: keep the template's values.
 - **Meaning tokens never change:** red = today / removed / what fails, green = new / decided, amber = open / needs an answer, the project accent = the change, inverted ink = "Your reply". Every color also carries a text label or marker (`+`, `−`, "Open"), so meaning never rests on hue alone.
-- **Dark mode only when the project defines dark tokens:** then add a `@media (prefers-color-scheme: dark)` block that redefines the base tokens. Otherwise the page is light only.
+- **Dark mode only when the project defines dark tokens:** keep the templates' dark block and put the project's dark values in its base half; its meaning half stays as shipped. No project dark tokens: delete the block, and the page is light only.
+- **SVG colors come only from the templates' `svg` classes** (`node`, `node-bad`, `node-new`, `node-fix`, `edge`, `edge-bad`, `muted`, `bad`, `mono`). A `fill` or `stroke` hex attribute ignores the dark block and turns unreadable.
 - Self-contained: inline CSS and inline SVG only, no CDN links, no web fonts, no external assets, no screenshots, no emojis. Font stacks name the project font first and fall back to system fonts.
 - Works at phone width: the templates' grids collapse to one column under 820 px; keep it that way.
 

@@ -33,6 +33,18 @@ resolve without the `superpowers:` prefix — same skills, same order.
    dispatch follows the repo's model routing; every spawn carries an explicit
    model pin and the reporting contract: every claim points at a tool result
    from the session, unverified items named as such.
+   When the saved `sdd-run` workflow is available, invoking /ship is the
+   opt-in to run the task loop through it. Do the skill's setup in the main
+   loop first: worktree, ledger, pre-flight scan, one brief per task, and one
+   routing question per plan. Then call `Workflow({name: 'sdd-run', args:
+   {worktree, plan, spec, sdd, constraints, base, mergeBase, tasks: [{n,
+   model}], notes}})`, with the repo's gate and forbidden commands in `notes`.
+   It runs every task through implement, task review, and up to 3 fix
+   rounds, then the final whole-branch review with one fix wave. When it
+   returns, append its `ledgerLines` to the ledger. Rule on each
+   `needsController` item as a ledgered `Ruling:`. Re-invoke it with the
+   remaining tasks. Without the Workflow tool or the saved workflow, run the
+   skill's loop by hand.
 4. **Self review** — use the configured supported runtime mechanism on the full
    branch diff (`git diff <base>...HEAD`); apply confirmed in-scope fixes. This
    self-review cannot substitute for any independently required review.

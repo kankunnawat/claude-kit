@@ -37,6 +37,13 @@ to force closure on unverified work.
    into the suite, never discarded. A new check must fail when the fix is
    reverted — a check that can only pass proves nothing.
 
+   Dispatch ledger: when `ledger-log` is on `PATH`, list open rows for this
+   branch —
+   `cat "$HOME/Library/Mobile Documents/com~apple~CloudDocs/claude-memory/ledger/"*.jsonl | jq -sr --arg b "$(git rev-parse --abbrev-ref HEAD)" '[group_by(.id)[] | max_by(.ts)] | map(select(.branch==$b and .verdict==null)) | .[].id'`
+   — and stop on any output: ask for the verdict and record it with
+   `ledger-log verdict <id> approve|nits|changes|redo` before the commit. A
+   branch with no rows passes; main-loop-only work is not gated.
+
 4. **Prove frontend changes visually.** If the shipped diff changes a
    user-facing frontend, the PR must carry visual evidence before merge.
    First check what images are already attached (e.g. by /ship): if they

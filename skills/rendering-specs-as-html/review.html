@@ -107,14 +107,19 @@
   .risk-row:last-child { border-bottom: 0; }
   .risk-row div:first-child { font-weight: 500; }
   .risk-row div:last-child { color: var(--ink2); }
-  .strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
-  .tag { border-radius: 14px; padding: 16px 18px; font-size: 16px; }
-  .tag small { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
-  .done { border: 1px solid var(--green-line); background: var(--green-soft); } .done small { color: var(--green); }
-  .open { border: 1px solid var(--amber-line); background: var(--amber-bg); } .open small { color: var(--amber); }
-  .fog { border: 1px dashed var(--line); background: var(--card); } .fog small { color: var(--muted); }
-  .reply { background: var(--ink); color: var(--bg); display: flex; flex-direction: column; justify-content: center; } .reply small { color: var(--faint); } .reply b { font-size: 17px; }
-  .out { font-size: 15px; color: var(--muted); margin: 0; }
+  .decide { display: flex; flex-direction: column; gap: 20px; }
+  .decide h3 { margin: 4px 0 0; font-size: 16px; font-weight: 600; color: var(--green); }
+  .qs, .done { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; max-width: 820px; }
+  .qs { gap: 16px; counter-reset: q; }
+  .qs li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 14px; counter-increment: q; color: var(--ink2); }
+  .qs li::before { content: counter(q); height: 34px; border-radius: 10px; background: var(--amber-bg); color: var(--amber); font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .qs b { display: block; color: var(--ink); font-weight: 600; }
+  .reply { margin: 0; padding: 14px 18px; border-radius: 12px; background: var(--ink); color: var(--bg); }
+  .done { gap: 6px; }
+  .done li { display: flex; gap: 10px; color: var(--ink2); }
+  .done li::before { content: "\2713"; flex: none; color: var(--green); font-weight: 700; }
+  .out { display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--muted); }
+  .out p { margin: 0; }
   .foot { font: 13px var(--mono); color: var(--faint); overflow-wrap: anywhere; }
   code { font: 13.5px var(--mono); background: var(--chip); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
   /* Panels 1 and 2 share row heights, so their pictures start on the same line. */
@@ -229,14 +234,22 @@
   <div class="risk-row"><div>[risk]</div><div>[why it is covered]</div></div>
 </section>
 
-<section class="strip">
-  <div class="tag done"><small>Decided</small>[settled choice]</div>
-  <div class="tag open"><small>Open &middot; recommend [x]</small>[question]</div>
-  <div class="tag fog"><small>Not yet specified</small>[item from the .md's Not yet specified section]</div>
-  <div class="tag reply"><small>Your reply</small><b>"approved" or what to change</b></div>
+<section class="card decide">
+  <h2>For you to decide</h2>
+  <ol class="qs">
+    <li><div><b>[open question, as one plain question]</b>I recommend [x]: [what x does, in plain words].</div></li>
+  </ol>
+  <p class="reply">Reply "approved" to take the recommendation, or say what to change.</p>
+  <h3>Already decided</h3>
+  <ul class="done">
+    <li>[settled choice]</li>
+  </ul>
 </section>
 
-<p class="out"><b>Not in this change:</b> [out of scope, one line]</p>
+<div class="out">
+  <p><b>Left for later:</b> [item from the .md's Not yet specified section]</p>
+  <p><b>Not in this change:</b> [out of scope, one line]</p>
+</div>
 
 <div class="foot">Full spec: [path to the .md]</div>
 </main>

@@ -27,8 +27,8 @@ The HTML is these parts, in this order:
      - **1 Today and 2 The change draw the same scene in the same layout.** Draw panel 1, copy it into panel 2, then change only what the change changes: red marks what fails in panel 1; the accent and green mark the change in panel 2. Each of the two panels holds exactly a kicker, an `h2`, one `.pic` and one `.words` block, so the template lines their pictures up. A change the user sees draws miniature screens (`.mini`); a change with no screen draws an svg diagram. A `.pic` may stack several screens or diagrams. Greenfield work draws the current reality in panel 1 ("none yet", the manual process being replaced).
      - **3 How it runs:** numbered steps. Draw a swimlane only when the order of messages between parts is the design itself (a handshake, a lock, a retry).
      - **4 Where it goes:** a block map, one row per kind of thing the spec names, with its count, holding `+` new, `~` changed, `−` removed and `=` unchanged blocks.
-3. **Strip:** "Decided" tags, "Open · recommend X" tags (each open question with your recommendation), "Not yet specified" tags (each open question in the `.md`'s Not yet specified section, with no recommendation), and a final "Your reply" tag. Leave out a tag kind with no items.
-4. **One line** "Not in this change:" (the `.md`'s Out of scope).
+3. **"For you to decide" card:** each open question as a numbered item, the question in bold, then "I recommend X:" and what X does in plain words, so the reply makes sense without the `.md`. Under the questions, the reply bar: `Reply "approved" to take the recommendation, or say what to change.` (no open questions: `Reply "approved" or say what to change.`). Then "Already decided": one checked line per settled choice. Leave out a part with no items.
+4. **Two lines:** "Left for later:" (the `.md`'s Not yet specified, no recommendation) and "Not in this change:" (the `.md`'s Out of scope).
 5. **Footer:** the repo-relative path of the `.md`.
 
 Plain words in headings and body; identifiers appear only in small `code` next to the plain name.
@@ -37,12 +37,12 @@ Plain words in headings and body; identifiers appear only in small `code` next t
 
 - Inline SVG and HTML/CSS only. Miniature screens are wireframes built from the page tokens: the real labels and controls, made-up sample values where the value tells the story (an account that should not appear, a wrong fee), skeleton bars (`.sk`) for the rest, never real user data. Mark changed text with `del` and `ins`, a changed area with `.spot.bad` / `.spot.good` plus a `.note` label, and a step between screens with `.hop`. Mini text stays at 11 px or larger.
 - **SVG colors come only from the template's svg classes:** `node`, `node-bad`, `node-new`, `node-fix`, `edge`, `edge-bad`, `edge-new`, `edge-ret`, `lifeline`; text `muted`, `mono`, `bad`, `good`, `fix`, `halo` (for a label over a line); arrowheads `url(#ah)`, `url(#ah-new)`, `url(#ah-bad)`. A `fill` or `stroke` hex attribute ignores the dark block and turns unreadable.
-- Every picture shows a state, a change or a structure. Risk rows, headings and the strip carry no icons.
+- Every picture shows a state, a change or a structure. Risk rows, headings and the decide card carry no icons.
 
 ## Look
 
 - **Base tokens follow the project.** If the project has a design system or design skill (Hausback: `hausback-design-taste`, tokens in `packages/ui`), copy its values into every base token of the template's `:root` block (background, surfaces, lines, ink levels, accent and its tints, fonts); derive a token the project lacks from its nearest value. No project tokens: keep the template's values.
-- **Meaning tokens never change:** red = today / removed / what fails, green = new / decided, amber = open, the project accent = the change, inverted ink = "Your reply". Every color also carries a text label or marker (`+`, `−`, "Open"), so meaning never rests on hue alone.
+- **Meaning tokens never change:** red = today / removed / what fails, green = new / decided, amber = open, the project accent = the change, inverted ink = the reply bar. Every color also carries a text label or marker (`+`, `−`, a check mark, a heading), so meaning never rests on hue alone.
 - **Dark mode only when the project defines dark tokens:** keep the templates' dark block and put the project's dark values in its base half; its meaning half stays as shipped. No project dark tokens: delete the block, and the page is light only. A dark-first project keeps the same shape: its light values go in `:root`, its dark values in the dark block, and the page follows the reader's system setting.
 - Self-contained: inline CSS and inline SVG only, no CDN links, no web fonts, no external assets, no screenshots, no emojis. Font stacks name the project font first and fall back to system fonts.
 - Works at phone width: the templates' grids collapse to one column under 820 px, and everything inside a panel wraps.
@@ -50,7 +50,7 @@ Plain words in headings and body; identifiers appear only in small `code` next t
 ## Rules
 
 1. **Pair, same basename, same directory:** spec `…/specs/YYYY-MM-DD-<topic>-design.{md,html}`, plan `…/plans/YYYY-MM-DD-<topic>.{md,html}`. Project locations override the path, never the pairing.
-2. **The `.md` ends with two sections:** **Not yet specified** (in-scope questions you can name but can't yet phrase sharply enough to plan; don't pre-slice them into steps) and **Out of scope** (consciously ruled out, returns only if the goal is redrawn). A question sharp enough to state precisely gets a plan step or an open question, never fog. The HTML shows them as the strip's "Not yet specified" tags and the "Not in this change" line.
+2. **The `.md` ends with two sections:** **Not yet specified** (in-scope questions you can name but can't yet phrase sharply enough to plan; don't pre-slice them into steps) and **Out of scope** (consciously ruled out, returns only if the goal is redrawn). A question sharp enough to state precisely gets a plan step or an open question, never fog. The HTML shows them as the "Left for later" and "Not in this change" lines.
 3. **Look at the page before you deliver it:** run `bash <this skill's dir>/shoot.sh <page.html> <scratchpad dir>` and read every PNG it lists (light, dark, phone tiles). Fix what you see, then shoot again: labels that overlap or clip, dark text on a dark fill, panels 1 and 2 that don't line up, and any `WARN` the script prints.
 4. **Deliver before the review gate:** write both files, commit them together, print the absolute path of the HTML and the `.md`, THEN ask for review.
 5. **Explicit user opt-out only:** if the user says to skip the HTML now, say it is owed and complete the pair at the next doc step.
@@ -62,4 +62,5 @@ Plain words in headings and body; identifiers appear only in small `code` next t
 - Panel 2 drawn as a new picture. The reader compares panel 1 and panel 2 side by side; a different layout breaks that.
 - A swimlane for work inside one component. Numbered steps read faster.
 - Taking the accent for a meaning color (for example, a red brand accent). The meaning tokens stay fixed; pick the accent from the project only for "the change".
-- Tracker or process status in the strip ("unassigned", "In Progress"). The strip holds spec decisions and questions only.
+- Tracker or process status in the decide card ("unassigned", "In Progress"). It holds spec decisions and questions only.
+- A recommendation the reader has to decode ("recommend native"). Say what the option does.

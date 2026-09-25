@@ -36,7 +36,10 @@ resolve without the `superpowers:` prefix — same skills, same order.
    When the saved `sdd-run` workflow is available, invoking /ship is the
    opt-in to run the task loop through it. Do the skill's setup in the main
    loop first: worktree, ledger, pre-flight scan, one brief per task, and one
-   routing question per plan. Then call `Workflow({name: 'sdd-run', args:
+   routing question per plan. Write any plan-mandated destructive SQL, such
+   as a `DELETE` or `DROP` migration body, during that setup, where the user
+   sees it: a permission check can deny a workflow agent's write of it and
+   stop the run. Then call `Workflow({name: 'sdd-run', args:
    {worktree, plan, spec, sdd, constraints, base, mergeBase, tasks: [{n,
    model}], notes}})`, with the repo's gate and forbidden commands in `notes`.
    It runs every task through implement, task review, and up to 3 fix

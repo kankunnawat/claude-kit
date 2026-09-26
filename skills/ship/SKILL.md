@@ -54,11 +54,13 @@ resolve without the `superpowers:` prefix — same skills, same order.
 5. **Verification evidence** — capture proof the change works (screenshots /
    command output, via the repo's verification harness) and attach it to the PR
    body before handing over for review — evidence gates the merge decision, it
-   never lands post-merge. Image uploads that need an external route (e.g. the
-   secret-gist technique) require the user's explicit go-ahead first. The PR
-   body also carries a risk line — `Risk: low|medium|high` plus a one-line
-   reason (blast radius, surfaces touched) — so the reviewer's depth can match
-   it:
+   never lands post-merge. Uploading images through the repo's declared
+   evidence route (CLAUDE.md/AGENTS.md) is part of this step when they show
+   only synthetic or test data — do it before asking for review, not as a
+   separate approval. Ask first only when no route is declared or an image may
+   show real user data. The PR body also carries a risk line —
+   `Risk: low|medium|high` plus a one-line reason (blast radius, surfaces
+   touched) — so the reviewer's depth can match it:
    low = evidence check only, high = full diff read.
 6. **Stop at the PR/merge boundary by default** — open the PR per repo
    convention with the evidence attached. Merge/tracker close-out stays with

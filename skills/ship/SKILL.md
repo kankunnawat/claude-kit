@@ -26,7 +26,10 @@ resolve without the `superpowers:` prefix — same skills, same order.
 
 1. **superpowers:writing-plans** — write the implementation plan from the spec
    (with `rendering-specs-as-html` for the md+html pair, if your global rules
-   call for one).
+   call for one). Each task's commit gate runs only the checks the task adds
+   or edits, plus the build they need. Lint and the full suites run once, in
+   the plan's final proof task: a full gate per task costs most of the wall
+   time once the suites grow.
 2. **review-plan** — adversarial gap-check of that plan.
 3. **superpowers:subagent-driven-development** — execute. Never
    superpowers:executing-plans (main-loop implementation is banned). Implementer

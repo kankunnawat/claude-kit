@@ -55,10 +55,10 @@ resolve without the `superpowers:` prefix — same skills, same order.
    command output, via the repo's verification harness) and attach it to the PR
    body before handing over for review — evidence gates the merge decision, it
    never lands post-merge. Uploading images through the repo's declared
-   evidence route (CLAUDE.md/AGENTS.md) is part of this step when they show
+   evidence route (CLAUDE.md/AGENTS.md), or through `finish`'s default GitHub
+   user-attachments when none is declared, is part of this step when they show
    only synthetic or test data — do it before asking for review, not as a
-   separate approval. Ask first only when no route is declared or an image may
-   show real user data. The PR body also carries a risk line —
+   separate approval. Ask first only when an image may show real user data. The PR body also carries a risk line —
    `Risk: low|medium|high` plus a one-line reason (blast radius, surfaces
    touched) — so the reviewer's depth can match it:
    low = evidence check only, high = full diff read.

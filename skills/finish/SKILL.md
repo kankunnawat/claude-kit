@@ -66,8 +66,8 @@ to force closure on unverified work.
    persists through matching close-out steps; do not ask again. Otherwise ask
    once for that action before it leaves the machine. Apply this check to each
    outward-facing action except `git push` to the usual remote and step 4's
-   upload through the repo's declared evidence route when the images show only
-   synthetic or test data. `/finish` alone
+   evidence upload (declared route or the user-attachments default) when the
+   images show only synthetic or test data. `/finish` alone
    does not authorize every external action. Comments on another person's PR
    and artifacts or transitions created under the user's name in an external
    tracker always need content-and-scope approval (count, targets, and owner).

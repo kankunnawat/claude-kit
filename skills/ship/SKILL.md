@@ -33,13 +33,24 @@ resolve without the `superpowers:` prefix — same skills, same order.
    dispatch follows the repo's model routing; every spawn carries an explicit
    model pin and the reporting contract: every claim points at a tool result
    from the session, unverified items named as such.
-   When the saved `sdd-run` workflow is available, invoking /ship is the
-   opt-in to run the task loop through it. Do the skill's setup in the main
-   loop first: worktree, ledger, pre-flight scan, one brief per task, and one
-   routing question per plan. Write any plan-mandated destructive SQL, such
-   as a `DELETE` or `DROP` migration body, during that setup, where the user
-   sees it: a permission check can deny a workflow agent's write of it and
-   stop the run. Then call `Workflow({name: 'sdd-run', args:
+   Do the skill's setup in the main loop first: worktree, ledger, pre-flight
+   scan, one brief per task, and one routing question per plan. Write any
+   plan-mandated destructive SQL, such as a `DELETE` or `DROP` migration
+   body, during that setup, where the user sees it: a permission check can
+   deny a workflow agent's write of it and stop the run.
+   Invoking /ship does not pick the runner. In the routing question, ask
+   the user to choose the saved `sdd-run` workflow or the skill's loop run
+   by hand, with a short comparison for this plan and one recommendation:
+   - `sdd-run`: one combined review per task, automatic fix rounds (round 3
+     escalates), main loop idle. Fits many tasks with self-contained briefs,
+     a clean pre-flight scan, and no expected rulings.
+   - By hand: separate spec and quality reviews, controller judgment
+     between tasks (skip or merge reviews on trivial tasks, stop drift
+     early), the user sees each step, main-loop context grows. Fits few
+     tasks, tasks that need rulings or taste calls, or a user who wants to
+     watch.
+   Record the pick in the ledger and in any handoff. For `sdd-run`, call
+   `Workflow({name: 'sdd-run', args:
    {worktree, plan, spec, sdd, constraints, base, mergeBase, tasks: [{n,
    model}], notes}})`, with the repo's gate and forbidden commands in `notes`.
    It runs every task through implement, task review, and up to 3 fix

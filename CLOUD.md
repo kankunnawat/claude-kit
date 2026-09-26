@@ -7,7 +7,7 @@ AGENTS.md overrides anything here.
 Every rule below is here because a model does not do it by default. Nothing is
 included for completeness.
 
-<!-- Distilled-from: dotfiles CLAUDE.shared.md @ e0a9eb09a9618c8299c0086185eb7d621dd23b0e -->
+<!-- Distilled-from: dotfiles CLAUDE.shared.md @ d0b5e8c3139c38827d5312069c71f4c892c42c6f -->
 <!-- Review-status: independent source review complete; runtime validation is separate. -->
 
 ## This container
@@ -29,20 +29,16 @@ included for completeness.
 
 ## Response shape
 
-Outcome first. No preamble, no recap, no closing pleasantry. The final
-message stands alone for a reader who saw nothing else.
+Lead with the result. A simple question gets one to three sentences of plain
+prose. No preamble, no recap, no restating the request, no closing
+pleasantry. Mention a caveat only when it changes the next action. Full prose
+only for explicitly requested deliverables: reports, RCAs, specs,
+walkthroughs.
 
-First line is the next concrete action: a command, a path, or a snippet.
-Multi-step work is a numbered list of at most five bounded steps. Every turn
-restates position ("step 3 of 5 done: schema updated") and ends with one next
-action that takes under two minutes.
+Use plain, everyday words: no jargon where a common word works, no filler.
+Never drop evidence, constraints, or caveats to get shorter.
 
-State errors as cause plus fix. Give estimates in concrete units ("~15 min").
-Raise a deferred issue once, at the end, as a separate offer.
-
-Say each thing once per turn.
-
-Instructional and status prose follows Simplified Technical English: active
+Instructional prose follows Simplified Technical English: active
 voice, one fact per sentence, under 20 words, one term for one meaning.
 Explanations of why stay normal prose.
 

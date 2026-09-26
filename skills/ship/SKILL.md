@@ -58,7 +58,8 @@ resolve without the `superpowers:` prefix — same skills, same order.
    evidence route (CLAUDE.md/AGENTS.md), or through `finish`'s default GitHub
    user-attachments when none is declared, is part of this step when they show
    only synthetic or test data — do it before asking for review, not as a
-   separate approval. Ask first only when an image may show real user data. The PR body also carries a risk line —
+   separate approval. Ask first only when an image may show real user data.
+   The PR body also carries a risk line —
    `Risk: low|medium|high` plus a one-line reason (blast radius, surfaces
    touched) — so the reviewer's depth can match it:
    low = evidence check only, high = full diff read.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Guards the lesson: "`vercel domains inspect` lies about a serving domain."
-# The verdict comes from an unsigned curl and CSS-hash parity with the local build.
+# The verdict comes from an unsigned curl and parity with the local static build.
 set -euo pipefail
 
 usage() {
@@ -9,8 +9,8 @@ Usage:
   deploy.sh <vercel-project> <public-host> [--scope <team-slug>] [--check-only]
 
   Builds, deploys to production, adds the public domain, then verifies:
-  an unsigned 200 with its x-robots-tag, and CSS-hash parity between the
-  local dist/ and the served homepage.
+  an unsigned 200 with its x-robots-tag, and byte parity for built HTML,
+  CSS, and JS files between local dist/ and the public site.
 
   --check-only  build and verify only; prints the deploy commands instead of running them.
 USAGE
@@ -63,12 +63,22 @@ echo "   HTTP $status"
 echo "   $robots"
 [ "$status" = "200" ] || { echo "public address does not answer 200 without a sign-in" >&2; exit 1; }
 
-echo "== CSS hash parity"
-css() { grep -o 'href="[^"]*\.css"' | sort -u; }
-local_css=$(css < dist/index.html)
-served_css=$(curl -s "https://$host/" | css)
-echo "   local:  $(echo "$local_css" | tr '\n' ' ')"
-echo "   served: $(echo "$served_css" | tr '\n' ' ')"
-[ "$local_css" = "$served_css" ] || { echo "served CSS does not match the local build: the live site is not this build" >&2; exit 1; }
+echo "== HTML, CSS, and JS parity"
+[ -f dist/index.html ] || { echo "dist/index.html is missing" >&2; exit 1; }
+response_file=$(mktemp)
+trap 'rm -f "$response_file"' EXIT
+checked=0
+while IFS= read -r -d '' file; do
+  relative=${file#dist/}
+  path="/$relative"
+  case $relative in
+    index.html) path=/ ;;
+    */index.html) path="/${relative%index.html}" ;;
+  esac
+  curl -fsSL "https://$host$path" -o "$response_file" || { echo "cannot fetch $path from $host" >&2; exit 1; }
+  cmp -s "$file" "$response_file" || { echo "served $path differs from the local build" >&2; exit 1; }
+  checked=$((checked + 1))
+done < <(find dist -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' \) -print0)
+echo "   $checked built files match"
 
 echo "== verified: $host serves this build, unsigned, with $robots"

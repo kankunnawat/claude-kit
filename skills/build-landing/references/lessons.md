@@ -19,6 +19,8 @@ One line each, portable across sites and frameworks. The phase number is the che
 - Removing a control can change the motion driver. Name autoplay or scroll; keep an accessible pause for autoplay.
 - Interaction patterns are site-specific. One site's questionnaire rules do not replace another site's comparator.
 - Accessibility designed in at the guideline stage costs nothing later: reduced motion, keyboard, JS off, native `details`.
+- A motion control belongs to the artwork it controls. Decide its visible touch cue, keyboard focus, and stop/restart behavior before drawing it.
+- A disclosure needs both directions. Decide open, close, rapid reversal, JS-off, and reduced-motion behavior together.
 
 ## Phase 2, directions
 
@@ -29,6 +31,7 @@ One line each, portable across sites and frameworks. The phase number is the che
 ## Phase 3, prototype
 
 - A static reference does not approve motion or mobile behavior. A loop that never stops, a nav that wraps, a 9.6px label: none is visible in a PNG.
+- An end-state screenshot does not prove animation. On the built page, observe an intermediate frame and elapsed duration when motion matters.
 - Judge the complete page after the hero. Repeated display-size supporting headings and generous spacing make a page long and flat.
 
 ## Phase 4, plan
@@ -52,6 +55,7 @@ One line each, portable across sites and frameworks. The phase number is the che
 ## Phase 6, verify
 
 - Dev mode hides build-only bugs. Check the built output at an explicit address and match the asset hash.
+- CSS minifiers can rewrite `250ms` as `.25s`; `parseFloat` loses the unit. Let CSS own timing or parse units, then check built-browser duration in both directions.
 - Single-engine coverage cannot see fallback bugs. `@supports` around partially supported CSS.
 - Unit tests protect the pure modules and nothing else. The browser harness is the test suite.
 - Verification harnesses need verifying. Read the evidence, not the verdict.
@@ -68,6 +72,7 @@ One line each, portable across sites and frameworks. The phase number is the che
 - Rules match team size. One owner and one agent commit to main.
 - A CLI's domain inspection can lie about a serving domain. Verify with an unsigned request and hash parity.
 - Asset-hash parity cannot tell a copy-only deploy from the stale build. Prove a copy change live with the phrase check per page.
+- CSS parity can miss stale copy and behavior. Compare built HTML and JS with the public response.
 - A team's display name and its CLI scope slug differ. Record the slug in the project context and pass the slug.
 
 ## Phase 8, lessons

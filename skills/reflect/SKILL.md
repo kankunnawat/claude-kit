@@ -26,10 +26,12 @@ A reflection can end with no change.
    - Personal memory: only when the user explicitly asks to save it.
 
    If the case was a one-off, lacks evidence, or already has a sufficient guard, report the lesson without writing.
-4. Apply a bounded, reversible change only when the request or earlier approval covers its exact scope.
-   Otherwise show the proposed change and target.
-   Keep external comments, tracker writes, and release actions behind their existing approval gates.
+4. Explicit invocation authorizes the smallest reversible, evidence-backed guard in the active project when its target is clear.
+   Apply it without another approval step.
+   Ask before unclear, shared, global, destructive, or external changes, including personal memory and tracker writes.
+   Preserve existing approval gates for comments and release actions.
 5. Re-run the original failure case or a close check against the guard.
+   For skill or script edits, run existing validation and keep a fix-proving check in the repo when applicable.
    If it still fails, revise within scope and check again.
    Report what the evidence proves and what remains unverified.
    On a later recurrence, update or remove the guard based on new evidence instead of stacking rules.

@@ -8,7 +8,7 @@ Phase 1 fills one row per component in `docs/design-guideline.md`. A blank cell 
 | Hero | owns the first screen; the object or composition; motion driver (autoplay, pointer, scroll, none) and idle behavior; when motion needs a control, its stop/restart action belongs to the artwork, with a visible touch cue and keyboard focus; the static frame for reduced motion and JS off; fixed-aspect box, no layout shift; mobile composition with text, with the main action never below decorative staging |
 | Primary interaction | purpose and form; initial state; progression (explicit Next or live); changing earlier answers; summary; reset; where feedback sits (beside the controls, in document order); keyboard model; JS-off content |
 | Sections | count from the content; ground per section with at least three strong grounds, one dark or saturated; rhythm (poster vs reading, padding per breakpoint); heading scale per level with named floors; eyebrow rule; reveal motion and its reduced-motion treatment |
-| FAQ or disclosure | native `details`; keyboard; open and close motion or an intentional instant change; JS-off and reduced-motion behavior; rapid reversal while opening or closing; open state styling; how many |
+| FAQ or disclosure | native `details`; keyboard; animate open and close; instant change only for reduced motion or JS-off fallback; rapid reversal while opening or closing; open state styling; how many |
 | Call-to-action band | one, loud; ground; the outbound link component and attribution |
 | Footer | dark; attribution line; links |
 | Secondary page | same system, simpler; header and footer shared; heading scale; column width; closing band |

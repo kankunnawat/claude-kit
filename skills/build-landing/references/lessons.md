@@ -16,7 +16,7 @@ One line each, portable across sites and frameworks. The phase number is the che
 - Positioning is settled before the page is built: positioning, visual direction, interaction states, motion driver, idle behavior.
 - Contrast fails on state changes, not on the palette. Measure every control state that changes ground.
 - Feedback sits beside its controls in document order, before large diagrams.
-- Removing a control can change the motion driver. Name autoplay or scroll; keep an accessible pause for autoplay.
+- Removing a control can change the motion driver. Name autoplay or scroll; if autoplay remains, plan stop and restart.
 - Interaction patterns are site-specific. One site's questionnaire rules do not replace another site's comparator.
 - Accessibility designed in at the guideline stage costs nothing later: reduced motion, keyboard, JS off, native `details`.
 - A motion control belongs to the artwork it controls. Decide its visible touch cue, keyboard focus, and stop/restart behavior before drawing it.

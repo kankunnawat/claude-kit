@@ -55,6 +55,7 @@ One line each, portable across sites and frameworks. The phase number is the che
 ## Phase 6, verify
 
 - Dev mode hides build-only bugs. Check the built output at an explicit address and match the asset hash.
+- Disclosure motion can pass while menu navigation fails; test a real menu link through destination, focus, and Back.
 - CSS minifiers can rewrite `250ms` as `.25s`; `parseFloat` loses the unit. Let CSS own timing or parse units, then check built-browser duration in both directions.
 - Single-engine coverage cannot see fallback bugs. `@supports` around partially supported CSS.
 - Unit tests protect the pure modules and nothing else. The browser harness is the test suite.
@@ -69,6 +70,7 @@ One line each, portable across sites and frameworks. The phase number is the che
 ## Phase 7, deliver
 
 - Platform facts cost round trips until written down. Verify team, permissions, and public response per project.
+- A successful local build does not prove the host will publish the intended output.
 - Rules match team size. One owner and one agent commit to main.
 - A CLI's domain inspection can lie about a serving domain. Verify with an unsigned request and hash parity.
 - Asset-hash parity cannot tell a copy-only deploy from the stale build. Prove a copy change live with the phrase check per page.

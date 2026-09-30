@@ -14,9 +14,12 @@ to force closure on unverified work.
 
 1. **Resolve the ritual.** Look for a `Close-out:` line in the project's
    CLAUDE.md / AGENTS.md (repo root, then parents). No line → default ritual:
-   commit + push, nothing else. Then resolve context the ritual needs: ticket
+   commit + push, nothing else. Resolve the completion endpoint against the
+   user's current instructions. Then resolve context the ritual needs: ticket
    key (branch name → conversation → recent commits), current branch, base
-   branch.
+   branch. For required repository or deployment steps, resolve the repository
+   owner, name, and visibility, plus the host project, account, and stable address.
+   Take those targets from project guidance and the user's instructions.
 
 2. **Prove tracker consistency.** When GitHub issues are in scope, fetch every
    issue targeted by `Closes`/`Fixes` and inspect its body live. If any checklist
@@ -62,27 +65,43 @@ to force closure on unverified work.
    the repo's usual harness and attach as GitHub user-attachments. Either
    way, verify every image/video actually renders in the PR.
 
-5. **Execute in order.** An approval for an exact action, target, and scope
-   persists through matching close-out steps; do not ask again. Otherwise ask
-   once for that action before it leaves the machine. Apply this check to each
-   outward-facing action except `git push` to the usual remote and step 4's
-   evidence upload (declared route or the user-attachments default) when the
-   images show only synthetic or test data. `/finish` alone
-   does not authorize every external action. Comments on another person's PR
-   and artifacts or transitions created under the user's name in an external
-   tracker always need content-and-scope approval (count, targets, and owner).
+5. **Execute in order.** `/finish` approves declared repository and host setup,
+   push, and deploy when resolved targets match the user's instructions.
+   Reuse approval for the same action, target, and scope.
+   If scope is missing or conflicts with user instructions, complete useful
+   preflight and ask only for the unresolved scope before the external write.
+   Other outward-facing actions need approval except `git push` to the usual
+   remote and step 4's evidence upload when images show only synthetic or test
+   data (declared route or the user-attachments default).
+   Comments on another person's PR and artifacts or transitions created under
+   the user's name in an external tracker always need content-and-scope approval
+   (count, targets, and owner).
+
+   Provision missing prerequisites for the resolved ritual:
+
+   - Reuse the matching repository; create it private unless the user expressly
+     requests public visibility. Set `origin` and verify its owner and visibility.
+   - Reuse the matching host project; create and link it in the resolved account
+     through sanctioned tools. Verify the link targets that account and project.
+
    Complete all close-out bookkeeping — tracker edits, ledger/status-doc
    updates — *before* the first PR push, so it rides the same commit set.
    Never trigger another full CI run solely for tracker or ledger edits; rerun
    only after substantive changes or a failed-gate repair. Typical steps a
    ritual declares:
+
    - commit (project's commit convention, ticket key in subject)
    - push (branch policy per the ritual — direct vs feature branch + PR)
+   - deploy (when declared; for CLI-hosted sites, run the host's deploy command)
    - tracker update (e.g. Jira comment + matching status transition — use the
      project's declared comment shape)
    - status-doc/memory updates
-   Skip any step whose precondition is absent (no ticket key → no tracker
-   step; say so). After merge, re-read the tracker state and checklist; reopen
+
+   For public deployment, verify the intended build at the stable address and
+   the project's indexing rules. A Git push alone does not deploy a CLI-hosted site.
+   Skip optional steps whose precondition is absent (no ticket key → no tracker
+   step; say so). A required remote or host project that is missing needs the setup above.
+   After merge, re-read the tracker state and checklist; reopen
    an umbrella that was auto-closed with unchecked work and report the repair.
 
 6. **Post-merge tail.** Rituals with steps *after* the merge — deploy
@@ -100,11 +119,12 @@ to force closure on unverified work.
      incomplete state only when new authority or a real blocker is required.
 
    Required check failures trigger diagnosis and an in-scope repair. Do not
-   integrate until every required check passes. Implementation authority does
-   not grant deployment authority.
+   integrate until every required check passes. Resolve deployment authority
+   through step 5; implementation approval alone does not grant it.
 
 7. **Report** what was done in one short block: commit hash, branch/PR, tracker
-   actions taken or skipped and why.
+   actions taken or skipped and why, plus deployment address and verification
+   when required by the completion endpoint.
 
 ## Declaring a ritual (for CLAUDE.md authors)
 

@@ -13,7 +13,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent
 SKILLS = {
     name: ROOT / "skills" / name / "SKILL.md"
-    for name in ("define-goal", "pick-driver", "ship", "review-plan", "worktrees", "park", "pickup", "build-landing", "whats-next", "semantic-computer-use", "no-ai-slop")
+    for name in ("define-goal", "pick-driver", "ship", "review-plan", "worktrees", "park", "pickup", "build-landing", "build-landing-auto", "whats-next", "semantic-computer-use", "no-ai-slop")
 }
 DRIVER_RUNTIME = ROOT / "skills/pick-driver/references/runtime-routing.md"
 WORKTREE_BULK = ROOT / "skills/worktrees/references/bulk-cleanup.md"

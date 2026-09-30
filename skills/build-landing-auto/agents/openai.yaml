@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Landing Auto"
+  short_description: "Choose landing-page review checkpoints"
+  default_prompt: "Use $build-landing-auto at 75% to build a marketing landing page from the project context."

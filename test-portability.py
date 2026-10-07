@@ -134,7 +134,7 @@ class PortabilityTest(unittest.TestCase):
         self.assertNotIn("origin/main", status)
         self.assertNotIn("run `ListAgents`", status)
         ui = read(SKILLS["semantic-computer-use"])
-        for guard in ("cua_repl", "current tool schema", "policy denial", "credentials", "third-party", "hand off"):
+        for guard in ("cua_repl", "current tool schema", "policy denial", "credentials", "third-party", "hand off", "Missing required Codex turn metadata", "never fake or inject", "not approved", "Close everything you open"):
             self.assertIn(guard, ui)
         self.assertNotIn("semantic-cu` MCP (this skill)", ui)
 

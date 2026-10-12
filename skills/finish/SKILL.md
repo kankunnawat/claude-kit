@@ -13,8 +13,13 @@ to force closure on unverified work.
 ## Steps
 
 1. **Resolve the ritual.** Look for a `Close-out:` line in the project's
-   CLAUDE.md / AGENTS.md (repo root, then parents). No line → default ritual:
-   commit + push, nothing else. Resolve the completion endpoint against the
+   CLAUDE.md / AGENTS.md (repo root, then parents). Read it from the base
+   branch on the remote (`git show origin/<base>:CLAUDE.md`); a local checkout
+   can lag behind the rules. No line → default ritual:
+   commit + push, nothing else. A project may declare other rituals (release,
+   hotfix) with their own trigger words. /finish runs Close-out only and never
+   continues into another ritual's steps unless the user used that ritual's
+   trigger. Resolve the completion endpoint against the
    user's current instructions. Then resolve context the ritual needs: ticket
    key (branch name → conversation → recent commits), current branch, base
    branch. For required repository or deployment steps, resolve the repository
@@ -66,8 +71,14 @@ to force closure on unverified work.
    way, verify every image/video actually renders in the PR.
 
 5. **Execute in order.** `/finish` approves declared repository and host setup,
-   push, and deploy when resolved targets match the user's instructions.
+   push, and any deploy the Close-out ritual itself declares, when resolved
+   targets match the user's instructions. A project rule that reserves
+   production changes (promote, rollback, alias, host settings) to the user's
+   explicit request overrides this: stop and report instead.
    Reuse approval for the same action, target, and scope.
+   Merge exactly the head the user approved (`gh pr merge --match-head-commit
+   <full SHA>` or the host's equivalent). A head that moved after approval,
+   even with fixes, needs new approval; silence is not approval.
    If scope is missing or conflicts with user instructions, complete useful
    preflight and ask only for the unresolved scope before the external write.
    Other outward-facing actions need approval except `git push` to the usual

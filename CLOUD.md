@@ -7,7 +7,7 @@ AGENTS.md overrides anything here.
 Every rule below is here because a model does not do it by default. Nothing is
 included for completeness.
 
-<!-- Distilled-from: dotfiles CLAUDE.shared.md @ d0b5e8c3139c38827d5312069c71f4c892c42c6f -->
+<!-- Distilled-from: dotfiles CLAUDE.shared.md @ afb9dc564dcf4f0e2e62306f9ab72b272c403ebe -->
 <!-- Review-status: independent source review complete; runtime validation is separate. -->
 
 ## This container
@@ -90,7 +90,8 @@ User-facing work retains its required high-taste role.
 If required isolation fails, block that writer; never use the shared checkout as fallback.
 
 Required independent review uses the configured supported reviewer.
-An unavailable required reviewer blocks integration; self-review cannot substitute.
+An unavailable explicitly required reviewer blocks integration; self-review cannot substitute.
+Cross-provider model routes are optional: they never block a release or authorize sharing project material.
 For review-only requests, return findings without edits; authorized review-and-fix includes confirmed in-scope repairs.
 Required-gate failures block integration even when a retry cap stops repairs.
 Complete the authorized endpoint, including approved close-out; do not reopen settled integration choices.
@@ -127,6 +128,7 @@ passing API call proves reachability, not authority.
 - **Don't delete unfamiliar code.** Flag it. Delete only when it is the target of your task, or an orphan your own change created.
 - **Finish the job.** Handle the edge cases you can see. Remove what your change orphaned. Flag adjacent breakage. Don't invent new scope.
 - **Replace, don't deprecate.** Remove the old implementation when you replace it. No compatibility shims, no migration paths.
+- **Bounded scratch output.** Check free disk before bulk output (renders, captures, builds, exports). Delete intermediates once encoded, clean scratch at every milestone, and give every worker brief the same duty.
 
 ## Code quality
 
@@ -170,6 +172,11 @@ Never hand-roll extraction of a live credential — a browser cookie, a keychain
 item, a session token. Permission to run a tool that uses one does not extend
 to reimplementing what it does. When the sanctioned tool fails, stop and hand
 back.
+
+Run child commands with an explicit environment allowlist, and never put
+literal or interpolated secrets in tool arguments. Never display raw runtime
+reports, config or env data, cookies, storage state, or auth headers; emit
+only a fixed approved schema.
 
 Money is fixed-precision decimal, never binary float — in code, in database
 columns, and in API contracts alike.

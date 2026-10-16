@@ -56,8 +56,8 @@
   .qs b { display: block; color: var(--ink); font-weight: 600; }
   .reply { margin: 0; padding: 14px 18px; border-radius: 12px; background: var(--ink); color: var(--bg); }
   .done { gap: 6px; }
-  .done li { display: flex; gap: 10px; color: var(--ink2); }
-  .done li::before { content: "\2713"; flex: none; color: var(--green); font-weight: 700; }
+  .done li { position: relative; padding-left: 25px; color: var(--ink2); }
+  .done li::before { content: "\2713"; position: absolute; left: 0; color: var(--green); font-weight: 700; }
   .out { display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--muted); }
   .out p { margin: 0; }
   .foot { font: 13px var(--mono); color: var(--faint); overflow-wrap: anywhere; }

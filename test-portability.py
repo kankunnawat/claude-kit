@@ -80,6 +80,18 @@ class PortabilityTest(unittest.TestCase):
         self.assertNotIn("`/code-review` at medium", ship)
         self.assertNotIn("Fable-pinned", review)
 
+    def test_ship_supplies_explicit_stage_model_pins(self):
+        ship = read(SKILLS["ship"])
+        invocation = re.search(r"Workflow\(\{name: 'sdd-run', args:\s*(.*?)\}\}\)", ship, re.DOTALL)
+        self.assertIsNotNone(invocation)
+        for field in ("reviewModel", "finalReviewModel", "escalateModel", "finalFixModel"):
+            self.assertRegex(invocation.group(1), rf"\b{field}\b")
+        self.assertIn("live current-session metadata", ship)
+        self.assertIn("current session's provider and model", ship)
+        self.assertIn("Only explicit user selections override a stage", ship)
+        self.assertIn("missing pins stop before dispatch", ship)
+        self.assertNotIn("repo's model routing", ship)
+
     def test_bulk_cleanup_is_conditional_and_deletion_guard_stays_resident(self):
         skill = read(SKILLS["worktrees"])
         self.assertTrue(WORKTREE_BULK.is_file())

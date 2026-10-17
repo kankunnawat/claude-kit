@@ -33,15 +33,16 @@ resolve without the `superpowers:` prefix — same skills, same order.
 2. **review-plan** — adversarial gap-check of that plan.
 3. **superpowers:subagent-driven-development** — execute. Never
    superpowers:executing-plans (main-loop implementation is banned). Implementer
-   dispatch follows the repo's model routing; every spawn carries an explicit
-   model pin and the reporting contract: every claim points at a tool result
-   from the session, unverified items named as such.
+   dispatch inherits the current session's provider and model.
+   Only explicit user selections override a stage.
+   Resolve each explicit model pin from live current-session metadata.
+   Every claim points at a tool result from the session; name unverified items.
    Do the skill's setup in the main loop first: worktree, ledger, pre-flight
-   scan, one brief per task, and one routing question per plan. Write any
+   scan, one brief per task, and one runner question per plan. Write any
    plan-mandated destructive SQL, such as a `DELETE` or `DROP` migration
    body, during that setup, where the user sees it: a permission check can
    deny a workflow agent's write of it and stop the run.
-   Invoking /ship does not pick the runner. In the routing question, ask
+   Invoking /ship does not pick the runner. In the runner question, ask
    the user to choose the saved `sdd-run` workflow or the skill's loop run
    by hand, with a short comparison for this plan and one recommendation:
    - `sdd-run`: one combined review per task, automatic fix rounds (round 3
@@ -55,7 +56,10 @@ resolve without the `superpowers:` prefix — same skills, same order.
    Record the pick in the ledger and in any handoff. For `sdd-run`, call
    `Workflow({name: 'sdd-run', args:
    {worktree, plan, spec, sdd, constraints, base, mergeBase, tasks: [{n,
-   model}], notes}})`, with the repo's gate and forbidden commands in `notes`.
+   model}], reviewModel, finalReviewModel, escalateModel, finalFixModel,
+   notes}})`, with the repo's gate and forbidden commands in `notes`.
+   Supply all stage pins, even for final-only or resumed runs; missing pins stop before dispatch.
+   Each pin inherits the current selection unless the user explicitly selects that stage's model.
    It runs every task through implement, task review, and up to 3 fix
    rounds, then the final whole-branch review with one fix wave. When it
    returns, append its `ledgerLines` to the ledger. Rule on each

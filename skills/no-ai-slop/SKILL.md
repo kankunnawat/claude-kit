@@ -32,7 +32,7 @@ If the goal is unclear, ask what the reader should think, feel, or do after read
 - **Front-load only when it improves clarity.** Put conclusions early when that helps the reader. Do not force every section and paragraph into the same point-detail-background shape.
 - **Keep the user's meaning.** Don't invent claims, examples, stats, or opinions. If something is unclear, ask.
 - **Open it up, don't dumb it down.** Keep the substance, nuance, and precision. Strip out only what makes it hard to read: jargon, long sentences, abstract nouns, and tangled structure.
-- **Use active voice.** "The team shipped it Tuesday" beats "the decision emerged." Never let inanimate things do human verbs.
+- **Use active voice and name the actor.** "The team shipped it Tuesday" beats "the decision emerged" or "it was decided." If a passive sentence hides who acted, name them. Never let inanimate things do human verbs.
 - **Make every sentence earn its place.** Cut empty qualifiers and throat-clearing. Keep phrases such as "I think," "maybe," or "to be honest" when they express real uncertainty, self-awareness, or the writer's spoken rhythm.
 - **Untangle sentences without flattening the cadence.** Split sentences and paragraphs when they are genuinely hard to follow. Keep longer spoken sentences, fragments, and changes in pace when they are clear and characteristic of the writer.
 - **Be concrete and specific.** Abstraction is where writing goes to die. "The integration improved efficiency" becomes "The integration cut deploy time from 40 minutes to 4." Names, numbers, dates, mechanisms, and examples beat abstractions.
@@ -86,13 +86,13 @@ Often-empty phrases: it's worth noting, it's important to note, at the end of th
 
 **Summary-recap endings.** "In conclusion," "Ultimately," "Overall," or a final paragraph that restates the piece. The reader was just there. End on the last concrete point, takeaway, or next action instead.
 
-**Formatting slop.** Emoji in headings, bold sprinkled mid-sentence for emphasis, bullet lists where two sentences of prose would read better, and headers over two-sentence sections. Format should follow the content, not decorate it.
+**Formatting slop.** Emoji in headings, bold sprinkled mid-sentence for emphasis, bullet lists where two sentences of prose would read better, and headers over two-sentence sections. Format should follow the content, not decorate it. Use sentence-case headings ("How the sync works", not "How The Sync Works") and straight quotes and apostrophes unless the publication's style says otherwise.
 
 **Em dashes.** Do not use them as a default rhythm crutch. In short copy, use none. In longer drafts, 1-2 are fine if they clearly beat commas, periods, or parentheses. Remove clusters and decorative dashes.
 
 **Over-compression.** Dropped articles, verbless fragments, arrows, and private abbreviations make the reader decode. "Parser rejects bad date → exit 2, no write" becomes "The parser rejects a bad date, exits with code 2, and writes nothing." Concise means fewer ideas, not fewer words per idea.
 
-**Abstract metaphor nouns.** Substrate, wedge, vector, surface (as in "API surface"), primitive as a noun, harness as a metaphor, north star, flywheel, paradigm. Use the concrete word.
+**Abstract metaphor nouns.** Substrate, wedge, wedge in, vector, surface (as in "API surface"), primitive as a noun, harness as a metaphor, scaffolding as a metaphor, north star, flywheel, paradigm, ratchet, gold-plating, endgame, evacuate, locus, nexus, vantage, bedrock, modality. Use the concrete word.
 
 **Could-be-anywhere sentences.** If a sentence could appear unchanged in another project's docs, it says nothing about this one. Name the mechanism or the number, or cut it.
 

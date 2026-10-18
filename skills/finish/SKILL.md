@@ -52,6 +52,14 @@ to force closure on unverified work.
    `ledger-log verdict <id> approve|nits|changes|redo` before the commit. A
    branch with no rows passes; main-loop-only work is not gated.
 
+   **Green is not safe.** Before merge, get a verdict from an agent that did
+   not write the code: a fresh-context reviewer (the `reviewer` agent,
+   `/code-review`, or `@codex review`) runs or reads the change against the
+   approved head and returns `PASS`, `PASS+NOTES`, or `FAIL`. Green CI and an
+   approving bot comment are not verdicts. A verdict covers a patch: if the
+   head moved after it, compare `git patch-id` and re-verify on any real
+   change. `FAIL` stops the close-out; report it.
+
 4. **Prove frontend changes visually.** If the shipped diff changes a
    user-facing frontend, the PR must carry visual evidence before merge.
    First check what images are already attached (e.g. by /ship): if they

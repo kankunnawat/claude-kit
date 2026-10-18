@@ -4,6 +4,7 @@ Use this procedure only after the resident skill requires a keep/stale/remove re
 
 `git worktree remove` deletes the checkout, not its branch or committed objects.
 Uncommitted files are the immediate loss risk; sort on that before merge state.
+When the cleanup is for disk space, record `df -h /` before the first removal.
 
 ## Classify
 
@@ -15,9 +16,13 @@ Uncommitted files are the immediate loss risk; sort on that before merge state.
    Offer keep, remove generated dependencies only, or commit and push through an authorized workflow.
 3. Check live processes and the repository's lease or claim ledger.
    The repository ledger owns paths when one exists.
+   A worktree that a live session uses (a herdr or tmux pane, a recent transcript, a lease) is held, never removed.
 4. Re-read `git worktree list --porcelain` immediately before mutation and assert protected paths are absent.
    Cross-check every directory against the registry because `git -C <dir>` can fall through to a parent repository.
 
 Finish with `git worktree prune`, the runtime's approved recoverable deletion tool for unregistered leftovers, and a final `git worktree list`.
 Do not use a broad recursive delete.
 Branch-reference deletion remains a separate operation governed by the resident guard in `SKILL.md`.
+
+Report `df -h /` before and after, what was removed, and one line per held worktree (which session, or which uncommitted files).
+If disk is still tight, name the next biggest targets (unavailable simulators, old simulator runtimes, Xcode DerivedData, package caches) for a separate approval; this procedure does not delete them.

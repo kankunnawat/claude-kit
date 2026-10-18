@@ -61,6 +61,17 @@ A keep/stale/remove report and approval come before bulk mutation.
 Uncommitted work, live leases, a fresh registry, protected paths, and commit
 retention remain mandatory guards.
 
+### Disk reclaim pass (from pstack worktree-cleanup)
+
+1. Record `df -h /`. List paths from `git worktree list --porcelain`, never hand-typed.
+2. Classify each: size, age, merge state (squash-aware: check the PR is merged, not commit reachability), uncommitted (`wip:N`) vs untracked scratch, and the newest session that touched it. The bucket is advice, not permission.
+3. Anything in use by a live session (herdr/tmux pane, recent transcript, lease) is held. Check usage before deleting; another session's worktree is never yours to remove.
+4. `wip` pauses for Kan with the diff; clean + merged + unused proceeds.
+5. Remove with `git worktree remove <path>`, `trash` any leftover build dir, then `git worktree prune`. Branch refs survive.
+6. Next biggest wins: `xcrun simctl delete unavailable`, old simulator runtimes, Xcode DerivedData, package caches Kan hasn't said to keep.
+
+Reply: `df -h /` before and after, what was pruned, and one line per held-back worktree (which session, or uncommitted work).
+
 ### Deleting the branch refs afterwards is a separate, riskier job
 
 Worktree removal keeps the commits; **`git branch -D` is what can orphan them.** Do

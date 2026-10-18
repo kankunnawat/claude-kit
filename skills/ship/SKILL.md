@@ -29,7 +29,8 @@ resolve without the `superpowers:` prefix — same skills, same order.
    call for one). Each task's commit gate runs only the checks the task adds
    or edits, plus the build they need. Lint and the full suites run once, in
    the plan's final proof task: a full gate per task costs most of the wall
-   time once the suites grow.
+   time once the suites grow. Order tasks so the commit sequence proves
+   itself: subtraction before reshape, failing test before fix.
 2. **review-plan** — adversarial gap-check of that plan.
 3. **superpowers:subagent-driven-development** — execute. Never
    superpowers:executing-plans (main-loop implementation is banned). Implementer
@@ -80,7 +81,9 @@ resolve without the `superpowers:` prefix — same skills, same order.
    The PR body also carries a risk line —
    `Risk: low|medium|high` plus a one-line reason (blast radius, surfaces
    touched) — so the reviewer's depth can match it:
-   low = evidence check only, high = full diff read.
+   low = evidence check only, high = full diff read. For medium or high,
+   run `blast-radius` on the branch diff first and put its "Safe because"
+   line in the PR body.
 6. **Stop at the PR/merge boundary by default** — open the PR per repo
    convention with the evidence attached. Merge/tracker close-out stays with
    the `finish` skill unless the user already authorized it for this task. A

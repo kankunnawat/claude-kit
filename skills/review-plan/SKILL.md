@@ -31,7 +31,9 @@ Stress-test a spec or plan artifact before it flows to the next stage. Apply a f
 This skill's rubrics grade plans and specs. When the artifact is a **diff, branch, or PR**, the rubrics don't apply — but the same review discipline does:
 
 - Sync to the latest remote first (`git fetch origin`), so you review against what is actually there.
+- Name the one fact the change is safe because of and how far it is proven: said, `file:line`, walked, ran, reproduced. For a diff you don't trust, run `blast-radius`.
 - Evaluate in order: **architecture > correctness > code quality > tests > performance.** The order is the priority: an architectural defect outranks a naming nit, always.
 - For each issue: describe it concretely with `file:line` references, present the options with their tradeoffs, and recommend one. In review-only mode, ask before changing code. An explicitly requested self-review or review-and-fix, or an approved review-then-execute chain, permits confirmed in-scope fixes. Ask for unresolved product, architecture, scope, or authority decisions. A finding that names a problem without a concrete failure scenario isn't finished.
+- When merging several reviewers' output, bucket each finding as Act on, Consider, Noted, or Dismissed (with a one-line reason) and note which reviewers raised it. Independent agreement is the strongest signal.
 
 For a final verdict with fresh context, use the configured independent reviewer through a supported runtime mechanism. If that reviewer is unavailable, the missing review blocks progression; self-review is not a substitute.

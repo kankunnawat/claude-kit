@@ -25,6 +25,9 @@ A reflection can end with no change.
    - Truly universal rule: global `AGENTS.md`.
    - Personal memory: only when the user explicitly asks to save it.
 
+   Within the target, pick the highest guard that works: architecture (one owner, one supported way, delete the old way an agent would copy) > types > a lint or check whose error names the fix > a behavior test > written rule last, for judgment calls only.
+   Nothing fails when an agent skips a written rule.
+
    If the case was a one-off, lacks evidence, or already has a sufficient guard, report the lesson without writing.
 4. Explicit invocation authorizes the smallest reversible, evidence-backed guard in the active project when its target is clear.
    Apply it without another approval step.
@@ -32,6 +35,8 @@ A reflection can end with no change.
    Preserve existing approval gates for comments and release actions.
 5. Re-run the original failure case or a close check against the guard.
    For skill or script edits, run existing validation and keep a fix-proving check in the repo when applicable.
+   A new check counts as a guard only after it fails on the real past mistake (revert or replay it).
+   If the deciding fact took a deep dig, propose the cheap always-on signal (log line, assertion, status output) that would have shown it at first look.
    If it still fails, revise within scope and check again.
    Report what the evidence proves and what remains unverified.
    On a later recurrence, update or remove the guard based on new evidence instead of stacking rules.

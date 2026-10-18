@@ -30,6 +30,8 @@ you don't, most of them still stand alone.
 | `build-landing` | Phased method for a marketing landing page: context, guideline, three directions, browser prototype, linted plan, build, verify, deliver, lessons. Scripts for contrast, plan lint, browser verification, and Vercel delivery. |
 | `build-landing-auto` | Adds 50%, 75%, and 100% review presets to `build-landing`. Keeps its artifacts, quality gates, and delivery authority. |
 | `quiz` | Comprehension check, only when you ask for one. |
+| `blast-radius` | Manual only. Finds what a diff could break beyond its own lines and proves the one fact it is safe because of. Adapted from pstack (MIT). |
+| `sharpen` | Manual only. A silent expert-framing check before a task too small for brainstorming. Adapted from pstack (MIT). |
 
 Skill names are deliberately unprefixed, so a skill can refer to another by
 bare name and behave identically on every machine.

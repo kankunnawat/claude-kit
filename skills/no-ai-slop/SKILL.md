@@ -90,6 +90,12 @@ Often-empty phrases: it's worth noting, it's important to note, at the end of th
 
 **Em dashes.** Do not use them as a default rhythm crutch. In short copy, use none. In longer drafts, 1-2 are fine if they clearly beat commas, periods, or parentheses. Remove clusters and decorative dashes.
 
+**Over-compression.** Dropped articles, verbless fragments, arrows, and private abbreviations make the reader decode. "Parser rejects bad date → exit 2, no write" becomes "The parser rejects a bad date, exits with code 2, and writes nothing." Concise means fewer ideas, not fewer words per idea.
+
+**Abstract metaphor nouns.** Substrate, wedge, vector, surface (as in "API surface"), primitive as a noun, harness as a metaphor, north star, flywheel, paradigm. Use the concrete word.
+
+**Could-be-anywhere sentences.** If a sentence could appear unchanged in another project's docs, it says nothing about this one. Name the mechanism or the number, or cut it.
+
 ## Workflow
 
 1. Read the full draft before editing.

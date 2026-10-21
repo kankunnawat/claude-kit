@@ -60,7 +60,7 @@ Often-empty phrases: it's worth noting, it's important to note, at the end of th
 
 **Faux-insight setups.** "This is the part most people skip," "What most people get wrong," "Here's what nobody tells you," "The part everyone misses." These flatter the writer as the lone expert. Cut the setup and make the claim stand on its own. "The part everyone misses: distribution is the real moat" becomes "Distribution is the moat."
 
-**Colon reveals.** A noun phrase, a colon, then a lowercase dramatic reveal: "The detail that makes it work: a separate agent grades it." "The best part: it learns." Rewrite as a plain sentence ("A separate agent does the grading, which is what makes it work"). Use colons for lists, labels, and quotes, not fake drama. Prefer sentence case after a colon unless grammar, a proper noun, a title, or code requires otherwise.
+**Colon reveals.** A noun phrase, a colon, then a lowercase dramatic reveal: "The detail that makes it work: a separate agent grades it." "The best part: it learns." Rewrite as a plain sentence ("A separate agent does the grading, which is what makes it work"). Use colons for lists, labels, and quotes, not fake drama. A colon used as a mid-sentence connector is the same tell. "If you're coming from traditional automation: instead of registering event handlers, you describe conditions" becomes "You describe when the scheduler should fire instead of registering event handlers." Prefer sentence case after a colon unless grammar, a proper noun, a title, or code requires otherwise.
 
 **Superficial analysis.** Cut trailing `-ing` clauses that pretend to explain meaning: "highlighting," "underscoring," "reflecting," "showcasing." "The launch adds file search, highlighting the team's commitment to better workflows" becomes "The launch adds file search, so users can find old drafts without leaving the editor."
 
@@ -86,7 +86,9 @@ Often-empty phrases: it's worth noting, it's important to note, at the end of th
 
 **Summary-recap endings.** "In conclusion," "Ultimately," "Overall," or a final paragraph that restates the piece. The reader was just there. End on the last concrete point, takeaway, or next action instead.
 
-**Formatting slop.** Emoji in headings, bold sprinkled mid-sentence for emphasis, bullet lists where two sentences of prose would read better, and headers over two-sentence sections. Format should follow the content, not decorate it. Use sentence-case headings ("How the sync works", not "How The Sync Works") and straight quotes and apostrophes unless the publication's style says otherwise.
+**Formatting slop.** Emoji in headings, bold sprinkled mid-sentence for emphasis, bold on every proper noun or acronym, bullet lists where two sentences of prose would read better, and headers over two-sentence sections. Format should follow the content, not decorate it. Use sentence-case headings ("How the sync works", not "How The Sync Works") and straight quotes and apostrophes unless the publication's style says otherwise.
+
+**Inline-header lists.** A list item that opens with a bold label and a colon, then restates the label: "**Performance:** Performance improved by 20%." Convert those items to prose or plain bullets. A bold lead-in that ends in a period, names the item, and is followed by new detail ("**Schema in TypeScript.** Tables live in one file.") is fine.
 
 **Em dashes.** Do not use them as a default rhythm crutch. In short copy, use none. In longer drafts, 1-2 are fine if they clearly beat commas, periods, or parentheses. Remove clusters and decorative dashes.
 

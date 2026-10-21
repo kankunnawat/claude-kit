@@ -148,6 +148,12 @@ to force closure on unverified work.
    actions taken or skipped and why, plus deployment address and verification
    when required by the completion endpoint.
 
+8. **Log the day.** When the loaded instructions declare a `Daily-log:`
+   location, append this close-out to today's file there, following that
+   location's own rules for date and format. One bullet per item: what
+   shipped (commit, PR), tracker actions, and what stays open. Facts from the
+   report only; no secrets or customer data. No declaration → skip and say so.
+
 ## Declaring a ritual (for CLAUDE.md authors)
 
 One line, imperative, ordered:

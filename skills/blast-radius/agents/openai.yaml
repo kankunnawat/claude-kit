@@ -1,6 +1,0 @@
-interface:
-  display_name: "Blast Radius"
-  short_description: "Find breakage beyond a diff and prove it safe"
-  default_prompt: "Use $blast-radius on this branch diff to find what it could break."
-policy:
-  allow_implicit_invocation: false

@@ -215,6 +215,10 @@ to force closure on unverified work.
    shipped (commit, PR), tracker actions, and what stays open. Facts from the
    report only; no secrets or customer data. No declaration → skip and say so.
 
+10. **Settle the thread.** Last, after the report. When the session runs in
+    t3code, call the `t3_thread_organize` tool with action `"settle"` on this
+    thread (omit `threadId`). Tool unavailable → skip silently.
+
 ## Declaring a ritual (for CLAUDE.md authors)
 
 One line, imperative, ordered:

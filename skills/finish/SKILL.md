@@ -187,15 +187,15 @@ to force closure on unverified work.
      GIT_INDEX_FILE=$TMP git add -A && T=$(GIT_INDEX_FILE=$TMP git write-tree); rm -f "$TMP"
      D=$(git log -1 --format=%cI HEAD)
      C=$(GIT_AUTHOR_DATE=$D GIT_COMMITTER_DATE=$D git commit-tree "$T" -p "$H" -m "wip backup of $NAME ($B)")
-     git push -q origin "$C:refs/heads/wip/backup-$NAME" || skip "backup push failed"
+     git push -q origin "${C}:refs/heads/wip/backup-${NAME}" || skip "backup push failed"
      [ "$(git ls-remote origin "refs/heads/wip/backup-$NAME" | cut -f1)" = "$C" ] || skip "backup verify failed"
      echo "backed up uncommitted work to wip/backup-$NAME ($C)"
      skip "worktree has uncommitted changes; backed up, but git worktree remove refuses dirty trees and --force is never used. Commit or drop them, then re-run"
    fi
    # 4. No live process (herdr, t3, codex, cc, editors) holds files or cwd inside it. Own session ancestry excluded.
    cd "$CD" || skip "cannot cd to $CD"
-   ME=" $$ $BASHPID "; p=$BASHPID; while [ "$p" -gt 1 ]; do p=$(ps -o ppid= -p "$p" | tr -d ' '); ME="$ME$p "; done
-   USERS=$(lsof -nP -Fpcn 2>/dev/null | awk -v w="$WT" '/^p/{pid=substr($0,2)} /^c/{cmd=substr($0,2)} /^n/{n=substr($0,2); if (n==w || index(n, w"/")==1) print pid" "cmd}' | sort -u | while read -r pid cmd; do case "$ME" in *" $pid "*) ;; *) echo "$pid:$cmd";; esac; done)
+   ME=" $$ "; p=$$; while [ "$p" -gt 1 ]; do p=$(ps -o ppid= -p "$p" | tr -d ' '); ME="$ME$p "; done
+   USERS=$(lsof -nP -Fpcn 2>/dev/null | awk -v w="$WT" '/^p/{pid=substr($0,2)} /^c/{cmd=substr($0,2)} /^n/{n=substr($0,2); if (n==w || index(n, w"/")==1) print pid" "cmd}' | sort -u | while read -r pid cmd; do case "$ME" in (*" $pid "*) ;; (*) echo "${pid}:${cmd}";; esac; done)
    [ -z "$USERS" ] || skip "in use by: $(echo $USERS)"
    # 5. Remove from the common dir, prune, keep the branch.
    KB=$(du -sk "$WT" | cut -f1)

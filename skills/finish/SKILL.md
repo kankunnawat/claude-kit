@@ -144,11 +144,72 @@ to force closure on unverified work.
    integrate until every required check passes. Resolve deployment authority
    through step 5; implementation approval alone does not grant it.
 
-7. **Report** what was done in one short block: commit hash, branch/PR, tracker
-   actions taken or skipped and why, plus deployment address and verification
+7. **Clean up the ticket worktree.** Last step once the PR is open and the
+   branch is pushed, so a finished ticket stops costing disk (worktrees with
+   SPM checkouts and DerivedData filled the disk before). Every workflow ends
+   here: pstack arena/swarm and tstack full-send/file-pr/babysit-pr close with
+   /finish. Run the block below from inside the worktree. It is idempotent: a
+   re-run, or a run in the main checkout, only reports.
+   - Removes the worktree only when origin's branch tip equals local HEAD, a
+     PR exists, no gitignored file (`.env`, local config) exists only here,
+     and no process other than this session (herdr, t3, codex, cc, editors)
+     has files or cwd inside it.
+   - Uncommitted work is backed up first to `wip/backup-<name>` through a temp
+     index, and the remote SHA is verified; removal then still waits, because
+     `git worktree remove` refuses dirty trees and `--force` is never used.
+   - Keeps the branch, never deletes any branch, never uses `--force`, never
+     merges. Report what was removed and the freed size, or the skip reason.
+
+   ```bash
+   ( set -u
+   skip() { echo "CLEANUP SKIPPED: $*"; exit 0; }
+   WT=$(git rev-parse --show-toplevel) || skip "not in a git worktree"
+   WT=$(cd "$WT" && pwd -P)
+   CD=$(cd "$(git rev-parse --git-common-dir)" && pwd -P)
+   MAIN=$(git -C "$CD" worktree list --porcelain | sed -n '1s/^worktree //p')
+   [ "$WT" != "$MAIN" ] || skip "$WT is the main checkout, not a ticket worktree"
+   B=$(git rev-parse --abbrev-ref HEAD); NAME=$(basename "$WT"); H=$(git rev-parse HEAD)
+   [ "$B" != HEAD ] || skip "detached HEAD"
+   # 1. Pushed and in a PR: remote tip must equal local HEAD.
+   R=$(git ls-remote origin "refs/heads/$B" | cut -f1)
+   [ "$R" = "$H" ] || skip "origin/$B (${R:-missing}) != HEAD ($H); push first"
+   PR=$(gh pr view "$B" --json url -q .url 2>/dev/null) || PR=
+   [ -n "$PR" ] || skip "no PR for $B"
+   # 2. Gitignored files that exist nowhere else (.env, local config). Rebuildable caches are fine.
+   REGEN='(^|/)(node_modules|\.build|build|DerivedData|SourcePackages|Pods|dist|\.next|\.turbo|\.swiftpm|__pycache__|\.venv|target|coverage|\.DS_Store)(/|$)'
+   UNIQUE=$(git ls-files --others --ignored --exclude-standard --directory | grep -Ev "$REGEN" | while IFS= read -r f; do
+     f=${f%/}; if [ -d "$WT/$f" ]; then diff -rq "$WT/$f" "$MAIN/$f" >/dev/null 2>&1 || echo "$f/"
+     else cmp -s "$WT/$f" "$MAIN/$f" || echo "$f"; fi; done)
+   [ -z "$UNIQUE" ] || skip "ignored files exist only here (copy them out first): $(echo $UNIQUE)"
+   # 3. Uncommitted work: back up to wip/backup-<name> with a temp index, verify on origin.
+   if [ -n "$(git status --porcelain)" ]; then
+     TMP=$(mktemp); cp "$(git rev-parse --git-path index)" "$TMP"
+     GIT_INDEX_FILE=$TMP git add -A && T=$(GIT_INDEX_FILE=$TMP git write-tree); rm -f "$TMP"
+     D=$(git log -1 --format=%cI HEAD)
+     C=$(GIT_AUTHOR_DATE=$D GIT_COMMITTER_DATE=$D git commit-tree "$T" -p "$H" -m "wip backup of $NAME ($B)")
+     git push -q origin "$C:refs/heads/wip/backup-$NAME" || skip "backup push failed"
+     [ "$(git ls-remote origin "refs/heads/wip/backup-$NAME" | cut -f1)" = "$C" ] || skip "backup verify failed"
+     echo "backed up uncommitted work to wip/backup-$NAME ($C)"
+     skip "worktree has uncommitted changes; backed up, but git worktree remove refuses dirty trees and --force is never used. Commit or drop them, then re-run"
+   fi
+   # 4. No live process (herdr, t3, codex, cc, editors) holds files or cwd inside it. Own session ancestry excluded.
+   cd "$CD" || skip "cannot cd to $CD"
+   ME=" $$ $BASHPID "; p=$BASHPID; while [ "$p" -gt 1 ]; do p=$(ps -o ppid= -p "$p" | tr -d ' '); ME="$ME$p "; done
+   USERS=$(lsof -nP -Fpcn 2>/dev/null | awk -v w="$WT" '/^p/{pid=substr($0,2)} /^c/{cmd=substr($0,2)} /^n/{n=substr($0,2); if (n==w || index(n, w"/")==1) print pid" "cmd}' | sort -u | while read -r pid cmd; do case "$ME" in *" $pid "*) ;; *) echo "$pid:$cmd";; esac; done)
+   [ -z "$USERS" ] || skip "in use by: $(echo $USERS)"
+   # 5. Remove from the common dir, prune, keep the branch.
+   KB=$(du -sk "$WT" | cut -f1)
+   git worktree remove "$WT" || skip "git worktree remove refused"
+   git worktree prune
+   echo "removed $WT (branch $B kept, PR $PR), freed ~$((KB/1024)) MB"
+   )
+   ```
+
+8. **Report** what was done in one short block: commit hash, branch/PR, tracker
+   actions taken or skipped and why, worktree cleanup result, plus deployment address and verification
    when required by the completion endpoint.
 
-8. **Log the day.** When the loaded instructions declare a `Daily-log:`
+9. **Log the day.** When the loaded instructions declare a `Daily-log:`
    location, append this close-out to today's file there, following that
    location's own rules for date and format. One bullet per item: what
    shipped (commit, PR), tracker actions, and what stays open. Facts from the

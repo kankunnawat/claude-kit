@@ -28,8 +28,9 @@ Move existing worktrees only when authorized, with `git worktree move` rather th
 Clean up completed worktrees in the same session unless explicitly parked.
 Before removal, verify a fresh worktree registry, clean status, no live owner or lease, and the approved target.
 Keep uncommitted or unretained work pending a decision.
-Branch deletion requires separate authority and proof that its tip is reachable from a ref you are keeping.
-Only after those checks:
+A finished ticket's worktree is removed by `/finish` step 7 (pushed, in a PR, backup of uncommitted work, no live users); use that rather than ad hoc removal.
+Branch deletion requires separate authority and proof that its tip is reachable from a ref you are keeping; `/finish` never deletes branches.
+Only after those checks (never `--force`; the branch line only with that separate authority):
 
 ```bash
 git worktree remove <path>

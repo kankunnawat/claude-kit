@@ -10,7 +10,7 @@
 set -eu
 
 KIT="$(cd "$(dirname "$0")" && pwd)"
-MODE=link
+MODE='link'
 [ "${1:-}" = "--copy" ] && MODE=copy
 
 # Links are absolute: the source repo is outside ~/.claude, so a relative link

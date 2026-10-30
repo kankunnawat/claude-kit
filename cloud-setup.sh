@@ -9,7 +9,7 @@
 
 set -u
 
-kit="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+kit="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
 claude_dir="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 log() { printf 'cloud-setup: %s\n' "$*"; }
 

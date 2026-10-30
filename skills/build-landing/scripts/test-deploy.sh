@@ -105,7 +105,7 @@ export HTTP_STATUS=200 HOST_BUILD_FAIL=0 HOST_OUTPUT_MISSING=0
 export ROBOTS_HEADERS='x-robots-tag: noindex, nofollow'
 cd "$fixture"
 fails=0
-fixture_project=fixture-project; fixture_host=example.test
+fixture_project='fixture-project'; fixture_host=example.test
 check() {
   local name=$1; shift
   if "$@"; then echo "pass: $name"; else echo "FAIL: $name" >&2; fails=$((fails + 1)); fi
@@ -211,13 +211,13 @@ check 'scoped expectation fails before build or writes' test ! -s "$CALLS_LOG"
 fixture_project=
 run_case project-empty fail 'project and public host must be non-empty'
 check 'empty project fails before build or writes' test ! -s "$CALLS_LOG"
-fixture_project=fixture-project; fixture_host=
+fixture_project='fixture-project'; fixture_host=
 run_case host-empty fail 'project and public host must be non-empty'
 check 'empty public host fails before build or writes' test ! -s "$CALLS_LOG"
 fixture_project=--unknown; fixture_host=example.test
 run_case project-option fail 'project and public host cannot be options' --check-only
 check 'project option fails before build or writes' test ! -s "$CALLS_LOG"
-fixture_project=fixture-project; fixture_host=-x
+fixture_project='fixture-project'; fixture_host=-x
 run_case host-option fail 'project and public host cannot be options' --check-only
 check 'host option fails before build or writes' test ! -s "$CALLS_LOG"
 

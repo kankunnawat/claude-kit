@@ -144,7 +144,7 @@ to force closure on unverified work.
    integrate until every required check passes. Resolve deployment authority
    through step 5; implementation approval alone does not grant it.
 
-7. **Clean up the ticket worktree.** Last step once the PR is open and the
+7. **Clean up the ticket worktree.** Runs once the PR is open and the
    branch is pushed, so a finished ticket stops costing disk (worktrees with
    SPM checkouts and DerivedData filled the disk before). Every workflow ends
    here: pstack arena/swarm and tstack full-send/file-pr/babysit-pr close with
@@ -215,9 +215,12 @@ to force closure on unverified work.
    shipped (commit, PR), tracker actions, and what stays open. Facts from the
    report only; no secrets or customer data. No declaration → skip and say so.
 
-10. **Settle the thread.** Last, after the report. When the session runs in
-    t3code, call the `t3_thread_organize` tool with action `"settle"` on this
-    thread (omit `threadId`). Tool unavailable → skip silently.
+10. **Settle the thread.** Last, after the report, and only when the report
+    shows nothing outstanding. A close-out stopped at steps 3, 5 or 6 leaves
+    the thread active so it stays in view. When `T3CODE_THREAD_ID` is set and
+    a `t3_thread_organize` tool exists (load its schema first if it is
+    deferred), call it with action `"settle"` on this thread (omit
+    `threadId`). No such variable or tool, or a failed call → skip silently.
 
 ## Declaring a ritual (for CLAUDE.md authors)
 

@@ -31,10 +31,10 @@ HOME="$SANDBOX" "$KIT/install.sh" >/dev/null
 t "park repointed at kit"    '[ "$(readlink "$SANDBOX/.claude/skills/park")" = "$KIT/skills/park" ]'
 
 echo "case: a real directory is never clobbered"
-rm -f "$SANDBOX/.claude/skills/quiz"
-mkdir -p "$SANDBOX/.claude/skills/quiz"; echo mine > "$SANDBOX/.claude/skills/quiz/SKILL.md"
+rm -f "$SANDBOX/.claude/skills/whats-next"
+mkdir -p "$SANDBOX/.claude/skills/whats-next"; echo mine > "$SANDBOX/.claude/skills/whats-next/SKILL.md"
 HOME="$SANDBOX" "$KIT/install.sh" >/dev/null
-t "real dir left alone"      '[ "$(cat "$SANDBOX/.claude/skills/quiz/SKILL.md")" = "mine" ]'
+t "real dir left alone"      '[ "$(cat "$SANDBOX/.claude/skills/whats-next/SKILL.md")" = "mine" ]'
 
 echo "case: a missing target dir is skipped, not created"
 SANDBOX2="$(mktemp -d)"; mkdir -p "$SANDBOX2/.claude/skills"

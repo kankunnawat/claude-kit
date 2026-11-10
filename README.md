@@ -29,7 +29,8 @@ you don't, most of them still stand alone.
 | `semantic-computer-use` | Drives native macOS apps through the accessibility tree instead of pixel clicking. |
 | `build-landing` | Phased method for a marketing landing page: context, guideline, three directions, browser prototype, linted plan, build, verify, deliver, lessons. Scripts for contrast, plan lint, browser verification, and Vercel delivery. |
 | `build-landing-auto` | Adds 50%, 75%, and 100% review presets to `build-landing`. Keeps its artifacts, quality gates, and delivery authority. |
-| `quiz` | Comprehension check, only when you ask for one. |
+
+`quiz` is parked in `skills-disabled/` (0 uses in 60 days); `install.sh` links only `skills/`.
 
 `blast-radius`, `reflect`, and `sharpen` come from pstack (`~/.agents/pstack`), not from this kit.
 

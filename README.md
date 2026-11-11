@@ -29,7 +29,7 @@ you don't, most of them still stand alone.
 | `semantic-computer-use` | Drives native macOS apps through the accessibility tree instead of pixel clicking. |
 | `build-landing` | Phased method for a marketing landing page: context, guideline, three directions, browser prototype, linted plan, build, verify, deliver, lessons. Scripts for contrast, plan lint, browser verification, and Vercel delivery. |
 | `build-landing-auto` | Adds 50%, 75%, and 100% review presets to `build-landing`. Keeps its artifacts, quality gates, and delivery authority. |
-| `unblock-threads` | Chief-of-staff pass over t3code threads: collects pending questions, answers what standing decisions cover, asks the rest as one numbered batch, relays answers, settles finished threads. |
+| `unblock-threads` | Chief-of-staff pass over t3code threads: collects pending questions, answers what standing decisions cover, asks the rest one by one (AskUserQuestion), relays answers, settles finished threads. |
 
 `quiz` is parked in `skills-disabled/` (0 uses in 60 days); `install.sh` links only `skills/`.
 

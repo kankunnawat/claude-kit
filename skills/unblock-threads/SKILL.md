@@ -5,8 +5,8 @@ description: >-
   user asks what needs their decision, says "unblock", "bring up my decisions",
   or "settle the done threads", or when a check finds threads waiting on an
   answer. Collects every pending question across threads, answers what standing
-  decisions already cover, puts the rest to the user as one numbered batch with
-  a recommendation each, relays the answers back, and settles finished threads.
+  decisions already cover, asks the rest one by one with AskUserQuestion, each
+  with a recommendation, relays the answers back, and settles finished threads.
 ---
 
 # Unblock threads
@@ -62,20 +62,29 @@ ask from an older message.
 
 ## 3. Present one batch
 
-One reply, in the user's language:
+Ask the decisions interactively, so the user answers them one by one:
 
-- A first line with the count: decisions, actions, and how many threads they
-  unblock.
-- Number the decisions D1, D2… and their options 1, 2, 3, so a terse reply such
-  as "D1 2, D2 1" cannot be misread. Never use letters from a non-Latin script.
-- Each decision: what is blocked and why in one line (thread link from
-  `t3_thread_list`, plus plain words next to every PR or ticket number), the
-  question in one sentence, 2 to 4 options each with its main pro and con, the
-  recommended option first and marked, and the fact that decides it.
-- Then the actions for the user, then "decided by me" one-liners, then what is
-  waiting on other people.
+- Use `AskUserQuestion`, one question per decision, at most 4 per call. With
+  more than 4, ask the 4 that unblock the most first, then the rest in a
+  second call after the answers come back.
+- Each question stands on its own, since the dialog may hide your earlier
+  text: what is blocked and why, with plain words next to every PR or ticket
+  number, then the question in one sentence. Header chip `D1 <topic>`.
+- 2 to 4 options. Put the recommended option first, with "(Recommended)" at
+  the end of its label. Each description gives its main pro and con and the
+  fact that decides it. When an option approves an outward write, such as a
+  tracker comment or a state change, say so in its description, so picking
+  it is that approval.
+- Never use letters from a non-Latin script in labels.
 - Order by how much work an answer unblocks, then by how cheap it is to answer.
 - Never re-ask something the user declined or already answered.
+- Only if `AskUserQuestion` is unavailable, fall back to one text reply:
+  number the decisions D1, D2… with options 1, 2, 3, so "D1 2, D2 1" can't
+  be misread.
+
+Before or after the questions, one short text reply carries the rest: a count
+line, the actions for the user, "decided by me" one-liners, and what is
+waiting on other people.
 
 ## 4. Relay the answers
 

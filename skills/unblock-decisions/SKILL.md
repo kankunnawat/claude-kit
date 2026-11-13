@@ -1,23 +1,39 @@
 ---
-name: unblock-threads
+name: unblock-decisions
 description: >-
-  Use when this session acts as chief of staff over other t3code threads and the
-  user asks what needs their decision, says "unblock", "bring up my decisions",
-  or "settle the done threads", or when a check finds threads waiting on an
-  answer. Collects every pending question across threads, answers what standing
-  decisions already cover, asks the rest one by one with AskUserQuestion, each
-  with a recommendation, relays the answers back, and settles finished threads.
+  Use when the user types /unblock-decisions, says "unblock", "bring up my
+  decisions", "what needs me" or "settle the done threads", when a chief of
+  staff tick runs its flag pass, or when a check finds t3code threads waiting
+  on the user. Finds every session that needs the user, answers what standing
+  decisions already cover, files the rest on the user's to-do list (flag mode)
+  or asks them one by one with AskUserQuestion, each with a recommendation (ask
+  mode), relays the answers and settles finished threads.
 ---
 
-# Unblock threads
+# Unblock decisions
 
 One pass that turns every thread waiting on someone into either an answer the
 thread can act on or one short, numbered question for the user.
-The Hermes and Grok Bot version of this pass is `unblock-decisions` in
+It was called `unblock-threads` before 2026-11-14.
+The Hermes and Grok Bot version of this pass has the same name in
 `~/.secretary-skills`; this one uses the t3code MCP tools from a Claude Code or
 Codex session.
 In hausback-core, also read [references/hausback.md](references/hausback.md)
 before collecting.
+
+## Modes
+
+- **ask** (default when the user runs it). Steps 1 to 5 below. When the user
+  runs it inside the coordinating thread (the chief of staff), act on each
+  answer directly in that thread instead of relaying it to yourself.
+- **flag** (`/unblock-decisions flag`, or a chief of staff tick). Steps 1 and 2
+  only, then:
+  - answer bucket 1 and act on bucket 2 as usual;
+  - put every bucket 3, 4 and 5 item on the user's to-do list once, with a
+    link and the minutes it takes (skip an item already listed there);
+  - ask nothing and never call `AskUserQuestion`;
+  - end with a "Needs you" list of at most 8 lines, newest blocker first, and
+    a ping only if the project's ping rule allows one at this hour.
 
 ## 1. Collect
 
@@ -39,6 +55,13 @@ Do this before asking anything.
 - Status `completed` only means the last turn ended. Read the message. A thread
   is waiting when it asks someone to pick, approve or supply something ("pick
   one", numbered options, "waits on you", "for you", "I've stopped").
+- Flag a session that needs the user's attention even when it asks nothing:
+  - status `failed`, `interrupted` or `cancelled` on a thread the user drives
+    or that owns an open PR;
+  - a thread the user drives that stopped with work unfinished (its last
+    message names a next step that waits on nobody else);
+  - a running thread whose `updatedAt` is over 30 minutes old (likely stalled);
+  - a thread that reports an account, budget or machine limit.
 - Also collect: open PRs waiting on the user (flagged for owner review,
   CONCERN or BLOCK findings), the project's owner to-do and ask lists (see the
   project reference), and earlier questions you asked the user that are still

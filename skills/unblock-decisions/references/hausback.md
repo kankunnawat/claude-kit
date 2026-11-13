@@ -14,9 +14,20 @@ Read this in hausback-core before step 1 of the pass.
   `answered`.
 - Standing decisions: `docs/agents/standing-decisions.md` and
   `docs/decisions/` on origin/dev.
-- The overnight or daytime chief-of-staff thread keeps a progress file, for
-  example `~/Vault/Outputs/hausback/<date>-overnight/cos.md`. Read its newest
-  Log lines before you ask: an ask may already be answered or filed there.
+- The chief of staff (CoS) runs a 24/7 loop; its manual is
+  `~/Vault/Outputs/hausback/cos-loop.md`. It keeps one record per Bangkok day,
+  `~/Vault/Outputs/hausback/<YYYY-MM-DD>-cos/cos.md` (older ones:
+  `<date>-overnight/cos.md`). Read the newest record's Log lines before you
+  ask: an ask may already be answered or filed there.
+
+## Owner rules for this pass (board D-31, D-32)
+
+- Quiet hours are 00:00 to 08:00 Bangkok (17:00 to 01:00Z). In quiet hours,
+  flag mode files to-dos but sends no ping, except for red dev or anything
+  touching uat-1.
+- From 08:00 to 00:00 Bangkok, ping (PushNotification) only when a decision
+  blocks running work. Routine progress goes in the CoS reports, never a ping.
+- Flag-mode to-dos use `--from cos` when the CoS runs the pass.
 
 ## Board writes
 

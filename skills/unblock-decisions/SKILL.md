@@ -30,7 +30,9 @@ before collecting.
   only, then:
   - answer bucket 1 and act on bucket 2 as usual;
   - put every bucket 3, 4 and 5 item on the user's to-do list once, with a
-    link and the minutes it takes (skip an item already listed there);
+    link and the minutes it takes (skip an item already listed there); a
+    project with no to-do list (only hausback-core has a board) gets its items
+    in the "Needs you" list only, never on another project's list;
   - ask nothing and never call `AskUserQuestion`;
   - end with a "Needs you" list of at most 8 lines, newest blocker first, and
     a ping only if the project's ping rule allows one at this hour.

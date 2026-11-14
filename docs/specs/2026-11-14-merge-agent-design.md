@@ -96,11 +96,11 @@ One part of Shape A is kept: when discovery finds nothing but the repo clearly h
 4. **Guide found: one PR at a time**, oldest first, a stack from the bottom up.
    1. Pre-check: open, not a draft, author, hold labels, base, clean merge, and the head commit. A PR already merged or with a moved head is reported, not acted on.
    2. Tier: by the repo's tool or rule. The agent recomputes it from the diff and may only raise an author's tier.
-   3. Review: a fresh session that did not write the change, given the diff range and the head, not the author's conclusions. The merge agent signs only what the guide lets it sign.
+   3. Review: accept the verdict the PR's opener recorded when it names this exact head and its reviewer did not write the change. Review again only when the head moved or no such verdict exists. A fresh review is a session that did not write the change, given the diff range and the head, not the author's conclusions. The merge agent signs only what the guide lets it sign.
    4. Verification: the checks the guide names for that tier, heavy ones through `verify-lane`. For a behaviour change, run it as a user with the repo's verification skill. Proof carried over from an older commit is reported as carried over.
    5. Verdict: recorded in the repo's own format, with the repo's own tool when it has one.
    6. Merge: re-read the head, then the agent itself types the repo's pinned command, so the guard judges it. Never `--auto`, never `--admin`. Read the PR back to confirm.
-   7. After merge: only what the guide lists. A tracker write needs Kan's approval unless he gave a standing one.
+   7. After merge: only what the guide lists, and nothing in the tracker. The landing report names the tracker move and the coordinator makes it.
 5. **Stop at merge-ready** when the guardrails do not name the repo, when the guard refuses, or when the PR touches gate or instruction files. The report gives the link and the exact command for Kan.
 6. **Maintain.**
    When a landing teaches a rule the guide lacks, the skill proposes the edit as a PR to that repo's guide.
@@ -120,6 +120,8 @@ It prints the pinned command; the agent runs it.
 `precheck` may pipe that candidate command through the guard: a refusal is reliable and is reported, a pass is not treated as permission.
 
 ## Authority rules
+
+Shared rules (consent, who owns review, merging and tracker writes, the report line, how rules improve) live in `skills/unblock-decisions/references/owner-contract.md`. The skill reads it first and repeats none of it.
 
 - The skill grants nothing. Kan's guardrails file and the guard decide where an agent may merge.
 - Kan's own PRs only, by default.
@@ -160,6 +162,9 @@ This spec gets no adversarial review: the replay above is the check.
 4. Default template for a new guide: the three tiers low, medium, high from agentic-discovery, or T0 to T3. Recommended: low, medium, high.
 
 ## Deviations
+
+- Changed by Kan after approval (2026-11-14): read the owner contract and drop what it covers; accept the opener's recorded verdict at the same commit; no tracker writes after a merge.
+- The script does not print the merge command or probe the merge guard. The agent types the guide's command itself.
 
 - The pstack `how` explainer and the `architect` arena were not run as separate agents. Three scouts gathered the facts and the main session compared the two shapes.
 - No fresh review of this spec, on the advice of the pstack guide against reviewing abstract plans.

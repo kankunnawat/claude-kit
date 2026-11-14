@@ -24,7 +24,7 @@ A reviewer or the merge agent who disagrees with the tier raises it, never lower
 
 | Tier | The diff has | Who reviews | Proof before merge |
 |---|---|---|---|
-| Low | Only docs, tests, comments or UI copy. No runtime behavior changes. | The author reads the full diff (`git diff <base>...HEAD`). | CI is green on the head commit. |
+| Low | Only docs, tests, comments or UI copy. No runtime behavior changes. | A fresh review of the full diff passes at the head commit. | CI is green on the head commit. |
 | Medium | A behavior change in [main source paths] that fits no high row. | A fresh review passes at the head commit. | The low proof. The change runs the way a user would use it, with [verification skill or command]. The PR body shows that proof. |
 | High | A file under [migration, deploy and CI paths]. Code that writes or deletes [customer or user] data. Sign-in, sessions, roles, tokens or secrets. [Money rules, if any.] A change to this guide. | The medium review, plus [a second independent reviewer, or the owner]. | The medium proof, run on [a copy of real data or a staging cell]. It writes nothing to a live system. |
 
@@ -75,4 +75,4 @@ A flag or hold label on a pull request stops the merge. Only [owner] adds or rem
 ### After merge
 
 - [Steps that follow a merge here, such as a staging check, a tracker move or retargeting a stacked PR. Write "Nothing." if there are none.]
-- A tracker write needs [owner]'s approval unless they gave a standing one.
+- The merge agent writes nothing to the tracker. Its landing report names the move, and [the coordinator, or the owner] makes it.

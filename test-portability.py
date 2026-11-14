@@ -181,7 +181,8 @@ class PortabilityTest(unittest.TestCase):
             for name, skill_path in SKILLS.items():
                 copied = copied_root / name
                 shutil.copytree(skill_path.parent, copied)
-                for reference in re.findall(r"references/[a-z0-9-]+\.md", read(copied / "SKILL.md")):
+                # A link into a sibling skill (`../<skill>/references/x.md`) is not this skill's own file.
+                for reference in re.findall(r"(?<![a-z0-9-]/)references/[a-z0-9-]+\.md", read(copied / "SKILL.md")):
                     self.assertTrue((copied / reference).is_file(), f"missing copied reference: {name}/{reference}")
 
 

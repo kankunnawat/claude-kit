@@ -23,7 +23,11 @@ from pathlib import Path
 INSTRUCTION_FILES = ("CLAUDE.md", "AGENTS.md")
 SKILL_DIRS = (".claude/skills", ".agents/skills")
 HELD_DIRS = {".claude", ".agents", ".github"}
-HELD_BASENAMES = ("CLAUDE*.md", "AGENTS*.md")
+HELD_BASENAMES = ("claude*.md", "agents*.md")
+
+# Every subprocess call must fit one of these shapes. Anything else is refused before it runs.
+READ_ONLY_GH = {("repo", "view"), ("pr", "list"), ("pr", "view")}
+GH_API_FLAGS = {"--paginate", "--slurp", "--jq"}
 
 # Prefix match on purpose: "Review" also finds "Reviewers", "Merge" finds "Merge lane".
 GATE_HEADING = re.compile(r"\b(pr gate|close-out|integration and close-out|review|merge)", re.IGNORECASE)
@@ -31,6 +35,7 @@ HEADING = re.compile(r"^\s{0,3}(#{1,6})\s+(.+?)\s*#*\s*$")
 CLOSE_OUT_LINE = re.compile(r"^\s*(?:[-*+]\s+)?(?:\*\*)?close-out:", re.IGNORECASE)
 FENCE = re.compile(r"^\s*(```|~~~)")
 IMPORT_LINE = re.compile(r"^@(\S+)\s*$")
+DOC_PATH = re.compile(r"[`(]([A-Za-z0-9_.\-/]+\.md)[`)#]")
 REVIEW_WORD = re.compile(r"\breview", re.IGNORECASE)
 MERGE_WORD = re.compile(r"\bmerg", re.IGNORECASE)
 
@@ -49,9 +54,14 @@ class Failure(Exception):
 
 
 def find_gate_headings(text, file):
-    """Gate headings and Close-out lines in one Markdown file, outside code fences."""
+    """Gate headings and Close-out lines in one Markdown file, outside code fences.
+
+    Each hit lists the Markdown files its section points at: they are part of the gate.
+    """
     found = []
     in_fence = False
+    open_hit = None
+    open_level = 0
     for number, line in enumerate(text.splitlines(), start=1):
         if FENCE.match(line):
             in_fence = not in_fence
@@ -59,10 +69,20 @@ def find_gate_headings(text, file):
         if in_fence:
             continue
         heading = HEADING.match(line)
-        if heading and GATE_HEADING.search(heading.group(2)):
-            found.append({"file": file, "heading": heading.group(2), "line": number})
-        elif CLOSE_OUT_LINE.match(line):
-            found.append({"file": file, "heading": "Close-out:", "line": number})
+        if heading:
+            level = len(heading.group(1))
+            if open_hit is not None and level <= open_level:
+                open_hit = None
+            if GATE_HEADING.search(heading.group(2)):
+                open_hit = {"file": file, "heading": heading.group(2), "line": number, "points_to": []}
+                open_level = level
+                found.append(open_hit)
+            continue
+        paths = [os.path.normpath(path) for path in DOC_PATH.findall(line) if not path.startswith(("/", "~", ".."))]
+        if CLOSE_OUT_LINE.match(line):
+            found.append({"file": file, "heading": "Close-out:", "line": number, "points_to": sorted(set(paths))})
+        elif open_hit is not None:
+            open_hit["points_to"] = sorted(set(open_hit["points_to"]) | set(paths))
     return found
 
 
@@ -93,12 +113,12 @@ def find_imports(text, file):
 
 def is_held_file(path, gate_files=()):
     """A changed file that holds the PR for the owner."""
-    parts = path.split("/")
-    if any(part in HELD_DIRS for part in parts[:-1]):
+    parts = path.lower().split("/")
+    if any(part in HELD_DIRS for part in parts):
         return True
     if any(fnmatch.fnmatchcase(parts[-1], pattern) for pattern in HELD_BASENAMES):
         return True
-    return path in set(gate_files)
+    return path.lower() in {gate_file.lower() for gate_file in gate_files}
 
 
 def held_files(paths, gate_files=()):
@@ -139,7 +159,7 @@ def proceed_reasons(facts):
     reasons = []
     if facts["state"] != "OPEN":
         reasons.append(f"not open: {facts['state']}")
-    if not facts["author_is_you"]:
+    if not facts["author_is_you"] and not facts.get("author_approved"):
         reasons.append(f"not the author: opened by {facts['author']}")
     if facts["is_draft"]:
         reasons.append("draft")
@@ -152,6 +172,8 @@ def proceed_reasons(facts):
         reasons.append("hold label: " + ", ".join(flagged))
     if facts["checks_on_head"]["fail"]:
         reasons.append(f"checks failing on head: {facts['checks_on_head']['fail']}")
+    if facts["checks_on_head"]["pending"]:
+        reasons.append(f"checks pending on head: {facts['checks_on_head']['pending']}")
     if facts["mergeable"] != "MERGEABLE":
         reasons.append(f"not mergeable: {facts['mergeable']}")
     return reasons
@@ -160,7 +182,36 @@ def proceed_reasons(facts):
 # ---------------------------------------------------------------- gh and git reads
 
 
+def read_only_refusal(args):
+    """Why this command is not a known read, or None when it is one."""
+    if not args or args[0] != "gh" or len(args) < 3:
+        return "only known gh reads may run"
+    if tuple(args[1:3]) in READ_ONLY_GH:
+        return None
+    if args[1] != "api":
+        return f"gh {args[1]} {args[2]} is not a known read"
+    rest = list(args[2:])
+    paths = []
+    while rest:
+        word = rest.pop(0)
+        if word == "--jq":
+            if not rest:
+                return "--jq needs a value"
+            rest.pop(0)
+        elif word.startswith("-"):
+            if word not in GH_API_FLAGS:
+                return f"gh api flag {word} is not allowed: it may send a write"
+        else:
+            paths.append(word)
+    if len(paths) != 1:
+        return "gh api takes exactly one path"
+    return "gh api graphql is not a known read" if paths[0].startswith("graphql") else None
+
+
 def run(args):
+    refusal = read_only_refusal(args)
+    if refusal:
+        raise Failure(f"refused to run {' '.join(args)}: {refusal}", "merge-agent.py only reads; type any write yourself")
     try:
         result = subprocess.run(args, capture_output=True, text=True, check=False)
     except FileNotFoundError:
@@ -230,11 +281,19 @@ def remote_dir_names(repo, branch, path):
     return [entry["name"] for entry in data]
 
 
-def guardrails_name_repo(repo):
+def guardrails_lines(repo, text):
+    """Lines of the guardrails text that name this exact repo. A longer name does not match."""
+    name = re.compile(r"(?<![\w.\-/])" + re.escape(repo) + r"(?![\w\-/]|\.\w)", re.IGNORECASE)
+    return [line.strip() for line in text.splitlines() if name.search(line)]
+
+
+def guardrails_for(repo):
+    """(named, lines). A hit is a hint: the lines say whether the repo is allowed or refused."""
     path = Path(os.environ.get("HOME", "")) / ".claude/rules/agent-guardrails.md"
     if not path.is_file():
-        return "unknown"
-    return repo.lower() in path.read_text(encoding="utf-8", errors="replace").lower()
+        return "unknown", []
+    lines = guardrails_lines(repo, path.read_text(encoding="utf-8", errors="replace"))
+    return bool(lines), lines
 
 
 # ---------------------------------------------------------------- subcommands
@@ -268,14 +327,17 @@ def doctor(args):
         for name in remote_dir_names(repo, branch, directory)
         if "verif" in name.lower()
     ]
+    named, lines = guardrails_for(repo)
     return {
         "repo": repo,
         "default_branch": branch,
         "instruction_files_read": sorted(texts),
         "gate_guide": gate_guide,
+        "gate_files": gate_files(gate_guide),
         "review_rules_hint": review_rules_hint(list(texts.values()), gate_guide),
         "verification_skill": verification,
-        "guardrails_name_repo": guardrails_name_repo(repo),
+        "guardrails_name_repo": named,
+        "guardrails_lines": lines,
         "guard_present": (Path(os.environ.get("HOME", "")) / ".claude/hooks/no-merge-guard.py").is_file(),
     }
 
@@ -292,12 +354,12 @@ def changed_files(repo, number):
 
 
 def gate_files(gate_guide):
-    return sorted({hit["file"] for hit in gate_guide})
+    return sorted({path for hit in gate_guide for path in (hit["file"], *hit.get("points_to", []))})
 
 
 def queue(args):
     repo, branch = resolve_repo(args.repo)
-    login = resolve_login(args.author)
+    login = resolve_login(None)
     _, gate_guide = discover(repo, branch)
     fields = "number,title,headRefOid,baseRefName,isDraft,labels,mergeable,statusCheckRollup,author,createdAt"
     prs = gh_json(
@@ -345,7 +407,7 @@ def checks_on_head(repo, head):
 
 def precheck(args):
     repo, branch = resolve_repo(args.repo)
-    login = resolve_login(args.author)
+    login = resolve_login(None)
     _, gate_guide = discover(repo, branch)
     pr = gh_json(
         ["pr", "view", str(args.pr), "--repo", repo, "--json", "number,state,author,headRefOid,isDraft,mergeable,baseRefName,labels"],
@@ -358,11 +420,13 @@ def precheck(args):
         "state": pr["state"],
         "author": pr["author"]["login"],
         "author_is_you": pr["author"]["login"].lower() == login.lower(),
+        "author_approved": bool(args.approved_author) and pr["author"]["login"].lower() == args.approved_author.lower(),
         "head": head,
         "head_matches_reviewed": None if not args.reviewed_head else head == args.reviewed_head,
         "is_draft": pr["isDraft"],
         "mergeable": pr["mergeable"],
         "base": pr["baseRefName"],
+        "base_is_default": pr["baseRefName"] == branch,
         "checks_on_head": checks_on_head(repo, head),
         "held_files": held_files(changed_files(repo, pr["number"]), gate_files(gate_guide)),
         "labels": [label["name"] for label in pr["labels"]],
@@ -370,6 +434,7 @@ def precheck(args):
     reasons = proceed_reasons(facts)
     facts["ok_to_proceed"] = not reasons
     facts["reasons"] = reasons
+    facts["warnings"] = [] if facts["checks_on_head"]["ran"] else ["no checks ran on this head: proceed only if the guide needs none"]
     return facts
 
 
@@ -391,14 +456,13 @@ def build_parser():
 
     p_queue = sub.add_parser("queue", help="list your open PRs, oldest first")
     p_queue.add_argument("--repo", help="owner/name; default is the current checkout's repo")
-    p_queue.add_argument("--author", help="GitHub login; default is the signed-in user")
     p_queue.set_defaults(handler=queue)
 
     p_pre = sub.add_parser("precheck", help="check one PR before review and before merge")
     p_pre.add_argument("pr", type=int, help="PR number")
     p_pre.add_argument("--repo", help="owner/name; default is the current checkout's repo")
     p_pre.add_argument("--reviewed-head", help="full SHA the review read")
-    p_pre.add_argument("--author", help="GitHub login; default is the signed-in user")
+    p_pre.add_argument("--approved-author", help="login of another author whose PR the owner approved by number")
     p_pre.set_defaults(handler=precheck)
     return parser
 

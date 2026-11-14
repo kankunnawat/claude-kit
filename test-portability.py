@@ -13,7 +13,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent
 SKILLS = {
     name: ROOT / "skills" / name / "SKILL.md"
-    for name in ("define-goal", "pick-driver", "ship", "review-plan", "worktrees", "park", "pickup", "build-landing", "build-landing-auto", "whats-next", "semantic-computer-use", "no-ai-slop")
+    for name in ("define-goal", "pick-driver", "ship", "review-plan", "worktrees", "park", "pickup", "build-landing", "build-landing-auto", "whats-next", "semantic-computer-use", "no-ai-slop", "merge-agent")
 }
 DRIVER_RUNTIME = ROOT / "skills/pick-driver/references/runtime-routing.md"
 WORKTREE_BULK = ROOT / "skills/worktrees/references/bulk-cleanup.md"
@@ -181,7 +181,8 @@ class PortabilityTest(unittest.TestCase):
             for name, skill_path in SKILLS.items():
                 copied = copied_root / name
                 shutil.copytree(skill_path.parent, copied)
-                for reference in re.findall(r"references/[a-z0-9-]+\.md", read(copied / "SKILL.md")):
+                # A link into a sibling skill (`../<skill>/references/x.md`) is not this skill's own file.
+                for reference in re.findall(r"(?<![a-z0-9-]/)references/[a-z0-9-]+\.md", read(copied / "SKILL.md")):
                     self.assertTrue((copied / reference).is_file(), f"missing copied reference: {name}/{reference}")
 
 

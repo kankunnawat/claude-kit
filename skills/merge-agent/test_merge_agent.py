@@ -293,12 +293,12 @@ class GithubReadTest(unittest.TestCase):
 
     def test_imported_instruction_file_is_read_for_the_gate(self):
         answers = self.pr_answers()
-        answers[1] = ("contents/CLAUDE.md", {"type": "file", "content": base64.b64encode(b"@AGENTS.md\n").decode()})
-        agents = base64.b64encode(b"## Merge\nSee `docs/land.md`.\n").decode()
-        answers.insert(1, ("contents/AGENTS.md", {"type": "file", "content": agents}))
+        answers[1] = ("contents/CLAUDE.md", {"type": "file", "content": base64.b64encode(b"@docs/rules.md\n").decode()})
+        rules = base64.b64encode(b"## Merge\nSee `docs/land.md`.\n").decode()
+        answers.insert(1, ("contents/docs/rules.md", {"type": "file", "content": rules}))
         self.fake(answers)
         out = ma.doctor(ma.build_parser().parse_args(["doctor", "--repo", "o/r"]))
-        self.assertEqual(out["gate_files"], ["AGENTS.md", "docs/land.md"])
+        self.assertEqual(out["gate_files"], ["docs/land.md", "docs/rules.md"])
         self.assertEqual(out["default_branch"], "dev")
 
     def queue_answers(self):

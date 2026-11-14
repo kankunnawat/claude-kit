@@ -83,8 +83,9 @@ You type every write yourself, so the merge guard judges it.
    3. **Review.** Look for the verdict the PR's opener recorded, in the repo's own format.
       Accept it only when all of these hold: it is a pass by the guide's own rule, it names this exact full head SHA, it names its reviewer, and that reviewer did not write the change.
       Then do not review again.
-      No verdict, a verdict that is not a pass, a verdict at another commit, a verdict that names no reviewer, a reviewer who wrote the change, or any doubt about who recorded it: get a fresh review.
-      A verdict that says the change fails stops the PR. Report it; do not review around it.
+      A recorded verdict at this head that is not a pass stops the PR. Report it as held; do not review around it.
+      No verdict, a verdict at another commit, a verdict that names no reviewer, a reviewer who wrote the change, or any doubt about who recorded it: get a fresh review.
+      A fresh review that is not a pass by the guide's own rule also stops the PR. Record it, report the PR as held, and go on to the next one.
       A fresh review is a session that did not write the change, given the diff range and the head SHA, not the author's conclusions.
       Sign only what the guide lets the merge agent sign.
    4. **Verify.** Run the checks the guide names for that tier. Run heavy checks through the machine's shared lane tool when it has one.
@@ -92,7 +93,7 @@ You type every write yourself, so the merge guard judges it.
       Proof carried over from an older commit is reported as carried over, with that commit.
    5. **Verdict.** When you reviewed again, record it in the repo's own format, with the repo's own tool when it has one.
    6. **Merge.** Run `precheck <pr> --reviewed-head <full SHA>` again, with the SHA the accepted verdict names.
-      `ok_to_proceed` must be true, the base must be the branch the guide merges into, and the tier's checks must pass on that head.
+      There must be a passing verdict at that SHA, accepted or fresh. `ok_to_proceed` must be true, the base must be the branch the guide merges into, and the tier's checks must pass on that head.
       A `warnings` entry about no checks on the head stops the merge unless the guide needs no checks for this tier.
       Then type the guide's pinned merge command yourself, with the full head SHA. Never auto-merge, never use admin rights.
       Read the PR back and confirm it merged into the base the guide names.

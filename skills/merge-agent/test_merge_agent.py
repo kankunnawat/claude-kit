@@ -193,7 +193,10 @@ class GuardrailsTest(unittest.TestCase):
     TEXT = "Solo repos (`kankunnawat/kan-brain`, `kankunnawat/agent-bar`).\nIn AlphaOS (duopreneur/AlphaOS), squash.\n"
 
     def test_exact_repo_name_matches_any_case(self):
-        self.assertEqual(len(ma.guardrails_lines("duopreneur/alphaos", self.TEXT)), 1)
+        self.assertEqual(
+            ma.guardrails_lines("duopreneur/alphaos", self.TEXT),
+            [{"line": 2, "text": "In AlphaOS (duopreneur/AlphaOS), squash."}],
+        )
         self.assertEqual(len(ma.guardrails_lines("kankunnawat/kan-brain", self.TEXT)), 1)
 
     def test_a_prefix_or_suffix_of_a_named_repo_does_not_match(self):
@@ -265,6 +268,73 @@ class GithubReadTest(unittest.TestCase):
         self.fake(self.pr_answers(files=files))
         self.assertEqual(self.precheck()["held_files"], ["CLAUDE.md", "docs/gate.md"])
 
+    def test_short_reviewed_head_is_refused(self):
+        self.fake(self.pr_answers())
+        with self.assertRaises(ma.Failure):
+            self.precheck("--reviewed-head", HEAD[:12])
+
+    def test_base_other_than_the_default_branch_is_reported(self):
+        answers = self.pr_answers()
+        answers[0] = ("nameWithOwner", {"nameWithOwner": "o/r", "defaultBranchRef": {"name": "main"}})
+        self.fake(answers)
+        self.assertFalse(self.precheck()["base_is_default"])
+
+    def test_commit_statuses_and_every_page_of_check_runs_count(self):
+        answers = self.pr_answers()
+        answers[3] = ("/check-runs", [
+            {"check_runs": [{"status": "completed", "conclusion": "success"}]},
+            {"check_runs": [{"status": "completed", "conclusion": "failure"}]},
+        ])
+        answers[4] = ("/status", {"statuses": [{"state": "pending"}]})
+        self.fake(answers)
+        out = self.precheck()
+        self.assertEqual(out["checks_on_head"], {"pass": 1, "fail": 1, "pending": 1, "total": 3, "ran": True})
+        self.assertFalse(out["ok_to_proceed"])
+
+    def test_imported_instruction_file_is_read_for_the_gate(self):
+        answers = self.pr_answers()
+        answers[1] = ("contents/CLAUDE.md", {"type": "file", "content": base64.b64encode(b"@AGENTS.md\n").decode()})
+        agents = base64.b64encode(b"## Merge\nSee `docs/land.md`.\n").decode()
+        answers.insert(1, ("contents/AGENTS.md", {"type": "file", "content": agents}))
+        self.fake(answers)
+        out = ma.doctor(ma.build_parser().parse_args(["doctor", "--repo", "o/r"]))
+        self.assertEqual(out["gate_files"], ["AGENTS.md", "docs/land.md"])
+        self.assertEqual(out["default_branch"], "dev")
+
+    def queue_answers(self):
+        listed = [
+            {"number": 9, "title": "newer", "headRefOid": "c" * 40, "baseRefName": "dev", "isDraft": False, "labels": [],
+             "mergeable": "MERGEABLE", "statusCheckRollup": [], "author": {"login": "me"}, "createdAt": "2026-02-01T00:00:00Z"},
+            {"number": 8, "title": "theirs", "headRefOid": "d" * 40, "baseRefName": "dev", "isDraft": False, "labels": [],
+             "mergeable": "MERGEABLE", "statusCheckRollup": [], "author": {"login": "someone"}, "createdAt": "2026-01-15T00:00:00Z"},
+            {"number": 7, "title": "older", "headRefOid": HEAD, "baseRefName": "dev", "isDraft": True,
+             "labels": [{"name": "review:flagged"}], "mergeable": "MERGEABLE", "statusCheckRollup": [],
+             "author": {"login": "me"}, "createdAt": "2026-01-01T00:00:00Z"},
+        ]
+        answers = self.pr_answers(files=[{"filename": ".github/ci.yml"}])
+        answers.insert(0, ("createdAt", listed))
+        return answers
+
+    def test_queue_lists_only_your_prs_oldest_first_with_hold_reasons(self):
+        self.fake(self.queue_answers())
+        out = ma.queue(ma.build_parser().parse_args(["queue", "--repo", "o/r"]))
+        self.assertEqual([row["number"] for row in out["open_prs"]], [7, 9])
+        self.assertEqual(out["open_prs"][0]["hold_reasons"], ["draft", "held files: .github/ci.yml", "hold label: review:flagged"])
+        self.assertEqual(out["open_prs"][1]["held_files"], [".github/ci.yml"])
+
+    def test_queue_takes_no_author_flag(self):
+        with self.assertRaises(ma.Failure):
+            ma.build_parser().parse_args(["queue", "--author", "someone"])
+
+    def test_doctor_and_queue_only_make_known_reads(self):
+        gh = self.fake(self.queue_answers())
+        ma.doctor(ma.build_parser().parse_args(["doctor", "--repo", "o/r"]))
+        ma.queue(ma.build_parser().parse_args(["queue", "--repo", "o/r"]))
+        self.assertTrue(gh.calls)
+        for call in gh.calls:
+            self.assertEqual(call[0], "gh", call)
+            self.assertIsNone(ma.read_only_refusal(call), call)
+
     def test_no_checks_on_head_warns(self):
         self.fake(self.pr_answers(check_runs=[]))
         out = self.precheck()
@@ -308,6 +378,14 @@ class ReadOnlyTest(unittest.TestCase):
             ["gh", "pr", "edit", "7", "--add-label", "x"],
             ["gh", "api", "--method", "POST", "repos/o/r/issues/7/comments"],
             ["gh", "api", "-X", "DELETE", "repos/o/r/git/refs/heads/x"],
+            ["gh", "api", "-XPOST", "repos/o/r/issues/7/comments"],
+            ["gh", "api", "--method=POST", "repos/o/r/issues/7/comments"],
+            ["gh", "api", "repos/o/r/issues/7/comments", "--field=body=x"],
+            ["gh", "api", "repos/o/r/issues/7/comments", "-H", "X-Test: 1"],
+            ["gh", "api", "repos/o/r/pulls", "repos/o/r/issues"],
+            ["gh", "pr", "view", "7", "--web"],
+            ["gh", "repo", "view", "-w"],
+            ["gh", "repo", "delete", "o/r"],
             ["gh", "api", "repos/o/r/issues/7/comments", "-f", "body=x"],
             ["gh", "api", "repos/o/r/issues/7/labels", "--input", "file.json"],
             ["gh", "api", "graphql", "-F", "query=mutation"],
@@ -319,8 +397,12 @@ class ReadOnlyTest(unittest.TestCase):
                 ma.run(args)
         self.assertEqual(ran, [])
 
-    def test_script_never_uses_a_shell(self):
-        self.assertNotIn("shell=True", SCRIPT.read_text(encoding="utf-8"))
+    def test_script_never_uses_a_shell_and_has_one_subprocess_door(self):
+        source = SCRIPT.read_text(encoding="utf-8")
+        self.assertNotIn("shell=True", source)
+        self.assertEqual(source.count("subprocess."), 1, "every command must go through run()")
+        self.assertNotIn("os.system", source)
+        self.assertNotIn("Popen", source)
 
 
 if __name__ == "__main__":

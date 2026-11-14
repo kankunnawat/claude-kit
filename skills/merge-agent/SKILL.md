@@ -52,7 +52,8 @@ You type every write yourself, so the merge guard judges it.
    ```
 
    - `guardrails_name_repo` false or `"unknown"`, or `guard_present` false: the agent does not merge here. Every PR stops at merge-ready.
-   - `guardrails_name_repo` true is a hint. Read `guardrails_lines`: they say whether an agent may merge here, into which branch and how. A line that refuses the repo means stop at merge-ready.
+   - `guardrails_name_repo` true is a hint. Open the guardrails file at each line number in `guardrails_lines` and read the whole rule around it, with every limit it lists.
+     The rule says whether an agent may merge here, into which branch, how, and for which PRs. A rule that refuses the repo means stop at merge-ready.
    - The guide or the guardrails say this repo lands through its own lane tool or skill: hand over to that skill now and stop. Run none of the steps below, and name no command.
    - `review_rules_hint` true with no gate guide: show what you found and ask where the gate lives. Do not draft over it.
    - No verification skill: warn once, and name in each report what was not proven by running the change.
@@ -72,15 +73,18 @@ You type every write yourself, so the merge guard judges it.
    Three points always hold: the merge is pinned and never automatic, a branch is never force-pushed, and a verdict never carries to a new head, even when `git patch-id` matches.
    Run `queue`, then for each PR, oldest first and a stack from the bottom up.
    With a PR number (`/merge-agent 123`), skip `queue` and run these steps on that PR only:
-   1. **Pre-check.** Run `precheck <pr>`. Held files or a hold label: review and verify it, then stop at merge-ready (step 5).
-      Another author: stop and ask the user about that PR by number. After their yes, pass `--approved-author <that login>` on every `precheck` of that PR, and on no other PR.
+   1. **Pre-check.** Run `precheck <pr>`. Read the reasons in this order.
+      Another author: stop and ask the user about that PR by number, before any review or verification. After their yes, pass `--approved-author <that login>` on every `precheck` of that PR, and on no other PR.
+      Held files or a hold label: review and verify it, then stop at merge-ready (step 5).
       A base that is not the branch the guide merges into: report it and go on to the next PR.
       Any other reason: report it and go on to the next PR. A merged PR or a moved head is reported, never acted on.
       A file the guide points to that `held_files` missed still holds the PR.
    2. **Tier.** Use the repo's tool or rule. Recompute it from the diff. You may raise the author's tier, never lower it.
    3. **Review.** Look for the verdict the PR's opener recorded, in the repo's own format.
-      Accept it when it names this exact head and its reviewer did not write the change. Do not review again.
-      No verdict, a verdict at another commit, or a reviewer who wrote the change: get a fresh review.
+      Accept it only when all of these hold: it is a pass by the guide's own rule, it names this exact full head SHA, it names its reviewer, and that reviewer did not write the change.
+      Then do not review again.
+      No verdict, a verdict that is not a pass, a verdict at another commit, a verdict that names no reviewer, a reviewer who wrote the change, or any doubt about who recorded it: get a fresh review.
+      A verdict that says the change fails stops the PR. Report it; do not review around it.
       A fresh review is a session that did not write the change, given the diff range and the head SHA, not the author's conclusions.
       Sign only what the guide lets the merge agent sign.
    4. **Verify.** Run the checks the guide names for that tier. Run heavy checks through the machine's shared lane tool when it has one.

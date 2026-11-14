@@ -36,6 +36,7 @@ CLOSE_OUT_LINE = re.compile(r"^\s*(?:[-*+]\s+)?(?:\*\*)?close-out:", re.IGNORECA
 FENCE = re.compile(r"^\s*(```|~~~)")
 IMPORT_LINE = re.compile(r"^@(\S+)\s*$")
 DOC_PATH = re.compile(r"[`(]([A-Za-z0-9_.\-/]+\.md)[`)#]")
+FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 REVIEW_WORD = re.compile(r"\breview", re.IGNORECASE)
 MERGE_WORD = re.compile(r"\bmerg", re.IGNORECASE)
 
@@ -187,7 +188,8 @@ def read_only_refusal(args):
     if not args or args[0] != "gh" or len(args) < 3:
         return "only known gh reads may run"
     if tuple(args[1:3]) in READ_ONLY_GH:
-        return None
+        opens_browser = any(word in ("--web", "-w") or word.startswith("--web=") for word in args[3:])
+        return "--web opens a browser" if opens_browser else None
     if args[1] != "api":
         return f"gh {args[1]} {args[2]} is not a known read"
     rest = list(args[2:])
@@ -284,11 +286,15 @@ def remote_dir_names(repo, branch, path):
 def guardrails_lines(repo, text):
     """Lines of the guardrails text that name this exact repo. A longer name does not match."""
     name = re.compile(r"(?<![\w.\-/])" + re.escape(repo) + r"(?![\w\-/]|\.\w)", re.IGNORECASE)
-    return [line.strip() for line in text.splitlines() if name.search(line)]
+    return [
+        {"line": number, "text": line.strip()}
+        for number, line in enumerate(text.splitlines(), start=1)
+        if name.search(line)
+    ]
 
 
 def guardrails_for(repo):
-    """(named, lines). A hit is a hint: the lines say whether the repo is allowed or refused."""
+    """(named, lines). A hit is a hint: read the whole rule around each line for its limits."""
     path = Path(os.environ.get("HOME", "")) / ".claude/rules/agent-guardrails.md"
     if not path.is_file():
         return "unknown", []
@@ -406,6 +412,8 @@ def checks_on_head(repo, head):
 
 
 def precheck(args):
+    if args.reviewed_head and not FULL_SHA.match(args.reviewed_head):
+        raise Failure("--reviewed-head must be the full 40-character commit SHA", "copy the full SHA from the verdict")
     repo, branch = resolve_repo(args.repo)
     login = resolve_login(None)
     _, gate_guide = discover(repo, branch)

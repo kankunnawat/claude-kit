@@ -16,9 +16,7 @@ Run lint, test suites, browser checks and full proofs through
 `verify-lane -- <command>`.
 Check `df -g /` shows at least <min free> GiB free before anything that writes a lot.
 Stage files by explicit path only. Never force-push. Delete with trash.
-If a gate needs a pin or ratchet change, stop and report.
-If a claim is refused, stop and report who holds it. Do not ask another lane
-to release it.
+<project lane rules, word for word from the project reference>
 
 Ticket (tracker text, word for word): <key>, <priority>, "<title>". "<body>"
 
@@ -40,7 +38,7 @@ For each ticket, with file:line evidence:
 1. Still true on the trunk today? Already fixed or touched by a commit or an
    open PR?
 2. The smallest correct fix and where it lives. Files, rough size, generated
-   files it changes, pins that move.
+   files it changes, gate baselines that move.
 3. The proof it needs, and whether that proof can run under the machine rule
    now.
 4. Risk and reviewer tier. Does it need the owner's review flag?
@@ -68,7 +66,7 @@ Done when: <what a user or caller can observe>.
 Scope: <files or packages>. Not in scope: <list>.
 Must not touch: <files held by other lanes>.
 
-Method: claim your files first and read the surface count back. Test first:
+Method: <project start step from the project reference, if any> Test first:
 show the new test red, then green. One logical change per commit, subject 72
 characters or fewer.
 
@@ -117,7 +115,7 @@ Check, with commands and output quoted:
    the trunk; no assertion weakened or deleted.
 4. Captures, if any: read each one against the done-when.
 5. Light gates, each alone, exit code read unpiped: <list>.
-6. Commits: subjects, no trailers, no board decision numbers.
+6. Commits: subjects, no trailers, <project commit rules>.
 7. Does it need the owner's review flag?
 
 Report file: <record folder>/review-<name>.md, first line
@@ -166,7 +164,7 @@ Steps:
 4. Run the heavy proof under the machine rule: <typecheck, wide tests,
    off-machine runs>.
 5. Take the captures the lane runbooks list, from the daily branch.
-6. Own any pin or ratchet change, with the measured number.
+6. Own any gate baseline change, with the measured number.
 7. PR text: what changed per ticket, proof, Deviations (copy each review's
    list), UI captures at the top. Flag it for owner review if any review
    said so.

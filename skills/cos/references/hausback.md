@@ -68,6 +68,18 @@ Read this before acting on `/cos` in hausback-core.
   else's PR.
 - Hold new worktrees when free disk is under 20 GiB.
 
+## Brief blanks
+
+Fill the project blanks of [briefs.md](briefs.md) with these lines.
+
+- Project lane rules: "If a gate needs a pin or ratchet change, stop and
+  report. If a claim is refused, stop and report who holds it. Do not ask
+  another lane to release it."
+- Project start step: "claim your files first and read the surface count
+  back."
+- Project commit rules: "no board decision numbers".
+- Gate baselines are the pin and ratchet JSON files.
+
 ## Guard traps
 
 - A Bash call whose text has "push" or "merge" inside a heredoc is blocked.

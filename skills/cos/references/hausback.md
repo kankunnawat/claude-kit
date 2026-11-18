@@ -36,8 +36,9 @@ Read this before acting on `/cos` in hausback-core.
   The plain form runs Opus high.
 - Thread ids carry the `mcp:` prefix in `t3 thread show` and
   `t3_thread_organize`.
-- Send: `~/.t3/bin/t3 thread send <id> "$(cat <file>)"`. Read the reply
-  ("Sent." or "Queued."). Use `queue` mode for a thread the owner drives.
+- Send: `~/.t3/bin/t3 thread send <id> - < <file>`. Read the reply
+  ("Sent." or "Queued."). A busy thread gets it as its next turn; nothing
+  is interrupted.
 - Lanes report with one `t3 thread send` to the inbox thread id, in the
   fixed format the brief gives.
 - Reuse a lane's thread for a fix round only when state lives in its

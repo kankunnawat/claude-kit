@@ -38,6 +38,8 @@ The rules shared with `cos` and `merge-agent` are in
   - skip the thread sweep of step 1; triage (step 2) and present (step 3) as
     usual, then act on each answer in this thread and record it where the
     question lived (the PR, the decision file, the to-do);
+  - a bucket 6 item is measured in this thread first, then asked with the
+    evidence;
   - never send the user to a PR, a doc or a board to answer. Link one only
     when the answer needs their eyes on an artifact or a UI.
   Plain **ask** mode starts with these same decisions, then sweeps the other
@@ -49,9 +51,11 @@ The rules shared with `cos` and `merge-agent` are in
     link and the minutes it takes (skip an item already listed there); a
     project with no to-do list (only hausback-core has a board) gets its items
     in the "Needs you" list only, never on another project's list;
-  - send each bucket 6 item back to its thread; never file it as a to-do;
+  - send each bucket 6 item back to its thread; never file it as a to-do,
+    and count them in one "sent back for evidence: n" line of the list
+    (outside the 8 lines; left out when n is 0);
   - ask nothing and never call `AskUserQuestion`;
-  - end with a "Needs you" list of at most 8 lines, newest blocker first, and
+  - end with a "Needs you" list of at most 8 lines, oldest blocker first, and
     a ping only if the project's ping rule allows one at this hour;
   - a coordinating thread runs this mode at each scheduled report and uses
     the "Needs you" list as that report's section, so the report and the

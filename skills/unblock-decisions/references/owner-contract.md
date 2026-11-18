@@ -8,7 +8,7 @@ A rule that two of them need lives here, once.
 
 | Skill | Job | Hands off |
 |---|---|---|
-| `cos` | Turns tickets into reviewed, open PRs | An open PR with its review verdict recorded at one commit |
+| `cos` | Turns tickets into open PRs built from reviewed lanes | An open PR; the merge agent reviews its head |
 | `merge-agent` | Turns an open PR into a landed one | One line per PR: landed, merge-ready or held, with the reason |
 | `unblock-decisions` | Carries the owner's decisions to both | Answers to the session that owns the next step, and one "Needs you" list |
 
@@ -21,7 +21,8 @@ A rule that two of them need lives here, once.
 - **Review.** The session that opens the PR records its fresh reviewer's
   verdict in the repo's own format, at the reviewed commit. The merge agent
   accepts that verdict when the head has not moved and the reviewer did not
-  write the change; otherwise it reviews again.
+  write the change; otherwise it reviews again. `cos` reviews lane heads,
+  not the integration head, so the merge agent reviews a `cos` PR.
 - **Merging.** Only the merge agent, only where the owner's guardrails name
   the repo, always pinned to the reviewed commit.
 - **Tracker writes after a merge.** The coordinator (`cos`) makes them, only

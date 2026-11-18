@@ -26,7 +26,8 @@ The rules this skill shares with `merge-agent` and `unblock-decisions`
 the rules) are in
 [the owner contract](../unblock-decisions/references/owner-contract.md).
 Read it once per session. The CoS never merges; it hands the merge agent
-an open PR with its review verdict recorded at the reviewed commit, and
+an open PR whose head the merge agent reviews (lane reviews do not carry
+to the integration head), and
 makes the tracker moves after a landing that a written standing approval
 covers; it asks for any other move by key.
 

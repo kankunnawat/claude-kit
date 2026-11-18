@@ -7,7 +7,8 @@
 # --model only labels the ledger row; the thread runs on the t3 default.
 # An implement lane needs --worktree (new lane) or --repo (a fix round in the
 # lane's existing worktree), so it never starts in the shared checkout.
-# Exits non-zero, with nothing left behind, if a check or the start fails.
+# Exits non-zero if a check or the start fails. A start that returns no
+# thread id may still have left a thread: check `t3 thread list`.
 # Once the thread runs, a ledger or log failure only warns; thread= is always printed.
 set -euo pipefail
 
@@ -41,6 +42,11 @@ if [ "$bucket" = implement ] && [ -z "$worktree" ] && [ "$repo_set" -eq 0 ]; the
   fail "an implement lane needs --worktree, or --repo set to its existing worktree"
 fi
 [ -d "$repo" ] || fail "repo not found: $repo"
+git -C "$repo" rev-parse --git-dir > /dev/null 2>&1 || fail "not a git repo: $repo"
+if [ "$bucket" = implement ] && [ -z "$worktree" ] &&
+  [ "$(git -C "$repo" rev-parse --path-format=absolute --git-dir)" = "$(git -C "$repo" rev-parse --path-format=absolute --git-common-dir)" ]; then
+  fail "--repo is the shared checkout; an implement lane needs its own worktree"
+fi
 brief=$(cd "$(dirname "$brief")" && pwd -P)/$(basename "$brief")
 record=$(cd "$(dirname "$record")" && pwd -P)/$(basename "$record")
 grep -q 't3 thread send' "$brief" || fail "brief has no report line (t3 thread send)"
@@ -68,7 +74,11 @@ echo "thread=$thread"
 ledger=$(cd "$repo" && "$HOME/.local/bin/ledger-log" start --bucket "$bucket" --model "$model" --effort high --task "$task" | tail -n 1) || ledger=""
 [ -n "$ledger" ] || echo "cos-launch: WARNING no ledger id; open the row by hand for $thread" >&2
 
-line=$(mktemp)
+line=$(mktemp) || {
+  echo "cos-launch: WARNING log line not written; add it by hand for $thread" >&2
+  echo "ledger=${ledger:-none}"
+  exit 0
+}
 printf 'Started "%s" thread %s (ledger %s) at load %s, %s GiB free. Task: %s\n' \
   "$title" "$thread" "${ledger:-none}" "$load" "$free" "$task" > "$line"
 python3 "$(dirname "$0")/cos-log.py" "$record" "$line" > /dev/null ||

@@ -26,7 +26,9 @@ Put every ask in exactly one bucket:
    change. List it with the exact place to go; it is not a question.
 6. **Not ready to ask.** The ask rests on a claim nobody has measured or
    checked. Send it back to its thread for the measurement. It reaches the
-   user only with the evidence attached.
+   user only with the evidence attached. A review of a change the user can
+   see, with no screenshots attached, is in this bucket: it goes back for
+   the captures.
 
 Check live state before you keep an ask; an old message is not evidence:
 

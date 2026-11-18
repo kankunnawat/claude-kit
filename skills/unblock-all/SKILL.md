@@ -2,7 +2,7 @@
 name: unblock-all
 description: >-
   Use when the user types /unblock-all, says "unblock" with no scope,
-  "bring up my decisions", "what needs me" or "settle the done threads", when a chief of staff tick runs its flag pass,
+  "bring up my decisions", "what needs me" or "settle the done threads", when a chief of staff report runs its flag pass,
   or when a check finds t3code threads waiting on the user. Sweeps every
   thread, this one included: answers what standing decisions already cover,
   files the rest on the user's to-do list (flag mode) or asks them one by
@@ -25,7 +25,7 @@ For an area whose manual has an "Unblock pass" section, read that section
 before collecting.
 Triage and question wording follow
 [the decision rules](references/decision-rules.md).
-The rules shared with `cos` and `merge-agent` are in
+The rules shared with `cos`, `lead` and `merge-agent` are in
 [references/owner-contract.md](references/owner-contract.md).
 
 ## Modes
@@ -33,25 +33,30 @@ The rules shared with `cos` and `merge-agent` are in
 - **ask** (default when the user runs it). Steps 1 to 5 below. Start with
   this thread's own open decisions (step 1 of
   [unblock-here](../unblock-here/SKILL.md)), then sweep the
-  other threads. When the user runs it inside the coordinating thread (the
-  chief of staff), act on each answer directly in that thread instead of
-  relaying it to yourself.
-- **flag** (`/unblock-all flag`, or a chief of staff tick). Steps 1 and 2
+  other threads. When the user runs it inside the thread that owns the
+  next step (a lead for its own area, the chief of staff for the roster),
+  act on that answer there instead of relaying it to yourself.
+- **flag** (`/unblock-all flag`, or a chief of staff report). Steps 1 and 2
   only, then:
   - answer bucket 1 and act on bucket 2 as usual;
-  - put every bucket 3, 4 and 5 item on the user's to-do list once, with a
-    link and the minutes it takes (skip an item already listed there); a
-    project with no to-do list (only hausback-core has a board) gets its items
-    in the "Needs you" list only, never on another project's list;
+  - put every bucket 3, 4 and 5 item on its area's to-do list once, with a
+    link and the minutes it takes (skip an item already listed there); an
+    area whose manual names no to-do list gets its items in the "Needs you"
+    list only, never on another area's list;
   - send each bucket 6 item back to its thread; never file it as a to-do,
     and count them in one "sent back for evidence: n" line of the list
     (outside the 8 lines; left out when n is 0);
   - ask nothing and never call `AskUserQuestion`;
-  - end with a "Needs you" list of at most 8 lines, oldest blocker first, and
-    a ping only if the project's ping rule allows one at this hour;
-  - a coordinating thread runs this mode at each scheduled report and uses
-    the "Needs you" list as that report's section, so the report and the
-    to-do list never disagree.
+  - end with one "Needs you" list across every area. It is the owner's one
+    queue. Order: what blocks running work first, then reviews that are
+    ready with their evidence, then the rest, oldest first. Each line: the
+    area, the item in plain words, a link, a recommendation and the
+    minutes it takes. Show at most 8 lines and count the rest;
+  - send a ping only if the area's manual has a ping rule that allows one
+    at this hour;
+  - the chief of staff runs this mode at each scheduled report and uses
+    the list as the report's queue, so the report and the to-do lists
+    never disagree.
 
 ## 1. Collect
 
@@ -87,8 +92,8 @@ Do this before asking anything.
     for sign-in. Name the tool and the fix once; do not retest it in new
     sessions after two failures.
 - Also collect: open PRs waiting on the user (flagged for owner review,
-  CONCERN or BLOCK findings), the project's owner to-do and ask lists (see the
-  project reference), and earlier questions you asked the user that are still
+  CONCERN or BLOCK findings), the area's owner to-do and ask lists (see the
+  area's manual), and earlier questions you asked the user that are still
   unanswered in this session or in the session's own progress record.
 - Count what each source returned before you triage. A source that returns
   nothing (no threads, no to-dos, no PRs) is re-read once another way before
@@ -107,15 +112,15 @@ Follow "Present one batch" in the same file.
 As soon as the user answers:
 
 - Send each answer with `t3_thread_send` (mode `auto`) to the thread that owns
-  the next step. When a coordinating thread (a chief of staff or orchestrator)
-  runs the lanes, send to it, not to its lanes. Tell the coordinator about
-  anything you changed in its lanes (settles, closed to-dos).
+  the next step. When a lead or another coordinating thread
+  runs the workers, send to it, not to its workers. Tell it about
+  anything you changed in its workers' threads (settles, closed to-dos).
 - Include the user's words, the option text they picked, and any limit that
   still applies. When the user typed their own answer, quote it word for word.
   Read the returned status to confirm the thread started.
-- Log each decision once in the project's decision record and give the
-  coordinator its number, so it does not log it again.
-- Keep one project's content out of another project's record.
+- Log each decision once in the area's decision record and give the
+  lead its number, so it does not log it again.
+- Keep one area's content out of another area's record.
 - A decision that becomes a standing rule goes into the project's
   standing-decision index when that file is in your write scope; otherwise list
   it for the user.

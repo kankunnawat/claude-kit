@@ -1,7 +1,7 @@
 # One chief of staff, a lead per area: design
 
 Date: 2026-11-18.
-Status: needs Kan's approval.
+Status: approved by Kan on 2026-11-18 and built the same day.
 Home: `skills/cos/`, a new `skills/lead/`, and `skills/unblock-all/` in this repo (claude-kit).
 Owner rulings folded in on 2026-11-18: the synced state lives in the brain repos, and the chief of staff also covers Bitazza work.
 
@@ -369,6 +369,21 @@ Two commits, so the move can be checked by itself.
 8. Run the whole proof.
 
 Steps 2, 4 and 7 write to the brain repos and the scheduler. The rest is in this repo.
+
+## Deviations
+
+Found while building, 2026-11-18.
+
+- **A watch lead keeps an area file.** `/lead` creates `cos/areas/<area>.md` with CURRENT STATE and Log when the area has none. A watch area still needs no manual, but its lead's state must sync like every other.
+- **In watch mode the worker opens the PR.** The lead then records the reviewer's verdict on it in the repo's own format. The spec's step 5 said the lead opens it; the spec's own move table asked for "a worker brief that opens a PR".
+- **The roster gained a quiet-hours line and a Machines table.** Quiet hours use Hausback's clock (00:00 to 08:00 Bangkok) for every area until Kan says otherwise. The Machines table holds each machine's budget flags and local folder. The work roster carries a copy, because a work-side lead never opens the main roster.
+- **The chief of staff has its own hold file.** `hold.md` in the machine's local folder (`~/Vault/Outputs/cos` on this Mac). It pauses the chief of staff's reports and puts no area on hold.
+- **Scheduled task ids are stored nowhere.** Each report run reads the holder line and stops when it names another thread, so a pair left behind on another machine goes quiet by itself.
+- **`cos-launch.sh --dry-run` exits 0 on a full machine.** It prints the budget and "a real start would be refused now". A real start still exits non-zero.
+- **`cos-log.py` stamps the date as well as the time.** An area file's Log spans days.
+- **The retro has no reading taken 10 minutes after a launch.** It compares the load each launch logged with the budget lines the lead logs at later ticks.
+- **One line of the Hausback manual was reworded.** "bitazza-ios" became "work repos" in the board rule, so proof 9 prints nothing.
+- **The queue page does not exist yet.** The first report creates it and writes its link into the roster.
 
 ## Not yet specified
 

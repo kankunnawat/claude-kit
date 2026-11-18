@@ -220,13 +220,27 @@
   <div class="risk-row"><div>The scheduled reports fire with the old prompts during the change.</div><div>The prompts are rewritten last and read back. Until then they still check the Hausback hold and stop.</div></div>
 </section>
 
+<section class="card">
+  <h2>What changed while building</h2>
+  <div class="risk-row"><div>A watch lead keeps an area file.</div><div><code>/lead</code> creates the area's file with its current state and log when the area has none. A watch area still needs no manual, but its lead's state must sync like every other.</div></div>
+  <div class="risk-row"><div>In watch mode the worker opens the PR.</div><div>The lead then records the reviewer's verdict on it in the repo's own format. The design said the lead opens it in one place and the worker in another.</div></div>
+  <div class="risk-row"><div>The roster gained a quiet-hours line and a Machines table.</div><div>Quiet hours use Hausback's clock (00:00 to 08:00 Bangkok) for every area until you say otherwise. The table holds each machine's budget numbers and local folder. The work roster carries a copy, because a work-side lead never opens the main roster.</div></div>
+  <div class="risk-row"><div>The chief of staff has its own hold file.</div><div>It sits in a local folder on this Mac. It pauses the chief of staff's reports and puts no area on hold.</div></div>
+  <div class="risk-row"><div>Scheduled task ids are stored nowhere.</div><div>Each report run reads the holder line and stops when it names another thread, so a pair left behind on another machine goes quiet by itself.</div></div>
+  <div class="risk-row"><div>cos-launch.sh --dry-run exits 0 on a full machine.</div><div>It prints the budget and "a real start would be refused now". A real start is still refused.</div></div>
+  <div class="risk-row"><div>cos-log.py stamps the date as well as the time.</div><div>An area's log spans days.</div></div>
+  <div class="risk-row"><div>The retro has no reading taken 10 minutes after a launch.</div><div>It compares the load each launch logged with the budget lines the lead logs at later wakes.</div></div>
+  <div class="risk-row"><div>One line of the Hausback manual was reworded.</div><div>A work repo's name became "work repos" in the board rule, so the separation check prints nothing.</div></div>
+  <div class="risk-row"><div>The queue page does not exist yet.</div><div>The first report creates it and writes its link into the roster.</div></div>
+</section>
+
 <section class="card decide">
   <h2>For you to decide</h2>
   <ol class="qs">
     <li><div><b>Should the per-area role get its own command, /lead?</b>I recommend yes: <code>/cos</code> becomes the one session over everything, and <code>/lead</code>, typed inside a repo, starts or takes over that area's lead. Today's lane steps move to it.</div></li>
     <li><div><b>Are these starting numbers for the machine budget right?</b>I recommend yes, then tune: room for one session per 2 idle cores, at most 4, at most 1 in quiet hours, and none when swap is 75% used, memory free is under 20% or free disk is under 20 GiB. They are a guess; the evening review compares the load before and after each start and proposes better ones.</div></li>
   </ol>
-  <p class="reply">Reply "approved" to take the recommendations, or say what to change.</p>
+  <p class="reply">You approved both on 2026-11-18. It is built.</p>
   <h3>Already decided</h3>
   <ul class="done">
     <li>One chief of staff over all areas, not one per project.</li>

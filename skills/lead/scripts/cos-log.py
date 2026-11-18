@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Append one timed Log line to a CoS day record.
+"""Append one timed Log line to a record or an area file.
 
 Usage: cos-log.py <record.md> <text-file>
 The text file holds the line without a time. Newlines collapse to spaces.
@@ -23,7 +23,7 @@ def main() -> int:
     if not text:
         print("empty log line", file=sys.stderr)
         return 2
-    stamp = datetime.now(timezone.utc).strftime("%H:%MZ")
+    stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%MZ")
     with record.open("a") as handle:
         handle.write(f"- {stamp} {text}\n")
     print(stamp)

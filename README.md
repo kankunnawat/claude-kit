@@ -21,7 +21,8 @@ you don't, most of them still stand alone.
 | `review-plan` | Adversarial rubric pass over a plan or spec. Finds the gaps before execution does. |
 | `finish` | Runs the repository's declared close-out ritual: commit, push, and whatever its `Close-out:` line specifies. |
 | `merge-agent` | Makes the session a repo's merge agent: finds the PR gate guide the repo declares and follows it to review, verify and merge your open PRs, or drafts a guide as a PR when there is none. |
-| `cos` | Makes the session a project's chief of staff: it plans, launches lanes and reviewers as separate sessions, relays your decisions and reports twice a day. It never implements or merges. |
+| `cos` | Makes the session the chief of staff over every area you work in: it keeps the roster, runs your one queue, relays your answers to the area leads and reports twice a day. It never implements, reviews, merges or starts workers. |
+| `lead` | Makes the session one area's lead: it starts workers and fresh reviewers as separate sessions within the machine budget and brings open PRs to merge-ready. A batch area's lead also picks up tickets. It never implements or merges. |
 | `whats-next` | Read-only position check against the repository's tracker. Answers where you are without starting work. |
 | `worktrees` | Where worktrees live, how they get created, and when they get cleaned up. |
 | `rendering-specs-as-html` | Keeps every spec and plan as a synced `.md` + `.html` pair. |
@@ -31,7 +32,7 @@ you don't, most of them still stand alone.
 | `semantic-computer-use` | Drives native macOS apps through the accessibility tree instead of pixel clicking. |
 | `build-landing` | Phased method for a marketing landing page: context, guideline, three directions, browser prototype, linted plan, build, verify, deliver, lessons. Scripts for contrast, plan lint, browser verification, and Vercel delivery. |
 | `build-landing-auto` | Adds 50%, 75%, and 100% review presets to `build-landing`. Keeps its artifacts, quality gates, and delivery authority. |
-| `unblock-all` | Sweeps every t3code thread (was `unblock-decisions`): finds each session that needs you, answers what standing decisions cover, then files the rest as to-dos (`flag` mode, run each CoS tick) or asks them one by one with a recommendation (`ask` mode), relays the answers and settles finished threads. |
+| `unblock-all` | Sweeps every t3code thread (was `unblock-decisions`): finds each session that needs you, answers what standing decisions cover, then files the rest as to-dos (`flag` mode, run at each chief of staff report, where the list is your one queue) or asks them one by one with a recommendation (`ask` mode), relays the answers and settles finished threads. |
 | `unblock-here` | The same pass for the current thread only: asks that thread's open decisions in the thread, each with a recommendation, and acts on the answers. |
 
 `quiz` is parked in `skills-disabled/` (0 uses in 60 days); `install.sh` links only `skills/`.

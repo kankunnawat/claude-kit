@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
-# Start one CoS session: machine check, thread, ledger row, log line.
+# Start one session for a lead: machine budget, thread, ledger row, log line.
 # Usage:
 #   cos-launch.sh --title T --brief FILE --bucket implement|review \
-#     --task TEXT --record RECORD.md --max-load N --min-free-gib N \
-#     [--worktree FULL_SHA] [--repo DIR] [--model ID] [--dry-run]
-# --max-load and --min-free-gib are the project's machine limits for this
-# hour; the project reference file names them.
-# --model only labels the ledger row; the thread runs on the t3 default.
+#     --task TEXT --record RECORD.md \
+#     [--worktree FULL_SHA] [--repo DIR] [--provider P] [--model ID] \
+#     [--dry-run] [-- CAPACITY_FLAGS...]
+# The machine budget comes from capacity.sh next to this file; a start is
+# refused when it prints slots=0. Flags after -- go to capacity.sh (the
+# machine's numbers from the roster, --quiet-hours).
+# --model only labels the ledger row unless --provider is given; then both go
+# to the thread start, for an area whose roster row names a provider.
 # An implement lane needs --worktree (new lane) or --repo (a fix round in the
 # lane's existing worktree), so it never starts in the shared checkout.
 # Exits non-zero if a check or the start fails. A start that returns no
@@ -15,7 +18,8 @@
 set -euo pipefail
 
 title="" brief="" bucket="" task="" record="" worktree="" repo="$PWD" repo_set=0
-model="claude-opus-5-5" dry=0 max_load="" min_free=""
+model="claude-opus-5-5" provider="" dry=0
+capacity_flags=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --title) title="$2"; shift 2 ;;
@@ -26,8 +30,8 @@ while [ $# -gt 0 ]; do
     --worktree) worktree="$2"; shift 2 ;;
     --repo) repo="$2"; repo_set=1; shift 2 ;;
     --model) model="$2"; shift 2 ;;
-    --max-load) max_load="$2"; shift 2 ;;
-    --min-free-gib) min_free="$2"; shift 2 ;;
+    --provider) provider="$2"; shift 2 ;;
+    --) shift; capacity_flags=("$@"); break ;;
     --dry-run) dry=1; shift ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
@@ -39,8 +43,6 @@ fail() { echo "cos-launch: $1" >&2; exit 1; }
 [ -s "$brief" ] || fail "brief missing or empty: $brief"
 [ -f "$record" ] || fail "record not found: $record"
 case "$bucket" in implement|review) ;; *) fail "bucket must be implement or review" ;; esac
-[[ "$max_load" =~ ^[0-9]+(\.[0-9]+)?$ ]] || fail "--max-load needs a number (the project reference names it)"
-[[ "$min_free" =~ ^[0-9]+$ ]] || fail "--min-free-gib needs a whole number (the project reference names it)"
 if [ -n "$worktree" ] && ! [[ "$worktree" =~ ^[0-9a-f]{40}$ ]]; then
   fail "--worktree needs a full 40-character sha"
 fi
@@ -57,17 +59,22 @@ brief=$(cd "$(dirname "$brief")" && pwd -P)/$(basename "$brief")
 record=$(cd "$(dirname "$record")" && pwd -P)/$(basename "$record")
 grep -q 't3 thread send' "$brief" || fail "brief has no report line (t3 thread send)"
 
-# Machine limits come from the caller: each project sets its own.
-load=$(sysctl -n vm.loadavg | awk '{print $2}')
-free=$(df -g / | awk 'NR==2 {print $4}')
-awk -v l="$load" -v m="$max_load" 'BEGIN { exit !(l < m) }' || fail "load $load is not under $max_load"
-[ "$free" -ge "$min_free" ] || fail "free disk ${free} GiB is under ${min_free} GiB"
-
-echo "load=$load free=${free}GiB title=$title worktree=${worktree:-none}"
-if [ "$dry" -eq 1 ]; then echo "dry run: nothing started"; exit 0; fi
+# One budget for the whole machine, shared by every area.
+budget=$("$(dirname "$0")/capacity.sh" ${capacity_flags[@]+"${capacity_flags[@]}"}) || fail "machine budget could not be read"
+echo "$budget title=$title worktree=${worktree:-none}"
+room=1
+case "$budget" in "slots=0 "*) room=0 ;; esac
+if [ "$dry" -eq 1 ]; then
+  [ "$room" -eq 1 ] && echo "dry run: nothing started" || echo "dry run: nothing started; a real start would be refused now"
+  exit 0
+fi
+[ "$room" -eq 1 ] || fail "no room on this machine now: $budget"
+load=$(printf '%s' "$budget" | sed -n 's/.* load=\([0-9.]*\) .*/\1/p')
+free=$(printf '%s' "$budget" | sed -n 's/.* free=\([0-9]*\)GiB .*/\1/p')
 
 args=(thread start --title "$title")
 [ -n "$worktree" ] && args+=(--worktree "$worktree")
+[ -n "$provider" ] && args+=(--provider "$provider" --model "$model")
 args+=(--json . -)
 out=$(cd "$repo" && "$HOME/.t3/bin/t3" "${args[@]}" < "$brief") || fail "thread start failed"
 thread=$(printf '%s' "$out" | jq -r '.threadId // empty')

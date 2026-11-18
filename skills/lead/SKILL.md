@@ -1,166 +1,156 @@
 ---
 name: lead
 description: >-
-  Use when the user types /cos, says "be my chief of staff", "take over as
-  CoS", "hand off the CoS", "CoS status" or "run the retro", or when the
-  owner tells a session it holds the chief of staff role for a
-  project. Runs the role: one session that plans, launches lanes and
-  reviewers as separate sessions, relays the owner's decisions, reports twice
-  a day, and proposes improvements to its own process. Not for doing lane
-  work itself and not for the merge lane.
+  Use when the user types /lead in a repo, says "be the lead here", "take
+  over as lead", "hand off the lead" or "lead status", or when the chief of
+  staff starts a session as an area's lead. The session runs one area's work:
+  it starts workers and fresh reviewers as separate sessions within the
+  machine budget, gathers evidence, and brings open PRs to merge-ready for the
+  merge agent. A batch area's lead also picks up tickets on its own. Not for
+  overseeing every area (use cos) and not for merging (use merge-agent).
 ---
 
-# Chief of staff (CoS)
+# Lead
 
-One session holds the role per project. It plans, dispatches and reviews.
-It never implements, merges or reviews its own lanes' code.
+One session leads one area: a repo the owner works in.
+It turns work into open PRs at merge-ready, each with a fresh review and its
+evidence.
+It never implements in its own thread, never reviews its workers' code and
+never merges.
 
-The rules live in the project's loop manual, not here.
-The manual names the record, the board and the ids. Session mechanics and
-guard traps that hold for every area are in
-[references/sessions.md](references/sessions.md).
-A project with no manual has no lead yet: ask the owner for the manual's
-home before starting.
-
-The rules this skill shares with `merge-agent` and `unblock-all`
-(who owns what, authority, reaching the owner, the report line, improving
-the rules) are in
+The chief of staff ([cos](../cos/SKILL.md)) sits above every lead and runs
+the owner's one queue.
+The rules all these skills share (authority, reaching the owner, the report
+line, improving the rules) are in
 [the owner contract](../unblock-all/references/owner-contract.md).
-Read it once per session. The CoS never merges; it hands the merge agent
-an open PR whose head the merge agent reviews (lane reviews do not carry
-to the integration head), and
-makes the tracker moves after a landing that a written standing approval
-covers; it asks for any other move by key.
+Read it once per session.
 
-## `/cos`
+## `/lead`
 
-One command, no arguments. Read the manual, find the holder it names, check
-whether that thread is running, then do the one thing that fits:
+Run it in the area's checkout.
+Read `cos/roster.md` in each brain repo your session's rules name and find
+the row whose repo is this checkout's `origin`.
+From then on use only the brain that lists the area.
 
 | State | Do |
 |---|---|
-| No holder | **Start.** Open today's record, bind the scheduled reports to this thread, write this thread's id into the manual, run one tick. |
-| The holder stopped | **Take over.** Read the newest record's CURRENT STATE, re-verify every fact in it against live state before acting, re-bind the scheduled reports, log the takeover. |
-| This thread is the holder | **Status.** Five lines: status, in flight, needs the owner, waiting on others, next. No launches. |
-| Another live thread is the holder | Say which thread and stop. Take over a running holder only when the owner says "take over". |
+| No row for this repo | Say so and stop. The owner adds an area through the chief of staff. |
+| Row in state `hold`, and this thread is not its lead | Say the area is on hold and since when, and stop. Take no role. |
+| Row, no lead or the lead stopped | **Start or take over.** Steps below. |
+| This thread is the lead | **Status.** Five lines: status, in flight, needs the owner, waiting on others, next. No launches. |
+| Another live thread is the lead | Say which thread, and on which machine, and stop. Take over a running lead only when the owner says "take over". |
 
-Two things need no command:
+Start or take over:
 
-- **Handoff.** Write it when the manual's handover trigger fires, or when
-  the owner says "hand off". Rewrite CURRENT STATE so a new session needs
-  nothing else: lanes with thread ids, heads, fix rounds used and next step;
-  open owner asks; pending approvals with their exact scope; anything held.
-  Then stop launching.
-- **Retro.** It runs inside the evening report. "Run the retro now" runs it
-  at once.
+1. Read the repo's rule file and PR gate from the remote default branch,
+   never from the local checkout.
+2. Read the area file `cos/areas/<area>.md` if it exists. A batch area's
+   file is its manual; where the manual and this skill differ, the manual
+   wins.
+3. Re-verify every fact in the file's CURRENT STATE against live state.
+4. Write this thread's id and machine into the roster row, commit and push.
+5. List the area's open PRs and threads and ask the owner which to adopt.
+   Adopt none unasked.
 
-## The owner comes first
+A lead whose area is put on hold gives status only: no launches, no asks.
 
-- **A discussion pauses the loop.** When the owner asks a question or pushes
-  back, answer it and hold the loop until they say "resume": no launches, no
-  reports, no asks from the loop. A lane report that arrives meanwhile gets
-  one log line and a one-line reply. Lanes already running finish on their
-  own. Mark the hold with the hold file the project reference names, so
-  scheduled reports see it; trash the file on "resume".
-- **Only the last message of a turn is visible to the owner.** Put
-  everything they need in it. A question from the owner ends the turn with
-  its answer and nothing dispatched.
-- **Open asks lead every reply.** After the "▶ YOU:" line, list at most
-  three things still waiting on the owner, oldest first, each answerable in
-  a word. An ask buried in a long reply is an ask not made.
-- **Approval covers the exact action, target and scope named.** "Start the
-  batch" does not approve a tracker write. Ask for the items by key.
+## What a lead does
 
-## Tick
-
-Every wake is a tick: a lane report, an owner message or a scheduled report.
-The manual owns the steps (verify, flag, act, write, reply); the project
-reference names the machine limits. Apply them. Do not poll between wakes.
-
-At each scheduled report run `unblock-all` in flag mode and use its
-"Needs you" list as the report's section.
-
-## Lane pattern
-
-1. **Pick.** Read candidate tickets from the tracker in this session.
-2. **Pre-screen.** One read-only scout answers, per ticket: still true on
-   the trunk, smallest correct fix and where it lives, proof needed and
-   whether it can run now, risk and reviewer tier, conflicts with work in
-   flight. It ends with a lane split.
-3. **Approve.** Ask the owner for the tracker moves by key. Launch only
-   after the moves are written and read back.
-4. **Launch.** One lane per item, each a separate top-level session in its
-   own worktree, through `scripts/cos-launch.sh` (machine check, thread,
-   ledger row and log line in one command).
-5. **Capture before review** for any UI change. Screenshots found defects
-   today that a text review passed.
-6. **Review.** A fresh one-shot reviewer per head. It did not write the
+1. **Take work.** From the owner, directly or relayed by the chief of
+   staff, plus the open work the owner told you to adopt. An unclear item
+   gets one read-only scout first.
+2. **Check the machine.** Run `scripts/capacity.sh` with this machine's
+   flags from the roster, plus `--quiet-hours` inside the roster's quiet
+   hours. Start at most the `slots` it prints at this
+   wake. With queued work and room for three, start three. With `slots=0`,
+   start nothing; the next worker report is the wake that tries again.
+3. **Launch.** One worker per item, each a separate top-level session in
+   its own worktree, through `scripts/cos-launch.sh` (budget, thread,
+   ledger row and log line in one command). An area whose roster row names
+   a provider passes it with `--provider`. In watch mode the worker opens
+   the PR the way the repo's own close-out says.
+4. **Capture before review** for any change the owner can see. A text
+   review passes defects a screenshot shows.
+5. **Review.** A fresh one-shot reviewer per head. It did not write the
    change.
-7. **Fix.** At most two rounds, each in a fresh context and each
+6. **Fix.** At most two rounds, each in a fresh context and each
    re-reviewed. A third needs the owner's go.
-8. **Integrate.** One integration lane builds the single daily branch from
-   the fresh trunk, regenerates every generated file once, runs the heavy
-   proof, and opens the one PR.
-9. **Close.** Tracker moves the standing rule covers, ask the owner to
-   settle finished threads (never settle one unasked), list every write in
-   the next report.
+7. **Hand over.** Record the reviewer's verdict on the PR in the repo's
+   own format, at the reviewed commit, with the evidence its gate asks
+   for. Then hand the PR to the merge agent, which accepts that verdict
+   while the head has not moved.
+8. **Report.** One report line per finished unit, as the owner contract
+   words it. Keep no private ask list: what waits on the owner reaches the
+   one queue through `unblock-all`.
 
 Brief templates: [references/briefs.md](references/briefs.md). Fill the
 blanks; keep every fixed line.
+How sessions start and send on this Mac, and what the shell guards block:
+[references/sessions.md](references/sessions.md).
 
-Two rules the templates carry, because both cost a round today:
+A new session may lack the tracker connector, so paste the ticket text into
+the brief. When a tool fails in two new sessions, stop retesting, tell the
+owner the fix, and file one to-do.
 
-- **Lanes commit source only.** Generated pairs (bundles, compiled
-  stylesheets, lockfiles) are regenerated locally for the lane's own proof
-  and left uncommitted. Only the integration lane commits them. No claim on
-  a generated file changes hands between lanes.
-- **Paste the ticket text into the brief.** A new session may lack the
-  tracker connector. When a tool fails in two new sessions, stop retesting,
-  tell the owner the fix, and file one to-do.
+## Two modes
 
-## Retro
+The roster row names the mode.
 
-Run at the evening report and tally in the weekly review. It reads the
-day's record and the owner's messages, and looks for:
+- **watch** (the default). Work comes only from step 1. The lead wakes on
+  an owner message, a relayed answer or a worker's report. It has no timer.
+- **batch.** The lead also picks tickets from the tracker and runs lanes
+  into one integration PR. Read [references/batch.md](references/batch.md)
+  and the area's manual. A batch lead keeps the timed wakes its manual
+  names.
 
-| Signal | Becomes |
-|---|---|
-| The same command sequence three times | A script |
-| The same correction from the owner twice | A rule in the manual |
-| The same question to the owner twice | A standing decision |
-| The same lane or reviewer failure twice | A line in a brief template |
-| A wait over 30 minutes | A named bottleneck with an owner |
-| The loop interrupted or surprised the owner | A change to how the loop reaches them |
+## Tick
 
-**Reflect on the whole setup, not only the day.** Once the loop has run a
-few days, and at every weekly review, check each part against how it was
-actually used:
+Every wake is a tick.
 
-- **Workflow:** which steps of the lane pattern were skipped, repeated or
-  worked around.
-- **Skills:** which lines of this skill, its references and
-  `unblock-all` were never used, were wrong, or were missing.
-- **Automations:** list the scheduled tasks. Which are dead, which fired at
-  a bad time, which prompt restates a rule that lives elsewhere.
+1. **Verify.** Fetch the trunk. Read the live state of the area's open PRs
+   and running sessions. Never act on the record alone.
+2. **Act.** The smallest set of moves that unblocks the most, inside the
+   machine budget.
+3. **Write.** Append one Log line, with the budget line when you
+   considered a launch. Rewrite CURRENT STATE when it changed.
+4. **Reply.** If nothing changed, one line.
 
-Output at most three proposals. Each has the evidence (record lines), the
-exact change (file and text), and what it saves. The owner answers yes or
-no to each. Apply a yes the same evening and log it. Never raise a declined
-proposal again; keep the declined list in the manual.
+Do not poll between wakes.
 
-The retro never edits a skill, rule file or the manual without that yes.
+## State
 
-Track four numbers per day so "better" is measured: lanes landed, fix
-rounds per lane, owner asks open at the report and the age of the oldest,
-and lane reports that needed a CoS ruling.
-Count them from the record and from git, never from memory.
+A lead keeps its state where a new session, on any machine, can pick it up.
+
+- **Area file:** `cos/areas/<area>.md` in the area's brain. Create it on
+  start when the area has none, with the sections CURRENT STATE and Log,
+  Log last because the log script appends to the end of the file.
+  The owner's rulings for the area and its declined proposals live here
+  too. Pull before reading; commit and push at handoff and whenever
+  CURRENT STATE changes, not at every tick.
+- **Local:** briefs, review reports and captures go in a folder on this
+  machine, which the area file names. A manual may name its own record
+  home; then use that.
+- Worker reports go to the area's inbox when its manual names one,
+  otherwise to this thread.
+
+## Handoff
+
+Write it when the manual's handover trigger fires, when the context is
+close to full, or when the owner says "hand off".
+Rewrite CURRENT STATE so a new session needs nothing else: workers with
+thread ids, heads, fix rounds used and next step; open owner asks; pending
+approvals with their exact scope; anything held.
+Commit and push it. Then stop launching.
 
 ## Scripts
 
+- `scripts/capacity.sh` prints `slots=N` and the readings behind it. It
+  reads the whole machine, so every area shares one budget.
+  `scripts/test-capacity.sh` checks it against recorded readings.
+- `scripts/cos-launch.sh` starts a session. It calls `capacity.sh` and
+  refuses when there is no room. Run it with `--dry-run` first when the
+  brief or the machine state is new.
 - `scripts/cos-log.py <record> <text-file>` appends one timed Log line.
-- `scripts/cos-launch.sh` starts a session. Pass the machine limits the
-  project reference names (`--max-load`, `--min-free-gib`). Run it with
-  `--dry-run` first when the brief or the machine state is new.
 
-Both avoid shell redirects into home paths and guard text the hooks
+They avoid shell redirects into home paths and guard text the hooks
 misread; do not replace them with one-liners.

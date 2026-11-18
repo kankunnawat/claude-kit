@@ -132,7 +132,7 @@ There is one queue for Kan, across every area.
 - Home: one private status page, updated in place at every report, plus the same list in the CoS thread.
 - Kan clears it in batches from the CoS thread.
   The CoS relays each answer to the lead that owns the next step, with his words quoted.
-  A merge approval names the repo (`merge AlphaOS#N`), so it records from the CoS thread.
+  A merge approval that names the repo (`merge AlphaOS#N`) records from the CoS thread: `merge-approval.py` takes the repo from the typed name when one is given.
 
 ## `/lead`
 
@@ -149,6 +149,8 @@ It matches the git remote to a roster row.
 What every lead does:
 
 1. Takes work from Kan, directly or relayed by the CoS.
+   On start it lists the area's open PRs and threads and asks Kan which to adopt.
+   It drives the ones he names, and its own, to merge-ready. It adopts none unasked.
 2. Starts one worker session per item in its own worktree, with a self-contained brief.
 3. Captures evidence for any change Kan can see, before review.
 4. Gets a fresh one-shot review per head. At most two fix rounds, each re-reviewed.
@@ -162,8 +164,9 @@ What only a batch lead does, read from `lead/references/batch.md`:
 - Runs lanes that open no PR, and one integration lane that opens the single daily PR.
 - Makes the tracker moves a written standing approval covers.
 
-A lead wakes on a message from Kan, a relayed answer, or a worker's report.
+A watch lead wakes on a message from Kan, a relayed answer, or a worker's report.
 It has no timer.
+A batch lead also keeps the timed wakes its manual names.
 
 ## Learning Kan's preferences
 
@@ -190,10 +193,21 @@ Leads read `kan-brain` as their rules already tell them to, so one accepted pref
 | `cos/scripts/cos-launch.sh`, `cos-log.py` | `lead/scripts/`, same code |
 | `owner-contract.md` "One 'Needs you' list per project" | "One queue for the owner, across every area" |
 | `owner-contract.md` "a per-project reference file inside a skill" | "A skill holds no repo names and no per-project file" |
-| Hausback manual sections Reports, Pings, Scheduled tasks | The report clock and task ids move to the roster. The Hausback ping and quiet-hours rules stay in the manual. |
+| `briefs.md` first fixed line "You work for the chief of staff (CoS)" | "You work for the <area> lead" |
+| `owner-contract.md` pipeline row for `cos`, and "the coordinator (`cos`)" | A `lead` row with today's text, and a new `cos` row: keeps the roster and the queue |
+| `unblock-all` "coordinating thread (the chief of staff)" | Area answers go to that area's lead. The CoS acts directly on answers about the roster. |
+| `README.md` row for `cos` | Rewritten, plus a row for `lead` |
+| `merge-agent` "the coordinator" | Unchanged. It names no skill, and the lead is the coordinator it means. |
+| Hausback manual sections Reports, Pings, Scheduled tasks | Stay in the manual. They are the Hausback lead's own reports. Only the task table changes (see below). |
 
-The two scheduled reports keep their times.
+Hausback keeps its file and seat names: `cos-loop.md`, `<date>-cos/cos.md`, `cos-inbox.md`, `cos-hold.md` and the board seat `cos`.
+Renaming them would touch the board, the inbox thread and old records for no gain.
+The manual's first line says the role is now the Hausback lead.
+
+The two scheduled tasks bound to this thread become the CoS reports.
+They keep their times.
 Their prompts change to read the roster, cover every area, and print one line for an area on hold.
+The Hausback manual's task table then says "none while on hold; the lead creates its own pair on resume".
 
 ## What changes for Hausback
 
@@ -202,6 +216,17 @@ Their prompts change to read the roster, cover every area, and print one line fo
   With the area on hold there is no Hausback lead thread, and none starts until Kan says "resume".
 - Its board, inbox thread, hold file, lane rules, standing approvals and Mac rules are untouched.
 - This thread becomes the CoS for all areas.
+
+## When Hausback resumes
+
+Nothing here runs until Kan says "resume hausback".
+
+1. The CoS sets the row to `active` and trashes the hold file, as today.
+2. Kan says yes to starting the lead. It starts in a thread inside the hausback-core project, so its scheduled tasks bind without the cross-project refusal this thread hit.
+3. `/lead` there reads the manual, takes the role, and writes its thread id into the roster row and the manual.
+4. It creates its own morning and evening tasks from the manual's "Reports" section. The morning queue, the day record and the Hausback status page stay with it.
+5. It sends the inbox thread its id, so lane reports wake the lead, not the CoS.
+6. The CoS report shows one Hausback line with a link to the lead's own report. Hausback items reach the one queue through the unblock pass, as every area's do.
 
 ## Proof
 
@@ -212,17 +237,32 @@ Their prompts change to read the roster, cover every area, and print one line fo
 5. `/lead` walked against hausback-core finds the manual through the roster and stops on the hold.
 6. `/cos` in this thread prints one status line per area and the queue.
 7. The two scheduled tasks are read back with their new prompts and this thread as the bound thread.
+8. `test-install.sh` and `test-portability.py` pass.
+9. The resume steps above are walked on paper against the manual: every wake the manual names (01:00Z morning queue, record start, evening retro, inbox report) has an owner.
+10. After the move commit, each moved passage is found word for word in its new file (`git diff -M --stat` plus `rg -F` on three sampled lines per file).
+
+A new skill directory is linked by `install.sh`.
+Kan runs nothing, but `/lead` is typeable only in a session started after the install.
 
 ## Order of work
 
-1. Write the roster (Hausback on hold, the two other areas with no lead yet).
-2. Create `skills/lead/` from the moved text, then rewrite `skills/cos/`.
-3. Update `unblock-all`, `unblock-here` and `owner-contract.md`. Delete both `hausback.md` files.
-4. Move the Hausback text into its manual.
-5. Rewrite the two scheduled prompts.
-6. Run the proof, then commit to `main` of claude-kit.
+Two commits, so the move can be checked by itself.
 
-Steps 1, 4 and 5 are vault and scheduler writes. Steps 2, 3 and 6 are in this repo.
+**Commit 1, a pure move. No behaviour changes.**
+
+1. Create `skills/lead/` from today's `cos` text, scripts and briefs. `cos` keeps a short file that points at it.
+2. Move the Hausback text from both `hausback.md` files into its manual, then delete them and fix the links.
+3. Run proof 1, 2, 3, 8 and 10. Run `install.sh`.
+
+**Commit 2, the new behaviour.**
+
+4. Write the roster (Hausback on hold, the two other areas with no lead yet).
+5. Rewrite `skills/cos/` for the roster and the queue. Add watch mode and `/lead`'s table to `lead`.
+6. Update `unblock-all`, `unblock-here`, `owner-contract.md` and `README.md`.
+7. Rewrite the two scheduled prompts.
+8. Run the whole proof.
+
+Steps 2, 4 and 7 include vault and scheduler writes. The rest is in this repo.
 
 ## Not yet specified
 

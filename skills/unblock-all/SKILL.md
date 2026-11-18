@@ -21,8 +21,14 @@ before 2026-11-14.
 The Hermes and Grok Bot version of this pass has the same name in
 `~/.secretary-skills`; this one uses the t3code MCP tools from a Claude Code or
 Codex session.
+Areas are listed in `cos/roster.md` of the brain repos your session's
+rules name; each row names the area's repo, its state and its manual.
 For an area whose manual has an "Unblock pass" section, read that section
 before collecting.
+**An area whose roster row is in state `hold` is skipped in both modes:**
+send nothing to its threads, write nothing to its to-do list or board, ask
+nothing about it and list none of its items. Count its waiting threads in
+one "on hold: <area>, n waiting" line.
 Triage and question wording follow
 [the decision rules](references/decision-rules.md).
 The rules shared with `cos`, `lead` and `merge-agent` are in

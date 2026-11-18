@@ -153,7 +153,7 @@ this thread. Each run:
 1. Stop if `hold.md` exists in the local folder.
 2. Pull the brains and read both rosters. Stop if the holder line names
    another thread.
-3. Run `unblock-all` in flag mode.
+3. Run `unblock-all` in flag mode. It skips every area on hold.
 4. Write one line per area: state, lead thread and whether it runs, in
    flight, oldest ask. An area on hold gets "on hold since <date>" and
    nothing else. A batch area with its own report gets a link to it.

@@ -382,11 +382,15 @@ Found while building, 2026-11-18.
 - **`cos-launch.sh --dry-run` exits 0 on a full machine.** It prints the budget and "a real start would be refused now". A real start still exits non-zero.
 - **`cos-log.py` stamps the date as well as the time.** An area file's Log spans days.
 - **The retro has no reading taken 10 minutes after a launch.** It compares the load each launch logged with the budget lines the lead logs at later ticks.
+- **The unblock pass skips an area on hold.** The old report prompts stopped on the Hausback hold file before the pass ran. The new report runs the pass over every area, so the pass itself now sends, files and lists nothing for an area whose roster row says `hold`.
 - **One line of the Hausback manual was reworded.** "bitazza-ios" became "work repos" in the board rule, so proof 9 prints nothing.
 - **The queue page does not exist yet.** The first report creates it and writes its link into the roster.
 
 ## Not yet specified
 
+- Whether the Hausback lead's own reports keep their "Needs you" section after resume.
+  Its manual runs a flag pass at each tick and report, so Kan would see two lists: the lead's and the one queue.
+  The area is on hold, so this waits for "resume".
 - Whether Hausback's sessions board and day records should sync too.
   They hold numbered decisions and are local to one Mac today.
   The area is on hold, so this waits for "resume".

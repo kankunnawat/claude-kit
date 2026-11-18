@@ -127,8 +127,10 @@ A lead keeps its state where a new session, on any machine, can pick it up.
   The owner's rulings for the area and its declined proposals live here
   too. Pull before reading; commit and push at handoff and whenever
   CURRENT STATE changes, not at every tick.
-- **Local:** briefs, review reports and captures go in a folder on this
-  machine, which the area file names. A manual may name its own record
+- **Local:** briefs, review reports, captures and the list of worker
+  thread ids go in a folder on this machine, which the area file names.
+  Thread ids mean nothing on another machine and stay out of the area
+  file. A manual may name its own record
   home; then use that.
 - Worker reports go to the area's inbox when its manual names one,
   otherwise to this thread.
@@ -137,8 +139,8 @@ A lead keeps its state where a new session, on any machine, can pick it up.
 
 Write it when the manual's handover trigger fires, when the context is
 close to full, or when the owner says "hand off".
-Rewrite CURRENT STATE so a new session needs nothing else: workers with
-thread ids, heads, fix rounds used and next step; open owner asks; pending
+Rewrite CURRENT STATE so a new session needs nothing else: each worker's
+name, branch, head, fix rounds used and next step; open owner asks; pending
 approvals with their exact scope; anything held.
 Commit and push it. Then stop launching.
 

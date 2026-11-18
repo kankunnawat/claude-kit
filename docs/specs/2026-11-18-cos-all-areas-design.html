@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review: one chief of staff, a lead per area</title>
+<style>
+  :root {
+    /* Base: replace with the project's design tokens when it has them. */
+    --bg: #F7F6F3; --card: #FFFFFF; --line: #E4E1DB; --line2: #EEEBE6; --chip: #E8E6E1;
+    --ink: #1F1E1C; --ink2: #45423D; --muted: #6B6760; --faint: #8C877E;
+    --accent: #2F5FD0; --accent-bg: #F3F6FD; --accent-line: #C9D6F4;
+    --sans: "IBM Plex Sans", -apple-system, "Helvetica Neue", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    /* Meaning: same in every project. Red = today/removed, green = new/decided, amber = open. */
+    --red: #B4412F; --red-bg: #FBEAE7;
+    --green: #2E7D4F; --green-bg: #E6F2EA;
+    --amber: #8A4B0F; --amber-bg: #FDF4E8;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 var(--sans); }
+  .page { max-width: 1120px; margin: 0 auto; padding: 64px 24px 96px; display: flex; flex-direction: column; gap: 36px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; font: 13px var(--mono); color: var(--muted); }
+  .chips span { padding: 4px 10px; border-radius: 999px; background: var(--chip); }
+  .chips .ask { background: var(--amber-bg); color: var(--amber); }
+  h1 { margin: 14px 0 12px; font-size: clamp(30px, 4.4vw, 46px); line-height: 1.12; font-weight: 700; letter-spacing: -0.02em; }
+  .lede { margin: 0; font-size: 20px; color: var(--ink2); max-width: 900px; }
+  .panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .kicker { font: 14px var(--mono); }
+  .today .kicker { color: var(--red); } .fix .kicker { color: var(--accent); }
+  .flow .kicker { color: var(--green); } .reach .kicker { color: var(--muted); }
+  .panel h2 { margin: 0; font-size: 26px; line-height: 1.2; font-weight: 700; }
+  .panel p { margin: 0; color: var(--ink2); }
+  .panel p.small { font-size: 15px; color: var(--muted); }
+  .pic, .words { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+
+  /* SVG pictures: color only through these classes, never fill/stroke hex attributes. */
+  svg { width: 100%; height: auto; display: block; }
+  svg text { fill: var(--ink); font: 14px var(--sans); }
+  svg .mono { font-family: var(--mono); } svg .muted { fill: var(--muted); }
+  svg text.bad { fill: var(--red); } svg text.good { fill: var(--green); } svg text.fix { fill: var(--accent); }
+  svg text.halo { paint-order: stroke; stroke: var(--card); stroke-width: 5px; stroke-linejoin: round; }
+  svg .node { fill: var(--card); stroke: var(--line); } svg .node-bad { fill: var(--red-bg); stroke: var(--red); }
+  svg .node-new { fill: var(--green-bg); stroke: var(--green); } svg .node-fix { fill: var(--accent-bg); stroke: var(--accent); }
+  svg .edge, svg .edge-bad, svg .edge-new { fill: none; stroke-width: 2; }
+  svg .edge { stroke: var(--muted); } svg .edge-bad { stroke: var(--red); stroke-dasharray: 6 5; } svg .edge-new { stroke: var(--green); }
+  svg .edge-ret { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  svg .lifeline { stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  svg .ah { fill: var(--muted); } svg .ah.new { fill: var(--green); } svg .ah.bad { fill: var(--red); }
+
+  /* Miniature screens: wireframes drawn from the tokens. Real labels, skeleton bars for data. */
+  .mini { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); overflow: hidden; font-size: 12px; line-height: 1.35; }
+  .url { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 10px; background: var(--card); border-bottom: 1px solid var(--line); font: 12px var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+  .url b { color: var(--ink); font-weight: 400; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; padding: 6px 8px; background: var(--card); border-bottom: 1px solid var(--line); }
+  .pill { padding: 2px 8px; border-radius: 999px; color: var(--muted); }
+  .pill.on { background: var(--chip); color: var(--ink); font-weight: 600; }
+  .pill.click { outline: 2px solid var(--ink2); outline-offset: 1px; color: var(--ink); }
+  .scr { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .sk { display: block; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--faint) 30%, transparent); }
+  .mini del { color: var(--red); background: var(--red-bg); border-radius: 4px; padding: 0 4px; }
+  .mini ins { color: var(--green); background: var(--green-bg); border-radius: 4px; padding: 0 4px; text-decoration: none; }
+  .spot { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 4px 6px; border-radius: 8px; }
+  .spot.bad { border: 1.5px dashed var(--red); background: var(--red-bg); }
+  .spot.good { border: 1.5px solid var(--green); background: var(--green-bg); }
+  .spot .note { margin-left: auto; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .spot.bad .note { color: var(--red); } .spot.good .note { color: var(--green); }
+  .hop { display: flex; align-items: center; gap: 12px; padding: 6px 0 6px 12px; font-size: 14px; }
+  .hop::before { content: "\2193"; font-size: 24px; line-height: 1; }
+  .hop b { display: block; }
+  .hop.bad::before, .hop .bad { color: var(--red); } .hop.good::before, .hop .good { color: var(--green); }
+
+  .steps { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
+  .steps li { display: flex; gap: 14px; align-items: center; }
+  .n { flex: none; width: 34px; height: 34px; border-radius: 10px; background: var(--green-bg); color: var(--green); font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+  /* Block map: one row per kind of thing the change touches. */
+  .map { display: flex; flex-direction: column; gap: 14px; }
+  .kind { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; align-items: start; }
+  .kind > b { font-size: 14px; line-height: 1.3; padding-top: 5px; }
+  .kind > b span { display: block; font: 12px var(--mono); color: var(--muted); font-weight: 400; }
+  .blocks { display: flex; flex-wrap: wrap; gap: 6px; }
+  .blk { font-size: 13.5px; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); }
+  .blk::before { font: 600 13px var(--mono); margin-right: 6px; }
+  .blk.new { border-color: var(--green); background: var(--green-bg); } .blk.new::before { content: "+"; color: var(--green); }
+  .blk.hit { border-color: var(--accent); background: var(--accent-bg); } .blk.hit::before { content: "~"; color: var(--accent); }
+  .blk.gone { border-color: var(--red); background: var(--red-bg); text-decoration: line-through; } .blk.gone::before { content: "\2212"; color: var(--red); }
+  .blk.same { color: var(--faint); border-style: dashed; } .blk.same::before { content: "="; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font: 12.5px var(--mono); color: var(--muted); }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 28px 32px; }
+  .card h2 { margin: 0 0 8px; font-size: 22px; font-weight: 600; }
+  .risk-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding: 13px 0; border-bottom: 1px solid var(--line2); }
+  .risk-row:last-child { border-bottom: 0; }
+  .risk-row div:first-child { font-weight: 500; }
+  .risk-row div:last-child { color: var(--ink2); }
+  .decide { display: flex; flex-direction: column; gap: 20px; }
+  .decide h3 { margin: 4px 0 0; font-size: 16px; font-weight: 600; color: var(--green); }
+  .qs, .done { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; max-width: 820px; }
+  .qs { gap: 16px; counter-reset: q; }
+  .qs li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 14px; counter-increment: q; color: var(--ink2); }
+  .qs li::before { content: counter(q); height: 34px; border-radius: 10px; background: var(--amber-bg); color: var(--amber); font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .qs b { display: block; color: var(--ink); font-weight: 600; }
+  .reply { margin: 0; padding: 14px 18px; border-radius: 12px; background: var(--ink); color: var(--bg); }
+  .done { gap: 6px; }
+  .done li { position: relative; padding-left: 25px; color: var(--ink2); }
+  .done li::before { content: "\2713"; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+  .out { display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--muted); }
+  .out p { margin: 0; }
+  .foot { font: 13px var(--mono); color: var(--faint); overflow-wrap: anywhere; }
+  code { font: 13.5px var(--mono); background: var(--chip); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+  /* Panels 1 and 2 share row heights, so their pictures start on the same line. */
+  @media (min-width: 821px) { .today, .fix { display: grid; grid-row: span 4; grid-template-rows: subgrid; align-content: start; } }
+  @media (max-width: 820px) {
+    .page { padding: 40px 16px 72px; }
+    .panels { grid-template-columns: 1fr; } .panel { padding: 22px; }
+    .risk-row { grid-template-columns: 1fr; gap: 4px; }
+    .kind { grid-template-columns: 1fr; gap: 6px; } .kind > b { padding-top: 0; }
+  }
+</style>
+</head>
+<body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+    <marker id="ah-new" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah new" d="M0,0 L10,5 L0,10 z"/></marker>
+    <marker id="ah-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah bad" d="M0,0 L10,5 L0,10 z"/></marker>
+  </defs>
+</svg>
+<main class="page">
+
+<header>
+  <div class="chips"><span>claude-kit</span><span>cos, lead, unblock-all skills</span><span class="ask">Needs your approval</span></div>
+  <h1>Approve: one chief of staff over every area, with a lead in each</h1>
+  <p class="lede">The chief of staff keeps a roster and one queue of what needs you; each area's lead runs the work there, and only Hausback's lead picks up ticket batches by itself.</p>
+</header>
+
+<section class="panels">
+  <article class="panel today">
+    <div class="kicker">1 &middot; Today</div>
+    <h2>The chief of staff only works in Hausback</h2>
+    <div class="pic">
+    <svg viewBox="0 0 480 290" role="img" aria-label="Today: the chief of staff covers Hausback only, and Kan switches threads for the other two areas">
+<rect class="node" x="190" y="8" width="100" height="38" rx="12"/><text x="240" y="32" text-anchor="middle">Kan</text>
+<path class="edge" d="M190,34 L118,92" marker-end="url(#ah)"/>
+<rect class="node-bad" x="20" y="96" width="190" height="56" rx="12"/><text class="mono" x="115" y="119" text-anchor="middle">cos</text><text class="bad" x="115" y="140" text-anchor="middle">Hausback only</text>
+<path class="edge" d="M80,152 V202" marker-end="url(#ah)"/>
+<path class="edge-bad" d="M250,46 V202" marker-end="url(#ah-bad)"/><path class="edge-bad" d="M290,36 L392,202" marker-end="url(#ah-bad)"/>
+<text class="bad halo" x="392" y="100" text-anchor="middle">you switch threads</text>
+<rect class="node" x="8" y="206" width="144" height="62" rx="12"/><text x="80" y="231" text-anchor="middle">Hausback</text><text class="muted" x="80" y="253" text-anchor="middle" style="font-size:13px">lanes, one daily PR</text>
+<rect class="node-bad" x="168" y="206" width="144" height="62" rx="12"/><text x="240" y="231" text-anchor="middle">AlphaOS</text><text class="bad" x="240" y="253" text-anchor="middle" style="font-size:13px">no chief of staff</text>
+<rect class="node-bad" x="328" y="206" width="144" height="62" rx="12"/><text x="400" y="231" text-anchor="middle">Agentic Discovery</text><text class="bad" x="400" y="253" text-anchor="middle" style="font-size:13px">no chief of staff</text>
+</svg>
+    </div>
+    <div class="words">
+      <p>The skill calls one session per project the chief of staff, but that session runs lanes, so it is really a lead. Hausback's daily-branch and tracker steps are written into the generic text, so no other project can use it.</p>
+      <p class="small">You also get one "Needs you" list per project, not one queue.</p>
+    </div>
+  </article>
+
+  <article class="panel fix">
+    <div class="kicker">2 &middot; The change</div>
+    <h2>One chief of staff, a lead per area, one queue</h2>
+    <div class="pic">
+    <svg viewBox="0 0 480 290" role="img" aria-label="After: Kan talks to one chief of staff, which oversees a lead in each of three areas">
+<rect class="node" x="190" y="8" width="100" height="38" rx="12"/><text x="240" y="32" text-anchor="middle">Kan</text>
+<path class="edge-new" d="M190,34 L118,92" marker-end="url(#ah-new)" marker-start="url(#ah-new)"/>
+<text class="good halo" x="92" y="64" text-anchor="middle">one queue</text>
+<rect class="node-fix" x="20" y="96" width="190" height="56" rx="12"/><text class="mono" x="115" y="119" text-anchor="middle">cos</text><text class="fix" x="115" y="140" text-anchor="middle">roster, every area</text>
+<path class="edge-new" d="M80,152 V202" marker-end="url(#ah-new)"/><path class="edge-new" d="M160,152 L226,202" marker-end="url(#ah-new)"/><path class="edge-new" d="M210,134 L370,202" marker-end="url(#ah-new)"/>
+<rect class="node-new" x="8" y="206" width="144" height="62" rx="12"/><text x="80" y="231" text-anchor="middle">Hausback</text><text class="good" x="80" y="253" text-anchor="middle" style="font-size:13px">lead, batch, on hold</text>
+<rect class="node-new" x="168" y="206" width="144" height="62" rx="12"/><text x="240" y="231" text-anchor="middle">AlphaOS</text><text class="good" x="240" y="253" text-anchor="middle" style="font-size:13px">lead, watch</text>
+<rect class="node-new" x="328" y="206" width="144" height="62" rx="12"/><text x="400" y="231" text-anchor="middle">Agentic Discovery</text><text class="good" x="400" y="253" text-anchor="middle" style="font-size:13px">lead, watch</text>
+</svg>
+    </div>
+    <div class="words">
+      <p>The chief of staff does no area work. It keeps the roster, builds the queue, relays your answers and reports twice a day. A lead turns work into open pull requests with a fresh review and evidence. Nobody new can merge.</p>
+      <p class="small">Names: <code>/cos</code> <code>/lead</code> <code>~/Vault/Outputs/cos/roster.md</code></p>
+    </div>
+  </article>
+
+  <article class="panel flow">
+    <div class="kicker">3 &middot; How it runs</div>
+    <h2>From your word to a merged change</h2>
+    <ol class="steps">
+      <li><span class="n">1</span>You give work to the chief of staff or straight to an area's lead.</li>
+      <li><span class="n">2</span>The lead starts a worker in its own worktree, then a fresh reviewer.</li>
+      <li><span class="n">3</span>The lead opens the pull request the way that repo's own rules say.</li>
+      <li><span class="n">4</span>The unblock pass puts it in your one queue, with screenshots for anything you can see.</li>
+      <li><span class="n">5</span>You clear the queue in a batch; the chief of staff relays each answer.</li>
+      <li><span class="n">6</span>The merge agent lands it where your guardrails allow, as today.</li>
+    </ol>
+  </article>
+
+  <article class="panel reach">
+    <div class="kicker">4 &middot; Where it goes</div>
+    <h2>Five skill files, one new file in the vault</h2>
+    <div class="map" role="img" aria-label="What the change touches and what stays">
+      <div class="kind"><b>Skills<span>4 changed, 1 new</span></b><div class="blocks"><span class="blk new">lead</span><span class="blk hit">cos</span><span class="blk hit">unblock-all</span><span class="blk hit">unblock-here</span><span class="blk hit">owner contract</span></div></div>
+      <div class="kind"><b>Per-project files in skills<span>2 removed</span></b><div class="blocks"><span class="blk gone">cos/references/hausback.md</span><span class="blk gone">unblock-all/references/hausback.md</span></div></div>
+      <div class="kind"><b>Vault<span>1 new, 1 changed</span></b><div class="blocks"><span class="blk new">roster</span><span class="blk hit">Hausback manual (text moved in)</span></div></div>
+      <div class="kind"><b>Scheduled reports<span>2 changed</span></b><div class="blocks"><span class="blk hit">morning brief prompt</span><span class="blk hit">evening wrap prompt</span></div></div>
+      <div class="kind"><b>Unchanged<span>6</span></b><div class="blocks"><span class="blk same">merge agent</span><span class="blk same">merge guard</span><span class="blk same">the three repos</span><span class="blk same">Hausback board and inbox</span><span class="blk same">Hausback hold</span><span class="blk same">launch scripts (moved, same code)</span></div></div>
+      <div class="legend"><span>+ new</span><span>~ changed</span><span>&minus; removed</span><span>= unchanged</span></div>
+    </div>
+  </article>
+</section>
+
+<section class="card">
+  <h2>Risk &rarr; answer</h2>
+  <div class="risk-row"><div>Moving Hausback's text breaks its loop when you resume it.</div><div>Its rules move word for word into its own manual. The proof walks <code>/lead</code> in hausback-core and checks it finds the manual and stops on the hold.</div></div>
+  <div class="risk-row"><div>One queue mixes projects and files an item on the wrong list.</div><div>The queue is a view rebuilt at each pass. Each item stays in its own thread, pull request or that area's own to-do list.</div></div>
+  <div class="risk-row"><div>A lead starts doing things in AlphaOS or Agentic Discovery that nobody asked for.</div><div>A watch lead only takes work you give it, follows that repo's own gate, and never merges. Starting a lead needs your yes per area.</div></div>
+  <div class="risk-row"><div>The scheduled reports fire with the old prompts during the change.</div><div>The prompts are rewritten last and read back. Until then they still check the Hausback hold and stop.</div></div>
+</section>
+
+<section class="card decide">
+  <h2>For you to decide</h2>
+  <ol class="qs">
+    <li><div><b>Should the per-area role get its own command, /lead?</b>I recommend yes: <code>/cos</code> becomes the one session over everything, and <code>/lead</code>, typed inside a repo, starts or takes over that area's lead. Today's lane steps move to it.</div></li>
+    <li><div><b>Should leads for AlphaOS and Agentic Discovery start as soon as the skills land?</b>I recommend yes: each starts in watch mode, reads its repo's rules, and launches nothing until you give it work. Hausback stays on hold with no lead.</div></li>
+  </ol>
+  <p class="reply">Reply "approved" to take the recommendations, or say what to change.</p>
+  <h3>Already decided</h3>
+  <ul class="done">
+    <li>One chief of staff over all areas, not one per project.</li>
+    <li>One queue for you, across every area.</li>
+    <li>Picking up ticket batches is optional and only Hausback uses it.</li>
+    <li>The status page is the queue's first home.</li>
+    <li>No thread is settled without asking you first.</li>
+    <li>Hausback stays on hold until you say "resume".</li>
+  </ul>
+</section>
+
+<div class="out">
+  <p><b>Left for later:</b> a local web app for the queue with keyboard and voice; how a lead records a video demo; whether a watch lead needs a timer.</p>
+  <p><b>Not in this change:</b> any file in the three repos, the merge agent or its guard, resuming Hausback, and a manual for AlphaOS or Agentic Discovery.</p>
+</div>
+
+<div class="foot">Full spec: docs/specs/2026-11-18-cos-all-areas-design.md</div>
+</main>
+</body>
+</html>

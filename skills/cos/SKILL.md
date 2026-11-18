@@ -73,8 +73,8 @@ Two things need no command:
 ## Tick
 
 Every wake is a tick: a lane report, an owner message or a scheduled report.
-The manual owns the steps (verify, flag, act, write, reply) and the machine
-limits. Apply them. Do not poll between wakes.
+The manual owns the steps (verify, flag, act, write, reply); the project
+reference names the machine limits. Apply them. Do not poll between wakes.
 
 At each scheduled report run `unblock-decisions` in flag mode and use its
 "Needs you" list as the report's section.
@@ -156,8 +156,9 @@ Count them from the record and from git, never from memory.
 ## Scripts
 
 - `scripts/cos-log.py <record> <text-file>` appends one timed Log line.
-- `scripts/cos-launch.sh` starts a session. Run it with `--dry-run` first
-  when the brief or the machine state is new.
+- `scripts/cos-launch.sh` starts a session. Pass the machine limits the
+  project reference names (`--max-load`, `--min-free-gib`). Run it with
+  `--dry-run` first when the brief or the machine state is new.
 
 Both avoid shell redirects into home paths and guard text the hooks
 misread; do not replace them with one-liners.

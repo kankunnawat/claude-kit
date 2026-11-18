@@ -34,6 +34,9 @@ Read this before acting on `/cos` in hausback-core.
 - Start: `scripts/cos-launch.sh`, which wraps
   `~/.t3/bin/t3 thread start --title .. [--worktree <full sha>] --json . -`.
   The plain form runs Opus high.
+- Machine limits for the launch: `--max-load 12 --min-free-gib 20` by day,
+  `--max-load 6 --min-free-gib 20` in quiet hours (00:00 to 08:00 Bangkok,
+  17:00 to 01:00 UTC). Lane briefs carry the same numbers.
 - Thread ids carry the `mcp:` prefix in `t3 thread show` and
   `t3_thread_organize`.
 - Send: `~/.t3/bin/t3 thread send <id> - < <file>`. Read the reply

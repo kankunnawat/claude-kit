@@ -2,8 +2,10 @@
 # Start one CoS session: machine check, thread, ledger row, log line.
 # Usage:
 #   cos-launch.sh --title T --brief FILE --bucket implement|review \
-#     --task TEXT --record RECORD.md [--worktree FULL_SHA] [--repo DIR] \
-#     [--model ID] [--dry-run]
+#     --task TEXT --record RECORD.md --max-load N --min-free-gib N \
+#     [--worktree FULL_SHA] [--repo DIR] [--model ID] [--dry-run]
+# --max-load and --min-free-gib are the project's machine limits for this
+# hour; the project reference file names them.
 # --model only labels the ledger row; the thread runs on the t3 default.
 # An implement lane needs --worktree (new lane) or --repo (a fix round in the
 # lane's existing worktree), so it never starts in the shared checkout.
@@ -13,7 +15,7 @@
 set -euo pipefail
 
 title="" brief="" bucket="" task="" record="" worktree="" repo="$PWD" repo_set=0
-model="claude-opus-5-5" dry=0
+model="claude-opus-5-5" dry=0 max_load="" min_free=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --title) title="$2"; shift 2 ;;
@@ -24,6 +26,8 @@ while [ $# -gt 0 ]; do
     --worktree) worktree="$2"; shift 2 ;;
     --repo) repo="$2"; repo_set=1; shift 2 ;;
     --model) model="$2"; shift 2 ;;
+    --max-load) max_load="$2"; shift 2 ;;
+    --min-free-gib) min_free="$2"; shift 2 ;;
     --dry-run) dry=1; shift ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
@@ -35,6 +39,8 @@ fail() { echo "cos-launch: $1" >&2; exit 1; }
 [ -s "$brief" ] || fail "brief missing or empty: $brief"
 [ -f "$record" ] || fail "record not found: $record"
 case "$bucket" in implement|review) ;; *) fail "bucket must be implement or review" ;; esac
+[[ "$max_load" =~ ^[0-9]+(\.[0-9]+)?$ ]] || fail "--max-load needs a number (the project reference names it)"
+[[ "$min_free" =~ ^[0-9]+$ ]] || fail "--min-free-gib needs a whole number (the project reference names it)"
 if [ -n "$worktree" ] && ! [[ "$worktree" =~ ^[0-9a-f]{40}$ ]]; then
   fail "--worktree needs a full 40-character sha"
 fi
@@ -51,15 +57,13 @@ brief=$(cd "$(dirname "$brief")" && pwd -P)/$(basename "$brief")
 record=$(cd "$(dirname "$record")" && pwd -P)/$(basename "$record")
 grep -q 't3 thread send' "$brief" || fail "brief has no report line (t3 thread send)"
 
-# Machine limits. Quiet hours are 17:00 to 01:00 UTC (00:00 to 08:00 Bangkok).
-hour=$((10#$(date -u +%H)))
-if [ "$hour" -ge 17 ] || [ "$hour" -lt 1 ]; then mode="quiet"; limit=6; else mode="day"; limit=12; fi
+# Machine limits come from the caller: each project sets its own.
 load=$(sysctl -n vm.loadavg | awk '{print $2}')
 free=$(df -g / | awk 'NR==2 {print $4}')
-awk -v l="$load" -v m="$limit" 'BEGIN { exit !(l < m) }' || fail "load $load is not under $limit ($mode)"
-[ "$free" -ge 20 ] || fail "free disk ${free} GiB is under 20 GiB"
+awk -v l="$load" -v m="$max_load" 'BEGIN { exit !(l < m) }' || fail "load $load is not under $max_load"
+[ "$free" -ge "$min_free" ] || fail "free disk ${free} GiB is under ${min_free} GiB"
 
-echo "mode=$mode load=$load free=${free}GiB title=$title worktree=${worktree:-none}"
+echo "load=$load free=${free}GiB title=$title worktree=${worktree:-none}"
 if [ "$dry" -eq 1 ]; then echo "dry run: nothing started"; exit 0; fi
 
 args=(thread start --title "$title")

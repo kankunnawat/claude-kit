@@ -9,11 +9,12 @@ A brief is self-contained: the session knows nothing else.
 You work for the chief of staff (CoS). Do the work yourself; no subagents.
 No PR, no PR comments, no tracker calls (the connector may not load in a new
 session; the ticket text is below).
-Machine rule: <day | quiet hours> limits from the manual. Check `uptime`
-before any test run and wait if the 1-minute load is <12 | 6> or more.
+Machine rule: <day | quiet hours> limits from the project reference. Check
+`uptime` before any test run and wait if the 1-minute load is <max load>
+or more.
 Run lint, test suites, browser checks and full proofs through
 `verify-lane -- <command>`.
-Check `df -g /` shows at least 20 GiB free before anything that writes a lot.
+Check `df -g /` shows at least <min free> GiB free before anything that writes a lot.
 Stage files by explicit path only. Never force-push. Delete with trash.
 If a gate needs a pin or ratchet change, stop and report.
 If a claim is refused, stop and report who holds it. Do not ask another lane

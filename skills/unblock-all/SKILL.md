@@ -18,7 +18,7 @@ the thread can act on, or one short question for the user.
 `unblock-here` is the same pass for the current thread only.
 This skill was `unblock-decisions` before 2026-11-18 and `unblock-threads`
 before 2026-11-14.
-The Hermes and Grok Bot version of this pass is `unblock-decisions` in
+The Hermes and Grok Bot version of this pass has the same name in
 `~/.secretary-skills`; this one uses the t3code MCP tools from a Claude Code or
 Codex session.
 In hausback-core, also read [references/hausback.md](references/hausback.md)

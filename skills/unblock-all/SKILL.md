@@ -21,7 +21,7 @@ before 2026-11-14.
 The Hermes and Grok Bot version of this pass has the same name in
 `~/.secretary-skills`; this one uses the t3code MCP tools from a Claude Code or
 Codex session.
-In hausback-core, also read [references/hausback.md](references/hausback.md)
+For an area whose manual has an "Unblock pass" section, read that section
 before collecting.
 Triage and question wording follow
 [the decision rules](references/decision-rules.md).

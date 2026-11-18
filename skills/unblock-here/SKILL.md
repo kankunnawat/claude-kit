@@ -17,8 +17,8 @@ Triage and question wording follow
 file before asking.
 Authority and how to reach the owner follow
 [the owner contract](../unblock-all/references/owner-contract.md).
-In hausback-core, the board commands for recording an answer are in
-[the hausback reference](../unblock-all/references/hausback.md).
+An area whose manual has an "Unblock pass" section names the commands for
+recording an answer there.
 
 ## 1. Collect
 

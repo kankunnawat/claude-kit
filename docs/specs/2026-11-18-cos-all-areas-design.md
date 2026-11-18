@@ -153,7 +153,8 @@ One command, no arguments. It reads the roster and does the one thing that fits.
 
 Kan adds or changes an area in plain words ("add AlphaOS", "hold hausback", "resume hausback").
 The CoS edits the row, reads it back, and starts or stops nothing else.
-Starting a lead thread for an area needs Kan's yes for that area.
+Starting a lead thread for an area needs Kan's yes for that area, and room in the machine budget.
+No lead starts when this change lands (owner ruling 2026-11-18: the machine is already full).
 
 Kept from today's skill, unchanged in meaning: the owner comes first (a discussion pauses automation, only the last message is visible, open asks lead, approval covers the exact action), handoff, and the retro.
 
@@ -212,6 +213,41 @@ What only a batch lead does, read from `lead/references/batch.md`:
 A watch lead wakes on a message from Kan, a relayed answer, or a worker's report.
 It has no timer.
 A batch lead also keeps the timed wakes its manual names.
+
+## Machine budget
+
+Owner ruling, 2026-11-18: dispatch matches the machine's health, "not too much, not too little".
+Evidence from the same hour on the 10-core Mac: 1-minute load 20.3, swap 5.6 of 7.2 GB used, both `verify-lane` slots busy.
+The machine was already past full, with no chief of staff work running.
+
+Today each launch only checks a fixed ceiling that the caller passes in (`--max-load`, `--min-free-gib`).
+That stops "too much" for one launch.
+It knows nothing about the other areas, and it never says how much room is left, so it cannot prevent "too little".
+
+**One budget per machine, read at every dispatch.**
+
+- A new script, `lead/scripts/capacity.sh`, prints how many new sessions may start now, with the readings it used.
+- It reads the whole machine: 1-minute load, core count, swap used, memory free, free disk and busy `verify-lane` slots.
+  Every area therefore shares one budget without the leads talking to each other.
+- The launch script calls it and refuses to start when it prints 0. The two fixed flags go away.
+- A lead with queued work starts up to that many sessions at this wake, not one at a time. That is the "not too little" half.
+- When it prints 0, the work waits. A finished worker's report is the wake that fills the freed slot.
+  Work that has waited through a report shows in the queue as "waiting for the machine".
+- The chief of staff's report shows the budget line for the machine it runs on.
+
+**Starting numbers, to be tuned.** They are a guess, not a measurement.
+
+```text
+slots = floor((cores - load) / 2), at most 4
+slots = 0 when any of: swap used 75% or more, memory free under 20%, free disk under 20 GiB
+quiet hours: at most 1
+```
+
+- The "2" assumes one working session adds about 2 to the load. Nothing has measured that yet.
+- Each launch already logs the load it started at. The retro compares that with the load 10 minutes later and proposes new numbers.
+- The numbers live per machine in `kan-brain/cos/roster.md`, because a second machine has other cores and memory.
+- An area's manual may be stricter than the machine's numbers, never looser. Hausback's Mac rules stay as written.
+- Heavy checks still go through `verify-lane` and its 2 slots. This budget counts sessions, not test runs.
 
 ## Learning Kan's preferences
 
@@ -298,7 +334,8 @@ Nothing here runs until Kan says "resume hausback".
 
 1. Every link in the edited skills resolves, and each `SKILL.md` has `name` and `description`.
 2. `rg -i hausback skills/cos skills/lead skills/unblock-all skills/unblock-here` prints nothing.
-3. `lead/scripts/cos-launch.sh --dry-run --repo <agentic-discovery checkout>` passes its machine check and starts nothing.
+3. `lead/scripts/cos-launch.sh --dry-run --repo <agentic-discovery checkout>` prints the budget and starts nothing.
+   `capacity.sh` is run against four recorded readings (idle, half loaded, today's 20.3 load, low disk) and prints 4, 2, 0 and 0.
 4. `/lead` walked by hand against agentic-discovery reaches "read the gate from origin/main" with no write.
 5. `/lead` walked against hausback-core finds the manual through the roster and stops on the hold.
 6. `/cos` in this thread prints one status line per area and the queue.
@@ -326,6 +363,7 @@ Two commits, so the move can be checked by itself.
 
 4. Make the three rule edits above. Write both rosters: `kan-brain` with Hausback on hold and the two other areas with no lead yet, `btz-brain` with no areas.
 5. Rewrite `skills/cos/` for the roster and the queue. Add watch mode and `/lead`'s table to `lead`.
+   Add `capacity.sh` with its test, and make the launch script call it.
 6. Update `unblock-all`, `unblock-here`, `owner-contract.md` and `README.md`.
 7. Rewrite the two scheduled prompts.
 8. Run the whole proof.

@@ -1,50 +1,42 @@
 ---
-name: unblock-decisions
+name: unblock-all
 description: >-
-  Use when the user types /unblock-decisions, says "unblock", "bring up my
-  decisions", "what needs me" or "settle the done threads", when a chief of
-  staff tick runs its flag pass, or when a check finds t3code threads waiting
-  on the user, or when the user asks to have this thread's own decisions
-  brought up in the thread ("ask me here"). Finds every session that needs
-  the user, this one included, answers what standing
-  decisions already cover, files the rest on the user's to-do list (flag mode)
-  or asks them one by one with AskUserQuestion, each with a recommendation (ask
-  mode), relays the answers and settles finished threads.
+  Use when the user types /unblock-all, says "unblock" with no scope,
+  "bring up my decisions", "what needs me" or "settle the done threads", when a chief of staff tick runs its flag pass,
+  or when a check finds t3code threads waiting on the user. Sweeps every
+  thread, this one included: answers what standing decisions already cover,
+  files the rest on the user's to-do list (flag mode) or asks them one by
+  one with AskUserQuestion, each with a recommendation (ask mode), relays
+  the answers and settles finished threads. For this thread only, use
+  unblock-here.
 ---
 
-# Unblock decisions
+# Unblock all
 
-One pass that turns every thread waiting on someone into either an answer the
-thread can act on or one short, numbered question for the user.
-It was called `unblock-threads` before 2026-11-14.
-The Hermes and Grok Bot version of this pass has the same name in
+One pass over every thread that waits on someone. Each ask becomes an answer
+the thread can act on, or one short question for the user.
+`unblock-here` is the same pass for the current thread only.
+This skill was `unblock-decisions` before 2026-11-18 and `unblock-threads`
+before 2026-11-14.
+The Hermes and Grok Bot version of this pass is `unblock-decisions` in
 `~/.secretary-skills`; this one uses the t3code MCP tools from a Claude Code or
 Codex session.
 In hausback-core, also read [references/hausback.md](references/hausback.md)
 before collecting.
+Triage and question wording follow
+[the decision rules](references/decision-rules.md).
 The rules shared with `cos` and `merge-agent` are in
 [references/owner-contract.md](references/owner-contract.md).
 
 ## Modes
 
-- **ask** (default when the user runs it). Steps 1 to 5 below. When the user
-  runs it inside the coordinating thread (the chief of staff), act on each
-  answer directly in that thread instead of relaying it to yourself.
-- **here** (`/unblock-decisions here`, or the user says "bring the decisions
-  here" or "ask me in this thread"). Only this thread's own open decisions:
-  - collect them from this conversation: questions you left for the user,
-    "owner ruling needed" lists in a file or PR you wrote, and any to-do you
-    filed that is really a decision;
-  - skip the thread sweep of step 1; triage (step 2) and present (step 3) as
-    usual, then act on each answer in this thread and record it where the
-    question lived (the PR, the decision file, the to-do);
-  - a bucket 6 item is measured in this thread first, then asked with the
-    evidence;
-  - never send the user to a PR, a doc or a board to answer. Link one only
-    when the answer needs their eyes on an artifact or a UI.
-  Plain **ask** mode starts with these same decisions, then sweeps the other
-  threads.
-- **flag** (`/unblock-decisions flag`, or a chief of staff tick). Steps 1 and 2
+- **ask** (default when the user runs it). Steps 1 to 5 below. Start with
+  this thread's own open decisions (step 1 of
+  [unblock-here](../unblock-here/SKILL.md)), then sweep the
+  other threads. When the user runs it inside the coordinating thread (the
+  chief of staff), act on each answer directly in that thread instead of
+  relaying it to yourself.
+- **flag** (`/unblock-all flag`, or a chief of staff tick). Steps 1 and 2
   only, then:
   - answer bucket 1 and act on bucket 2 as usual;
   - put every bucket 3, 4 and 5 item on the user's to-do list once, with a
@@ -104,74 +96,11 @@ Do this before asking anything.
 
 ## 2. Triage each ask
 
-Put every ask in exactly one bucket:
-
-1. **Already answered.** Search the project's standing-decision index and
-   decision records, the session's progress record, and the user's earlier
-   answers in this conversation. If one covers the ask, answer the thread and
-   cite the source. Do not ask the user again.
-2. **Yours to decide.** Reversible, inside work the user already approved, and
-   not reserved to the user: retry order, which of two equivalent approaches,
-   running a capture or a re-check, queueing, closing a to-do whose target is
-   gone. Decide, tell the thread, and list the call in one line of the user
-   reply.
-3. **The user's decision.** Product scope, architecture, anything written to an
-   external tracker or posted under the user's name, messages to other people,
-   merges, spending, real customer data, and anything the thread's own rules
-   reserve for the user.
-4. **Someone else must act.** Draft the message for the user to send (a
-   paste-by-hand file, per the user's rules) instead of asking a question.
-5. **Action for the user.** A review, a click in a UI, a setting only they can
-   change. List it with the exact place to go; it is not a question.
-6. **Not ready to ask.** The ask rests on a claim nobody has measured or
-   checked. Send it back to its thread for the measurement. It reaches the
-   user only with the evidence attached.
-
-Check live state before you keep an ask; an old message is not evidence:
-
-- Search the tracker before asking to file something. It may already exist.
-- Check each PR's state and mergeability. For a conflict, list the files
-  (`git merge-tree --write-tree --name-only origin/<base> <head>`). A
-  conflict in a docs file only changes the ask.
-- A "review PR X" to-do is stale once X is merged or closed. A "decide a
-  follow-up" to-do is not: it stays live while its item is open.
-- A closed, unmerged PR may have a replacement. Look for one before you call
-  its to-do stale.
-
-Merge asks that share one root cause. Drop asks made stale by later events
-(PR merged, slot freed, item closed).
+Follow "Triage each ask" in [the decision rules](references/decision-rules.md).
 
 ## 3. Present one batch
 
-Ask the decisions interactively, so the user answers them one by one:
-
-- Use `AskUserQuestion`, one question per decision, at most 4 per call. With
-  more than 4, ask the 4 that unblock the most first, then the rest in a
-  second call after the answers come back.
-- Each question stands on its own, since the dialog may hide your earlier
-  text: what is blocked and why, with plain words next to every PR or ticket
-  number, then the question in one sentence. Header chip `D1 <topic>`. Keep
-  each question to 2 or 3 sentences.
-- 2 to 4 options. Put the recommended option first, with "(Recommended)" at
-  the end of its label. Each description gives its main pro or con and the
-  fact that decides it, in one or two sentences. When an option approves an
-  outward write, such as a tracker comment or a state change, say so in its
-  description, so picking it is that approval.
-- Bundle many stale-looking old asks into one question ("close all as stale"
-  versus "go through them one by one") instead of one question each.
-- Never use letters from a non-Latin script in labels.
-- Questions from an earlier pass that the user has not answered come first,
-  marked "still open", with their age. Drop one only when live state made it
-  stale.
-- Order by how much work an answer unblocks, then by how cheap it is to answer.
-- Never re-ask something the user declined or already answered.
-- Only if `AskUserQuestion` is unavailable, fall back to one text reply:
-  number the decisions D1, D2… with options 1, 2, 3, so "D1 2, D2 1" can't
-  be misread.
-
-The text reply around the questions is short: at most about 8 lines. It holds
-a count line, the actions for the user, "decided by me" one-liners, and what
-is waiting on other people. No per-thread narration.
+Follow "Present one batch" in the same file.
 
 ## 4. Relay the answers
 

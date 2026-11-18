@@ -10,7 +10,7 @@ The repo declares its PR gate. This skill finds that gate and follows it.
 It holds no repo names, tier names, verdict formats or merge commands of its own.
 A repo with no gate gets a drafted guide, and nothing merges there until the user merges that guide.
 
-Read [the owner contract](../unblock-decisions/references/owner-contract.md) first.
+Read [the owner contract](../unblock-all/references/owner-contract.md) first.
 It holds the rules this skill shares with the others: authority and consent, who owns review, merging and tracker writes, the report line, and how a lesson becomes a rule.
 This file keeps only the merge agent's own job.
 

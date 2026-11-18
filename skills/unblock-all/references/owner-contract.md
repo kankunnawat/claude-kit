@@ -1,6 +1,6 @@
 # Owner contract
 
-Shared by `cos`, `merge-agent` and `unblock-decisions`.
+Shared by `cos`, `merge-agent`, `unblock-all` and `unblock-here`.
 Each skill reads this file and keeps only its own job in its `SKILL.md`.
 A rule that two of them need lives here, once.
 
@@ -10,7 +10,7 @@ A rule that two of them need lives here, once.
 |---|---|---|
 | `cos` | Turns tickets into open PRs built from reviewed lanes | An open PR; the merge agent reviews its head |
 | `merge-agent` | Turns an open PR into a landed one | One line per PR: landed, merge-ready or held, with the reason |
-| `unblock-decisions` | Carries the owner's decisions to both | Answers to the session that owns the next step, and one "Needs you" list |
+| `unblock-all` | Carries the owner's decisions to both | Answers to the session that owns the next step, and one "Needs you" list |
 
 ## Who owns what
 
@@ -55,7 +55,7 @@ A rule that two of them need lives here, once.
 - **Open asks lead.** At most three, oldest first, each answerable in a
   word.
 - **One "Needs you" list per project.** Every session's held items go to
-  it through `unblock-decisions` flag mode. No session keeps a private ask
+  it through `unblock-all` flag mode. No session keeps a private ask
   list.
 - **Reports from other sessions go to the project's inbox**, when it has
   one, never into the thread the owner is talking in.

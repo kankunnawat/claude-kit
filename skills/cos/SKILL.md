@@ -21,10 +21,10 @@ names the manual, the record, the board and the ids.
 A project with no reference file has no CoS yet: ask the owner for the
 manual's home before starting.
 
-The rules this skill shares with `merge-agent` and `unblock-decisions`
+The rules this skill shares with `merge-agent` and `unblock-all`
 (who owns what, authority, reaching the owner, the report line, improving
 the rules) are in
-[the owner contract](../unblock-decisions/references/owner-contract.md).
+[the owner contract](../unblock-all/references/owner-contract.md).
 Read it once per session. The CoS never merges; it hands the merge agent
 an open PR whose head the merge agent reviews (lane reviews do not carry
 to the integration head), and
@@ -76,7 +76,7 @@ Every wake is a tick: a lane report, an owner message or a scheduled report.
 The manual owns the steps (verify, flag, act, write, reply); the project
 reference names the machine limits. Apply them. Do not poll between wakes.
 
-At each scheduled report run `unblock-decisions` in flag mode and use its
+At each scheduled report run `unblock-all` in flag mode and use its
 "Needs you" list as the report's section.
 
 ## Lane pattern
@@ -137,7 +137,7 @@ actually used:
 - **Workflow:** which steps of the lane pattern were skipped, repeated or
   worked around.
 - **Skills:** which lines of this skill, its references and
-  `unblock-decisions` were never used, were wrong, or were missing.
+  `unblock-all` were never used, were wrong, or were missing.
 - **Automations:** list the scheduled tasks. Which are dead, which fired at
   a bad time, which prompt restates a rule that lives elsewhere.
 

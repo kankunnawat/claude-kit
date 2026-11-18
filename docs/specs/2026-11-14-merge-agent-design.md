@@ -121,7 +121,7 @@ It prints the pinned command; the agent runs it.
 
 ## Authority rules
 
-Shared rules (consent, who owns review, merging and tracker writes, the report line, how rules improve) live in `skills/unblock-decisions/references/owner-contract.md`. The skill reads it first and repeats none of it.
+Shared rules (consent, who owns review, merging and tracker writes, the report line, how rules improve) live in `skills/unblock-all/references/owner-contract.md`. The skill reads it first and repeats none of it.
 
 - The skill grants nothing. Kan's guardrails file and the guard decide where an agent may merge.
 - Kan's own PRs only, by default.

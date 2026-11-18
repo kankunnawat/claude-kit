@@ -21,7 +21,7 @@ Read this before acting on `/cos` in hausback-core.
   and review reports go in the same folder.
 - **Board:** the newest `~/Vault/Outputs/hausback/*-hausback-sessions-board.md`,
   written only through `board.mjs` (see
-  `unblock-decisions/references/hausback.md` for the commands).
+  `unblock-all/references/hausback.md` for the commands).
 - **Shared brief rules:** the newest `lane-brief-common.md` and
   `review-brief-common.md` under `~/Vault/Outputs/hausback/`. Briefs point at
   them and add only what is new.

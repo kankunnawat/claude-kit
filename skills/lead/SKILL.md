@@ -61,7 +61,7 @@ A lead whose area is put on hold gives status only: no launches, no asks.
    gets one read-only scout first.
 2. **Check the machine.** Run `scripts/capacity.sh` with this machine's
    flags from the roster, plus `--quiet-hours` inside the roster's quiet
-   hours. Start at most the `slots` it prints at this
+   hours and any stricter flags the area's manual names. Start at most the `slots` it prints at this
    wake. With queued work and room for three, start three. With `slots=0`,
    start nothing; the next worker report is the wake that tries again.
 3. **Launch.** One worker per item, each a separate top-level session in

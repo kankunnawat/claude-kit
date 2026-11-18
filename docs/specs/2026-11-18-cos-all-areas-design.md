@@ -380,6 +380,7 @@ Found while building, 2026-11-18.
 - **The chief of staff has its own hold file.** `hold.md` in the machine's local folder (`~/Vault/Outputs/cos` on this Mac). It pauses the chief of staff's reports and puts no area on hold.
 - **Scheduled task ids are stored nowhere.** Each report run reads the holder line and stops when it names another thread, so a pair left behind on another machine goes quiet by itself.
 - **`cos-launch.sh --dry-run` exits 0 on a full machine.** It prints the budget and "a real start would be refused now". A real start still exits non-zero.
+- **`capacity.sh` takes `--max-load N`.** Hausback's manual sets a load ceiling per launch (12 by day, 6 in quiet hours), and the removed flag had no other equivalent. It is off unless an area passes it.
 - **`cos-log.py` stamps the date as well as the time.** An area file's Log spans days.
 - **The retro has no reading taken 10 minutes after a launch.** It compares the load each launch logged with the budget lines the lead logs at later ticks.
 - **The unblock pass skips an area on hold.** The old report prompts stopped on the Hausback hold file before the pass ran. The new report runs the pass over every area, so the pass itself now sends, files and lists nothing for an area whose roster row says `hold`.

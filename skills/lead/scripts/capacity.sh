@@ -2,19 +2,20 @@
 # Print how many new agent sessions this machine has room for right now.
 # Usage:
 #   capacity.sh [--quiet-hours] [--max N] [--per-session N] [--swap-max PCT]
-#               [--mem-min PCT] [--min-free-gib N]
+#               [--mem-min PCT] [--min-free-gib N] [--max-load N]
 # The defaults are the starting numbers; a machine's own numbers come from its
 # row in the roster and are passed as flags.
 #   slots = floor((cores - load) / per-session), at most --max (1 in quiet hours)
 #   slots = 0 when swap used >= --swap-max, memory free < --mem-min,
-#           or free disk < --min-free-gib
+#           free disk < --min-free-gib, or load >= --max-load (an area's own
+#           stricter ceiling; off unless given)
 # It reads the whole machine, so every area shares one budget.
 # Output is one line: slots=N followed by the readings and the reason.
 # CAPACITY_READINGS="cores load swap_pct mem_free_pct free_gib" replaces the
 # live readings (for the test).
 set -euo pipefail
 
-max=4 per=2 swap_max=75 mem_min=20 min_free=20 quiet=0
+max=4 per=2 swap_max=75 mem_min=20 min_free=20 quiet=0 max_load=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --quiet-hours) quiet=1; shift ;;
@@ -23,10 +24,11 @@ while [ $# -gt 0 ]; do
     --swap-max) swap_max="$2"; shift 2 ;;
     --mem-min) mem_min="$2"; shift 2 ;;
     --min-free-gib) min_free="$2"; shift 2 ;;
+    --max-load) max_load="$2"; shift 2 ;;
     *) echo "capacity: unknown argument: $1" >&2; exit 2 ;;
   esac
 done
-for n in "$max" "$per" "$swap_max" "$mem_min" "$min_free"; do
+for n in "$max" "$per" "$swap_max" "$mem_min" "$min_free" ${max_load:+"$max_load"}; do
   [[ "$n" =~ ^[0-9]+$ ]] || { echo "capacity: limits must be whole numbers, got: $n" >&2; exit 2; }
 done
 [ "$per" -gt 0 ] || { echo "capacity: --per-session must be above 0" >&2; exit 2; }
@@ -53,6 +55,9 @@ done
 slots=$(awk -v c="$cores" -v l="$load" -v p="$per" -v m="$max" 'BEGIN { s = int((c - l) / p); if (s < 0) s = 0; if (s > m) s = m; print s }')
 reason="room for $slots"
 [ "$slots" -eq 0 ] && reason="load $load on $cores cores"
+if [ -n "$max_load" ] && awk -v l="$load" -v m="$max_load" 'BEGIN { exit !(l >= m) }'; then
+  slots=0; reason="load $load at or over the area's ceiling $max_load"
+fi
 if [ "$swap_pct" -ge "$swap_max" ]; then slots=0; reason="swap ${swap_pct}% used"; fi
 if [ "$mem_free" -lt "$mem_min" ]; then slots=0; reason="memory ${mem_free}% free"; fi
 if [ "$free" -lt "$min_free" ]; then slots=0; reason="disk ${free} GiB free"; fi

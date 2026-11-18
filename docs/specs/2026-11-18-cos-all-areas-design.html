@@ -228,6 +228,8 @@
   <div class="risk-row"><div>The chief of staff has its own hold file.</div><div>It sits in a local folder on this Mac. It pauses the chief of staff's reports and puts no area on hold.</div></div>
   <div class="risk-row"><div>Scheduled task ids are stored nowhere.</div><div>Each report run reads the holder line and stops when it names another thread, so a pair left behind on another machine goes quiet by itself.</div></div>
   <div class="risk-row"><div>cos-launch.sh --dry-run exits 0 on a full machine.</div><div>It prints the budget and "a real start would be refused now". A real start is still refused.</div></div>
+  <div class="risk-row"><div>The unblock pass skips an area on hold.</div><div>The old report prompts stopped on the Hausback hold file before the pass ran. The new report runs the pass over every area, so the pass itself now sends, files and lists nothing for an area on hold.</div></div>
+  <div class="risk-row"><div>The budget script takes an area's own load ceiling.</div><div>Hausback's manual sets one per launch (12 by day, 6 in quiet hours). It is off unless an area passes it.</div></div>
   <div class="risk-row"><div>cos-log.py stamps the date as well as the time.</div><div>An area's log spans days.</div></div>
   <div class="risk-row"><div>The retro has no reading taken 10 minutes after a launch.</div><div>It compares the load each launch logged with the budget lines the lead logs at later wakes.</div></div>
   <div class="risk-row"><div>One line of the Hausback manual was reworded.</div><div>A work repo's name became "work repos" in the board rule, so the separation check prints nothing.</div></div>

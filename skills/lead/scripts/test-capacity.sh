@@ -21,6 +21,8 @@ t "low memory stops every start"         0 "10 1.5 10 19 60"
 t "quiet hours allow one"                1 "10 1.5 10 60 60" --quiet-hours
 t "a machine's own cap is honoured"      2 "10 1.5 10 60 60" --max 2
 t "a bigger machine gets more room"      4 "16 5.0 10 60 60"
+t "an area's load ceiling stops starts"  0 "10 6.2 10 60 60" --max-load 6
+t "under the ceiling the budget rules"   2 "10 5.0 10 60 60" --max-load 6
 
 if CAPACITY_READINGS="10 abc 10 60 60" "$HERE/capacity.sh" > /dev/null 2>&1; then
   echo "  FAIL an unreadable load must exit non-zero"; fails=$((fails+1))

@@ -25,6 +25,8 @@ Areas are listed in `cos/roster.md` of the brain repos your session's
 rules name; each row names the area's repo, its state and its manual.
 For an area whose manual has an "Unblock pass" section, read that section
 before collecting.
+An item belongs to the area whose repo owns its thread's checkout, its PR
+or its ticket, whichever thread reports it.
 **An area whose roster row is in state `hold` is skipped in both modes:**
 send nothing to its threads, write nothing to its to-do list or board, ask
 nothing about it and list none of its items. Count its waiting threads in

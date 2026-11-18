@@ -4,7 +4,9 @@ description: >-
   Use when the user types /unblock-decisions, says "unblock", "bring up my
   decisions", "what needs me" or "settle the done threads", when a chief of
   staff tick runs its flag pass, or when a check finds t3code threads waiting
-  on the user. Finds every session that needs the user, answers what standing
+  on the user, or when the user asks to have this thread's own decisions
+  brought up in the thread ("ask me here"). Finds every session that needs
+  the user, this one included, answers what standing
   decisions already cover, files the rest on the user's to-do list (flag mode)
   or asks them one by one with AskUserQuestion, each with a recommendation (ask
   mode), relays the answers and settles finished threads.
@@ -20,12 +22,26 @@ The Hermes and Grok Bot version of this pass has the same name in
 Codex session.
 In hausback-core, also read [references/hausback.md](references/hausback.md)
 before collecting.
+The rules shared with `cos` and `merge-agent` are in
+[references/owner-contract.md](references/owner-contract.md).
 
 ## Modes
 
 - **ask** (default when the user runs it). Steps 1 to 5 below. When the user
   runs it inside the coordinating thread (the chief of staff), act on each
   answer directly in that thread instead of relaying it to yourself.
+- **here** (`/unblock-decisions here`, or the user says "bring the decisions
+  here" or "ask me in this thread"). Only this thread's own open decisions:
+  - collect them from this conversation: questions you left for the user,
+    "owner ruling needed" lists in a file or PR you wrote, and any to-do you
+    filed that is really a decision;
+  - skip the thread sweep of step 1; triage (step 2) and present (step 3) as
+    usual, then act on each answer in this thread and record it where the
+    question lived (the PR, the decision file, the to-do);
+  - never send the user to a PR, a doc or a board to answer. Link one only
+    when the answer needs their eyes on an artifact or a UI.
+  Plain **ask** mode starts with these same decisions, then sweeps the other
+  threads.
 - **flag** (`/unblock-decisions flag`, or a chief of staff tick). Steps 1 and 2
   only, then:
   - answer bucket 1 and act on bucket 2 as usual;
@@ -33,9 +49,13 @@ before collecting.
     link and the minutes it takes (skip an item already listed there); a
     project with no to-do list (only hausback-core has a board) gets its items
     in the "Needs you" list only, never on another project's list;
+  - send each bucket 6 item back to its thread; never file it as a to-do;
   - ask nothing and never call `AskUserQuestion`;
   - end with a "Needs you" list of at most 8 lines, newest blocker first, and
-    a ping only if the project's ping rule allows one at this hour.
+    a ping only if the project's ping rule allows one at this hour;
+  - a coordinating thread runs this mode at each scheduled report and uses
+    the "Needs you" list as that report's section, so the report and the
+    to-do list never disagree.
 
 ## 1. Collect
 
@@ -51,6 +71,9 @@ Do this before asking anything.
   `runLimit: 1`. Positions follow `itemCount`, so this lands on the last
   messages. If the last item is a short progress line, read a few items
   further on.
+- A thread whose newest user message is under 15 minutes old is being
+  driven by the user right now. List it as "you are in it" and ask nothing
+  about it.
 - A thread with `pendingRequestCount > 0` has an approval or question waiting
   in its UI. Read it with `t3_pending_request` if available; otherwise link
   the thread and tell the user to answer it there.
@@ -63,11 +86,17 @@ Do this before asking anything.
   - a thread the user drives that stopped with work unfinished (its last
     message names a next step that waits on nobody else);
   - a running thread whose `updatedAt` is over 30 minutes old (likely stalled);
-  - a thread that reports an account, budget or machine limit.
+  - a thread that reports an account, budget or machine limit;
+  - a thread that reports a tool or connector it needs is missing or asks
+    for sign-in. Name the tool and the fix once; do not retest it in new
+    sessions after two failures.
 - Also collect: open PRs waiting on the user (flagged for owner review,
   CONCERN or BLOCK findings), the project's owner to-do and ask lists (see the
   project reference), and earlier questions you asked the user that are still
   unanswered in this session or in the session's own progress record.
+- Count what each source returned before you triage. A source that returns
+  nothing (no threads, no to-dos, no PRs) is re-read once another way before
+  you treat it as empty.
 
 ## 2. Triage each ask
 
@@ -90,6 +119,9 @@ Put every ask in exactly one bucket:
    paste-by-hand file, per the user's rules) instead of asking a question.
 5. **Action for the user.** A review, a click in a UI, a setting only they can
    change. List it with the exact place to go; it is not a question.
+6. **Not ready to ask.** The ask rests on a claim nobody has measured or
+   checked. Send it back to its thread for the measurement. It reaches the
+   user only with the evidence attached.
 
 Check live state before you keep an ask; an old message is not evidence:
 
@@ -124,6 +156,9 @@ Ask the decisions interactively, so the user answers them one by one:
 - Bundle many stale-looking old asks into one question ("close all as stale"
   versus "go through them one by one") instead of one question each.
 - Never use letters from a non-Latin script in labels.
+- Questions from an earlier pass that the user has not answered come first,
+  marked "still open", with their age. Drop one only when live state made it
+  stale.
 - Order by how much work an answer unblocks, then by how cheap it is to answer.
 - Never re-ask something the user declined or already answered.
 - Only if `AskUserQuestion` is unavailable, fall back to one text reply:

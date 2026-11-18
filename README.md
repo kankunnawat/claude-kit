@@ -21,6 +21,7 @@ you don't, most of them still stand alone.
 | `review-plan` | Adversarial rubric pass over a plan or spec. Finds the gaps before execution does. |
 | `finish` | Runs the repository's declared close-out ritual: commit, push, and whatever its `Close-out:` line specifies. |
 | `merge-agent` | Makes the session a repo's merge agent: finds the PR gate guide the repo declares and follows it to review, verify and merge your open PRs, or drafts a guide as a PR when there is none. |
+| `cos` | Makes the session a project's chief of staff: it plans, launches lanes and reviewers as separate sessions, relays your decisions and reports twice a day. It never implements or merges. |
 | `whats-next` | Read-only position check against the repository's tracker. Answers where you are without starting work. |
 | `worktrees` | Where worktrees live, how they get created, and when they get cleaned up. |
 | `rendering-specs-as-html` | Keeps every spec and plan as a synced `.md` + `.html` pair. |

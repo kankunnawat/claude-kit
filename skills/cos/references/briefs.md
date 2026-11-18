@@ -1,0 +1,175 @@
+# Brief templates
+
+Fill every `<blank>`. Keep every fixed line. One brief per session.
+A brief is self-contained: the session knows nothing else.
+
+## Lines every brief carries
+
+```
+You work for the chief of staff (CoS). Do the work yourself; no subagents.
+No PR, no PR comments, no tracker calls (the connector may not load in a new
+session; the ticket text is below).
+Machine rule: <day | quiet hours> limits from the manual. Check `uptime`
+before any test run and wait if the 1-minute load is <12 | 6> or more.
+Run lint, test suites, browser checks and full proofs through
+`verify-lane -- <command>`.
+Check `df -g /` shows at least 20 GiB free before anything that writes a lot.
+Stage files by explicit path only. Never force-push. Delete with trash.
+If a gate needs a pin or ratchet change, stop and report.
+If a claim is refused, stop and report who holds it. Do not ask another lane
+to release it.
+
+Ticket (tracker text, word for word): <key>, <priority>, "<title>". "<body>"
+
+End with exactly one message, then stop:
+~/.t3/bin/t3 thread send <inbox thread id> "<fixed report line>"
+```
+
+## Scout (read-only pre-screen)
+
+```
+You are a read-only scout. No edits, commits, pushes or claims. No installs,
+tests, builds or browser. Read with rg, git and gh only. Fetch the trunk and
+say which sha you read.
+
+Goal: <what the owner asked for>. Pre-screen <n> tickets so the CoS can
+launch at most <m> lanes.
+
+For each ticket, with file:line evidence:
+1. Still true on the trunk today? Already fixed or touched by a commit or an
+   open PR?
+2. The smallest correct fix and where it lives. Files, rough size, generated
+   files it changes, pins that move.
+3. The proof it needs, and whether that proof can run under the machine rule
+   now.
+4. Risk and reviewer tier. Does it need the owner's review flag?
+5. Conflicts with work in flight: <lane branches and their files>.
+<ticket-specific questions>
+
+End with a lane split: which tickets to run now, in what order, and what
+each lane must not touch.
+
+Report file: <record folder>/prescreen-<name>.md, verdict table at the top.
+Report line: "Pre-screen <name> done: <path>. <key> <verdict, one line>. ...
+Lanes: <split>."
+```
+
+## Lane
+
+```
+Lane <name> for <key> (<plain words>). Branch <type>/<area>/<key>-<slug>,
+cut from the trunk at <full sha>, in your own worktree.
+
+Read first: <shared lane rules file>, then the scout report <path>,
+section <key>.
+
+Done when: <what a user or caller can observe>.
+Scope: <files or packages>. Not in scope: <list>.
+Must not touch: <files held by other lanes>.
+
+Method: claim your files first and read the surface count back. Test first:
+show the new test red, then green. One logical change per commit, subject 72
+characters or fewer.
+
+Generated files: commit source only. If a bundle, compiled stylesheet or
+lockfile must change, regenerate it locally for your own proof, leave it
+modified and uncommitted, and write the regenerate command in your state
+file. Never stage, stash or restore it.
+
+Proof at your head: <named test files, one at a time>, <light gates>,
+`git diff --check`. Say what you did not run and why.
+
+UI change: capture <routes, states, viewports, languages> into
+<record folder>/artifacts/<name>/ before you report, and list anything odd
+you see in them.
+
+State file: <record folder>/<name>.md with CURRENT STATE, red and green
+lines, head, checks, and an "Integration lane runbook" section (regenerate
+commands, checks that must be green after, capture list).
+
+Push the branch, no force.
+Report line: "<name>: ready, head <full sha>. Done-when <met | not met>.
+Red to green <lines>. Checks <summary>. Captures <n files, odd: list or
+none>. Deviations <list or none>."
+```
+
+## Reviewer (one-shot, fresh)
+
+```
+You are a one-shot independent reviewer. You did not write this change.
+Review only: no edits, commits, pushes, PR comments, labels or tracker
+writes. No installs, tests, builds or browser.
+
+Read first: <shared review rules file>, <tier checklist file>, the lane
+state file <path> (claims to verify, not trust).
+
+Goal and done-when: <copied from the lane brief>.
+Range: <trunk full sha> .. <head full sha> on <branch>. <n> commits,
+<n> files.
+Known and expected, not a finding: <for example, generated pair not
+committed by rule>.
+
+Check, with commands and output quoted:
+1. Scope: every changed file belongs to the done-when.
+2. The change itself: <specific risks from the scout report>.
+3. Tests assert what a user or caller observes; each new case would fail on
+   the trunk; no assertion weakened or deleted.
+4. Captures, if any: read each one against the done-when.
+5. Light gates, each alone, exit code read unpiped: <list>.
+6. Commits: subjects, no trailers, no board decision numbers.
+7. Does it need the owner's review flag?
+
+Report file: <record folder>/review-<name>.md, first line
+`VERDICT: PASS|CONCERN|BLOCK at <short sha>`, then findings with file:line
+marked MUST or SHOULD, what you verified, what you could not verify, and a
+list for the integration lane.
+Report line: "review-<name>: <VERDICT> at <short sha>. Done-when <met | not
+met>. <one line per finding or none>. Flag <agree | disagree>. Report
+<path>"
+```
+
+## Fix round
+
+```
+Fix round <1 | 2> of 2 for <key>, lane <name>. Fresh context, the lane's own
+worktree, branch <branch>, pushed head <full sha>.
+
+Read first: <shared lane rules file>, the state file, the review <path>.
+State you inherit: <files modified and uncommitted on purpose, and why>.
+
+Fix exactly these, each test-first in its own commit:
+1. <finding, file:line, the observable test>
+2. ...
+Not in this round: <list, and who handles each>.
+
+Proof, captures (recapture only what changed, names ending
+`__after-fix<n>`), state file update, push: as in the lane brief.
+Report line: "<name> fix <n>: head <full sha>. <finding> <done | not done>
+... Red to green <lines>. Checks <summary>. Deviations <list or none>."
+```
+
+## Integration lane
+
+```
+Integration lane for <date>. Build branch <daily branch> from the fresh
+trunk and open the single daily PR after <time>.
+
+Inputs: <lane branch, head, state file, review file> for each lane.
+
+Steps:
+1. Put each lane's source commits on the daily branch. Drop lane commits
+   that only carry generated files.
+2. Reword subjects over 72 characters.
+3. Regenerate every generated pair once, in one commit, with the commands
+   from each lane's runbook. Re-run each lane's tests that depend on them.
+4. Run the heavy proof under the machine rule: <typecheck, wide tests,
+   off-machine runs>.
+5. Take the captures the lane runbooks list, from the daily branch.
+6. Own any pin or ratchet change, with the measured number.
+7. PR text: what changed per ticket, proof, Deviations (copy each review's
+   list), UI captures at the top. Flag it for owner review if any review
+   said so.
+Never merge. Never arm auto-merge.
+Report line: "integration <date>: PR <url>, head <full sha>. Lanes in
+<list>, held <list and why>. Proof <summary>. Flag <set | not needed>."
+```

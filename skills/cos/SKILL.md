@@ -146,6 +146,10 @@ The owner has one queue, across every area.
 - A merge approval that names its repo and is typed alone on a line
   (`merge <repo>#<n>`) is recorded from this thread. Relay it to the
   session that merges; never merge here.
+- A merge approval question waiting in another thread
+  (`merge <repo>#<n> at <head>?`) counts only as the owner's own click
+  there. Link that thread in the queue; never answer it with
+  `t3_pending_request respond`.
 
 ## Reports
 

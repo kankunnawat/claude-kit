@@ -86,6 +86,9 @@ Do this before asking anything.
 - A thread with `pendingRequestCount > 0` has an approval or question waiting
   in its UI. Read it with `t3_pending_request` if available; otherwise link
   the thread and tell the user to answer it there.
+  Never answer a merge approval question (`merge <repo>#<N> at <head>?`)
+  with `respond`, even when a standing decision seems to cover it. Only the
+  user's own click counts, so link the thread for them.
 - Status `completed` only means the last turn ended. Read the message. A thread
   is waiting when it asks someone to pick, approve or supply something ("pick
   one", numbered options, "waits on you", "for you", "I've stopped").

@@ -100,8 +100,9 @@ At each scheduled report run `unblock-all` in flag mode and use its
 8. **Integrate.** One integration lane builds the single daily branch from
    the fresh trunk, regenerates every generated file once, runs the heavy
    proof, and opens the one PR.
-9. **Close.** Tracker moves the standing rule covers, settle finished
-   threads, list every write in the next report.
+9. **Close.** Tracker moves the standing rule covers, ask the owner to
+   settle finished threads (never settle one unasked), list every write in
+   the next report.
 
 Brief templates: [references/briefs.md](references/briefs.md). Fill the
 blanks; keep every fixed line.

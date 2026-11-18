@@ -126,15 +126,10 @@ As soon as the user answers:
 
 - Log each decision in the session's progress record: time, thread, question,
   answer, who decided.
-- Settle a thread with `t3_thread_organize` action `settle` only when nothing
-  is outstanding: its work is finished, it has no open question or pending
-  request, and no PR still waits on its own next step.
-  - Reviewer and scout threads: settle once their verdict or report reached
-    the coordinator.
-  - Lane threads: settle once their claim is complete and their commits are
-    in the integration PR.
-  - Setup or one-question threads the user drove by hand: settle once their
-    work is done and the user asked to settle done threads.
+- Never settle a thread on your own judgment. List the threads that look
+  finished (work done, no open question or pending request, no PR waiting on
+  the thread's own next step) and ask the user before settling any. Settle
+  only the ones they name, with `t3_thread_organize` action `settle`.
 - Never settle: a thread still running or waiting, a recurring loop (a cleanup
   or watch thread that ticks), a thread whose PR still needs its capture, fix
   or report, a thread on hold for someone else, this thread, or a child thread

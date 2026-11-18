@@ -3,6 +3,7 @@
 Date: 2026-11-18.
 Status: needs Kan's approval.
 Home: `skills/cos/`, a new `skills/lead/`, and `skills/unblock-all/` in this repo (claude-kit).
+Owner rulings folded in on 2026-11-18: the synced state lives in the brain repos, and the chief of staff also covers Bitazza work.
 
 ## Goal
 
@@ -68,23 +69,59 @@ It matches the post, and it removes the per-project copies instead of generalizi
 Workers, reviewers and scouts stay separate top-level sessions that a lead starts.
 A worker never starts another worker.
 
+## Where state lives
+
+`~/Vault` is a plain folder on one Mac: no git, no sync.
+A chief of staff that must work from any of Kan's machines cannot keep its rules there.
+State splits in two.
+
+**Synced through git, in the brain repos.** This is what a session on another machine needs to take over.
+
+- The roster.
+- Each area's manual, with Kan's standing rulings and the declined proposals.
+- The chief of staff's record with its CURRENT STATE, committed at each report and at handoff, never at every tick.
+
+**Local to the machine that runs the work.**
+
+- Thread ids of workers, scheduled task ids and checkout paths. They mean nothing on another machine.
+- Briefs, review reports, captures, the inbox log and the hold file.
+
+There are two brain repos, split by responsibility.
+Each holds a `cos/` folder with the same layout: `roster.md`, `areas/<area>.md`, `records/<date>.md`.
+
+| Brain | Holds | Areas today |
+|---|---|---|
+| `kan-brain` | Personal and Duopreneur areas, and the holder line | hausback, alphaos, agentic-discovery |
+| `btz-brain` | Bitazza areas | none yet; Kan adds them by name |
+
+- One chief of staff reads both rosters and runs one queue.
+- An area's rows, manual and record lines stay in its own brain. Nothing from one brain is copied into the other.
+- A skill names neither repo. It says "the brain repos your session's rules name".
+- A lead reads only its own area's brain. A Bitazza lead never opens `kan-brain`.
+
 ## The roster
 
-One file in the vault: `~/Vault/Outputs/cos/roster.md`.
-It is the only place that lists areas.
+One `cos/roster.md` per brain.
+Together they are the only place that lists areas.
 No skill holds a repo name.
 
 ```text
-Holder: <CoS thread id>, since <time>Z
-Reports: 08:00 and 23:30 Bangkok, scheduled task ids <id>, <id>
+Holder: <CoS thread id> on <machine>, since <time>Z      (kan-brain only)
+Reports: 08:00 and 23:30 Bangkok
 Queue page: <url>
 
-| Area | Repo | Checkout | Mode | Manual | Lead thread | State |
+| Area | Repo | Mode | Provider | Manual | Lead thread | State |
 |---|---|---|---|---|---|---|
-| hausback | duopreneur/hausback-core | ~/Code/duopreneur/hausback-core | batch | ~/Vault/Outputs/hausback/cos-loop.md | none | hold |
-| alphaos | duopreneur/AlphaOS | ~/Code/duopreneur/AlphaOS | watch | none | <id> | active |
-| agentic-discovery | duopreneur/agentic-discovery | ~/Personal/development/agentic-discovery | watch | none | <id> | active |
+| hausback | duopreneur/hausback-core | batch | default | areas/hausback.md | none | hold |
+| alphaos | duopreneur/AlphaOS | watch | default | none | <id> on <machine> | active |
+| agentic-discovery | duopreneur/agentic-discovery | watch | default | none | <id> on <machine> | active |
 ```
+
+- **Provider** is what the lead and its workers start on.
+  A Bitazza area names the work provider, so its sessions, commits and usage stay on the work side.
+- The roster names repos, not paths.
+  A session finds the checkout on its own machine from the repo name.
+- There is one holder across all machines, never one per machine.
 
 - **Mode `watch`** is the default.
   Work comes from Kan.
@@ -95,7 +132,13 @@ Queue page: <url>
 - **State `hold`** means the lead launches nothing and the CoS reports one line for the area.
   The area's own hold file, where it has one, still rules inside the area.
 - A repo with two checkouts has one row.
-  The row names the checkout its lead starts in.
+
+## On a second machine
+
+- `/cos` pulls both brains and reads the holder line.
+- The holder is on another machine: it says so and stops. Where t3 links the two machines, it reads and messages that thread from here.
+- "Take over" moves the role to this machine. The new holder reads the synced records, re-verifies them, starts its own scheduled reports locally and rewrites the holder line.
+- Leads move the same way, one area at a time, on Kan's word.
 
 ## `/cos`
 
@@ -103,7 +146,7 @@ One command, no arguments. It reads the roster and does the one thing that fits.
 
 | State | Do |
 |---|---|
-| No roster | **Start.** Draft the roster from the repos where Kan has open threads or open PRs, show it, write it on his yes. Bind the two reports to this thread. |
+| No roster | **Start.** Draft each brain's roster from the repos where Kan has open threads or open PRs, show them, write them on his yes. Bind the two reports to this thread. |
 | The holder stopped | **Take over.** Re-verify each roster row against live state, re-bind the reports, log it. |
 | This thread is the holder | **Status.** One line per area (state, in flight, oldest ask), then the queue. No launches. |
 | Another live thread is the holder | Say which thread and stop. Take over only on "take over". |
@@ -130,6 +173,8 @@ There is one queue for Kan, across every area.
   It also carries a recording where the area's rules say how to make one.
   A review item with no evidence is a bucket 6 item: it goes back to its thread and reaches Kan only with the evidence.
 - Home: one private status page, updated in place at every report, plus the same list in the CoS thread.
+- A Bitazza item is one line like any other: plain words, a link and the minutes it takes.
+  The page and the thread never carry code, customer data or secrets from any area.
 - Kan clears it in batches from the CoS thread.
   The CoS relays each answer to the lead that owns the next step, with his words quoted.
   A merge approval that names the repo (`merge AlphaOS#N`) records from the CoS thread: `merge-approval.py` takes the repo from the typed name when one is given.
@@ -175,6 +220,7 @@ The retro stays in the CoS evening report, and it now reads every area.
 - A lesson about one area becomes a proposal for that area's manual or the repo's guide.
 - A lesson about how a skill works becomes a proposal for the skill.
 - A preference that holds across areas becomes a rule proposal in `kan-brain/00-inbox/`, as that repo already requires.
+  A Bitazza-only lesson goes to `btz-brain/00-inbox/`.
 - Nothing is edited without Kan's yes. A declined proposal is recorded and never raised again.
 
 Leads read `kan-brain` as their rules already tell them to, so one accepted preference reaches every area.
@@ -188,6 +234,7 @@ Leads read `kan-brain` as their rules already tell them to, so one accepted pref
 | `cos/SKILL.md` lane steps 1, 3, 8, 9 and the two brief rules | `lead/references/batch.md` |
 | `cos/references/briefs.md` | `lead/references/briefs.md`, with a worker brief that opens a PR and the batch briefs marked as batch only |
 | `cos/references/hausback.md` sessions and guard traps | `lead/references/sessions.md` (true on this Mac for every area) |
+| `~/Vault/Outputs/hausback/cos-loop.md` (the Hausback manual) | `kan-brain/cos/areas/hausback.md`, moved whole. The old file is trashed after the move is read back. |
 | `cos/references/hausback.md` homes, tracker, repo rules, brief blanks, limits | The Hausback manual |
 | `unblock-all/references/hausback.md` | A "Unblock pass" section of the Hausback manual |
 | `cos/scripts/cos-launch.sh`, `cos-log.py` | `lead/scripts/`, same code |
@@ -200,18 +247,37 @@ Leads read `kan-brain` as their rules already tell them to, so one accepted pref
 | `merge-agent` "the coordinator" | Unchanged. It names no skill, and the lead is the coordinator it means. |
 | Hausback manual sections Reports, Pings, Scheduled tasks | Stay in the manual. They are the Hausback lead's own reports. Only the task table changes (see below). |
 
-Hausback keeps its file and seat names: `cos-loop.md`, `<date>-cos/cos.md`, `cos-inbox.md`, `cos-hold.md` and the board seat `cos`.
+Hausback's local files keep their names and stay in `~/Vault/Outputs/hausback/`: `<date>-cos/cos.md`, `cos-inbox.md`, `cos-hold.md`, the morning queue, the sessions board and the board seat `cos`.
 Renaming them would touch the board, the inbox thread and old records for no gain.
-The manual's first line says the role is now the Hausback lead.
+Only the manual moves, because it holds the rulings.
+Its first line says the role is now the Hausback lead.
 
 The two scheduled tasks bound to this thread become the CoS reports.
 They keep their times.
 Their prompts change to read the roster, cover every area, and print one line for an area on hold.
 The Hausback manual's task table then says "none while on hold; the lead creates its own pair on resume".
 
+## Rule changes this needs
+
+Kan's ruling, 2026-11-18: the two brains are split to separate responsibility, not to wall off his own agent harness.
+Three rule files say otherwise today. Each edit below is made only after Kan approves this spec.
+
+| File | Today | After |
+|---|---|---|
+| `btz-brain/AGENTS.md`, Access | Only the work account's sessions read and write this repo. Other agents, the personal Claude Code among them, don't. | Adds: the chief of staff session and the leads it starts may read this repo and write only under `cos/` (Kan, 2026-11-18). Grok Bot, Hermes, Codex and personal bots still don't. |
+| `btz-brain/AGENTS.md`, Access | Never copy its contents into `kan-brain` or any personal tool. | Never copy its contents into `kan-brain`. The chief of staff's queue may list a Bitazza item as one line with a link. |
+| `kan-brain/AGENTS.md`, line 5 | Bitazza work lives in `btz-brain`, which only the work account's sessions read and write. | Same, plus: the chief of staff session may read it and write its `cos/` folder (Kan, 2026-11-18). |
+
+What does not change:
+
+- Bitazza content never goes into `kan-brain`.
+- A work-side session never reads `kan-brain` or the personal memory.
+- Bitazza leads and workers run on the work provider.
+- No secrets, customer PII or customer account data in either brain, the queue or the status page.
+
 ## What changes for Hausback
 
-- Its manual gains a `Repo:` line and the sections moved in from the two deleted reference files.
+- Its manual moves to `kan-brain/cos/areas/hausback.md` and gains the sections moved in from the two deleted reference files.
 - Its lead is the role this thread holds today.
   With the area on hold there is no Hausback lead thread, and none starts until Kan says "resume".
 - Its board, inbox thread, hold file, lane rules, standing approvals and Mac rules are untouched.
@@ -238,8 +304,10 @@ Nothing here runs until Kan says "resume hausback".
 6. `/cos` in this thread prints one status line per area and the queue.
 7. The two scheduled tasks are read back with their new prompts and this thread as the bound thread.
 8. `test-install.sh` and `test-portability.py` pass.
-9. The resume steps above are walked on paper against the manual: every wake the manual names (01:00Z morning queue, record start, evening retro, inbox report) has an owner.
-10. After the move commit, each moved passage is found word for word in its new file (`git diff -M --stat` plus `rg -F` on three sampled lines per file).
+9. `git -C <kan-brain> grep -i bitazza -- cos/` prints nothing, and `btz-brain/cos/` names no Duopreneur area.
+10. A fresh clone of both brains holds everything `/cos` reads before its first local write.
+11. The resume steps above are walked on paper against the manual: every wake the manual names (01:00Z morning queue, record start, evening retro, inbox report) has an owner.
+12. After the move commit, each moved passage is found word for word in its new file (`git diff -M --stat` plus `rg -F` on three sampled lines per file).
 
 A new skill directory is linked by `install.sh`.
 Kan runs nothing, but `/lead` is typeable only in a session started after the install.
@@ -251,20 +319,25 @@ Two commits, so the move can be checked by itself.
 **Commit 1, a pure move. No behaviour changes.**
 
 1. Create `skills/lead/` from today's `cos` text, scripts and briefs. `cos` keeps a short file that points at it.
-2. Move the Hausback text from both `hausback.md` files into its manual, then delete them and fix the links.
-3. Run proof 1, 2, 3, 8 and 10. Run `install.sh`.
+2. Move the Hausback manual into `kan-brain/cos/areas/`, then move the Hausback text from both `hausback.md` files into it. Delete those two files and fix the links.
+3. Run proof 1, 2, 3, 8 and 12. Run `install.sh`. Commit and push the kit and `kan-brain`.
 
 **Commit 2, the new behaviour.**
 
-4. Write the roster (Hausback on hold, the two other areas with no lead yet).
+4. Make the three rule edits above. Write both rosters: `kan-brain` with Hausback on hold and the two other areas with no lead yet, `btz-brain` with no areas.
 5. Rewrite `skills/cos/` for the roster and the queue. Add watch mode and `/lead`'s table to `lead`.
 6. Update `unblock-all`, `unblock-here`, `owner-contract.md` and `README.md`.
 7. Rewrite the two scheduled prompts.
 8. Run the whole proof.
 
-Steps 2, 4 and 7 include vault and scheduler writes. The rest is in this repo.
+Steps 2, 4 and 7 write to the brain repos and the scheduler. The rest is in this repo.
 
 ## Not yet specified
+
+- Whether Hausback's sessions board and day records should sync too.
+  They hold numbered decisions and are local to one Mac today.
+  The area is on hold, so this waits for "resume".
+- Which Bitazza areas join first, and whether their repos already declare a PR gate.
 
 - A local web app for the queue, with keyboard shortcuts and voice, like the one in the post.
   The status page comes first; the app is worth designing once the queue has run for a week.
@@ -280,3 +353,5 @@ Steps 2, 4 and 7 include vault and scheduler writes. The rest is in this repo.
 - Resuming Hausback.
 - A manual for AlphaOS or agentic-discovery.
   A watch area needs none.
+- Setting up the kit, the brains or the t3 link on the personal MacBook.
+  The design makes that machine able to take over; it does not prepare it.

@@ -133,7 +133,7 @@
 <header>
   <div class="chips"><span>claude-kit</span><span>cos, lead, unblock-all skills</span><span class="ask">Needs your approval</span></div>
   <h1>Approve: one chief of staff over every area, with a lead in each</h1>
-  <p class="lede">The chief of staff keeps a roster and one queue of what needs you; each area's lead runs the work there, and only Hausback's lead picks up ticket batches by itself.</p>
+  <p class="lede">The chief of staff keeps a roster and one queue of what needs you, synced through your two brain repos so it works from any machine; each area's lead runs the work there, Bitazza included.</p>
 </header>
 
 <section class="panels">
@@ -155,7 +155,7 @@
     </div>
     <div class="words">
       <p>The skill calls one session per project the chief of staff, but that session runs lanes, so it is really a lead. Hausback's daily-branch and tracker steps are written into the generic text, so no other project can use it.</p>
-      <p class="small">You also get one "Needs you" list per project, not one queue.</p>
+      <p class="small">You also get one "Needs you" list per project, and its rules sit in a folder on one Mac with no git and no sync.</p>
     </div>
   </article>
 
@@ -176,7 +176,8 @@
     </div>
     <div class="words">
       <p>The chief of staff does no area work. It keeps the roster, builds the queue, relays your answers and reports twice a day. A lead turns work into open pull requests with a fresh review and evidence. Nobody new can merge.</p>
-      <p class="small">Names: <code>/cos</code> <code>/lead</code> <code>~/Vault/Outputs/cos/roster.md</code></p>
+      <p>Bitazza areas join through a second roster in the work brain. Their leads run on the work provider.</p>
+      <p class="small">Names: <code>/cos</code> <code>/lead</code> <code>kan-brain/cos/roster.md</code> <code>btz-brain/cos/roster.md</code></p>
     </div>
   </article>
 
@@ -195,13 +196,14 @@
 
   <article class="panel reach">
     <div class="kicker">4 &middot; Where it goes</div>
-    <h2>One new skill, one new file in the vault</h2>
+    <h2>One new skill, state in the two brains</h2>
     <div class="map" role="img" aria-label="What the change touches and what stays">
       <div class="kind"><b>Skills<span>5 changed, 1 new</span></b><div class="blocks"><span class="blk new">lead</span><span class="blk hit">cos</span><span class="blk hit">unblock-all</span><span class="blk hit">unblock-here</span><span class="blk hit">owner contract</span><span class="blk hit">README</span></div></div>
       <div class="kind"><b>Per-project files in skills<span>2 removed</span></b><div class="blocks"><span class="blk gone">cos/references/hausback.md</span><span class="blk gone">unblock-all/references/hausback.md</span></div></div>
-      <div class="kind"><b>Vault<span>1 new, 1 changed</span></b><div class="blocks"><span class="blk new">roster</span><span class="blk hit">Hausback manual (text moved in)</span></div></div>
+      <div class="kind"><b>Brain repos<span>3 new, 1 moved in</span></b><div class="blocks"><span class="blk new">roster in kan-brain</span><span class="blk new">roster in btz-brain</span><span class="blk new">chief of staff record</span><span class="blk hit">Hausback manual (moved from the Mac folder)</span></div></div>
+      <div class="kind"><b>Rule files<span>2 changed</span></b><div class="blocks"><span class="blk hit">btz-brain access rule</span><span class="blk hit">kan-brain line about btz-brain</span></div></div>
       <div class="kind"><b>Scheduled reports<span>2 changed</span></b><div class="blocks"><span class="blk hit">morning brief prompt</span><span class="blk hit">evening wrap prompt</span></div></div>
-      <div class="kind"><b>Unchanged<span>6</span></b><div class="blocks"><span class="blk same">merge agent</span><span class="blk same">merge guard</span><span class="blk same">the three repos</span><span class="blk same">Hausback board, inbox and file names</span><span class="blk same">Hausback hold</span><span class="blk same">launch scripts (moved, same code)</span></div></div>
+      <div class="kind"><b>Unchanged<span>7</span></b><div class="blocks"><span class="blk same">merge agent</span><span class="blk same">merge guard</span><span class="blk same">the three repos</span><span class="blk same">Hausback board, inbox and day records (stay local)</span><span class="blk same">Hausback hold</span><span class="blk same">launch scripts (moved, same code)</span><span class="blk same">Bitazza content stays out of kan-brain</span></div></div>
       <div class="legend"><span>+ new</span><span>~ changed</span><span>&minus; removed</span><span>= unchanged</span></div>
     </div>
   </article>
@@ -210,6 +212,8 @@
 <section class="card">
   <h2>Risk &rarr; answer</h2>
   <div class="risk-row"><div>Moving Hausback's text breaks its loop when you resume it.</div><div>The first commit is a pure move, checked word for word. On "resume hausback" its lead starts inside the Hausback project with its own timed reports and the inbox pointed at it; the spec lists the six steps.</div></div>
+  <div class="risk-row"><div>Bitazza content leaks into the personal brain, or personal notes reach a work session.</div><div>Each area's rows, manual and record stay in its own brain. A Bitazza lead reads only the work brain and runs on the work provider. The queue shows a Bitazza item as one line with a link: no code, customer data or secrets.</div></div>
+  <div class="risk-row"><div>Two machines each run a chief of staff.</div><div>The synced roster names one holder and its machine. A second machine says who holds the role and stops, until you say "take over".</div></div>
   <div class="risk-row"><div>One queue mixes projects and files an item on the wrong list.</div><div>The queue is a view rebuilt at each pass. Each item stays in its own thread, pull request or that area's own to-do list.</div></div>
   <div class="risk-row"><div>A lead starts doing things in AlphaOS or Agentic Discovery that nobody asked for.</div><div>A watch lead lists the area's open pull requests and threads and asks which to adopt. It adopts none unasked, follows that repo's own gate, and never merges.</div></div>
   <div class="risk-row"><div>The scheduled reports fire with the old prompts during the change.</div><div>The prompts are rewritten last and read back. Until then they still check the Hausback hold and stop.</div></div>
@@ -228,14 +232,16 @@
     <li>One queue for you, across every area.</li>
     <li>Picking up ticket batches is optional and only Hausback uses it.</li>
     <li>The status page is the queue's first home.</li>
+    <li>Synced state lives in kan-brain, and Bitazza areas in btz-brain.</li>
+    <li>The chief of staff covers Bitazza too: it may read btz-brain and write its own folder there. Two rule files change to say so.</li>
     <li>No thread is settled without asking you first.</li>
     <li>Hausback stays on hold until you say "resume".</li>
   </ul>
 </section>
 
 <div class="out">
-  <p><b>Left for later:</b> a local web app for the queue with keyboard and voice; how a lead records a video demo; whether a watch lead needs a timer.</p>
-  <p><b>Not in this change:</b> any file in the three repos, the merge agent or its guard, resuming Hausback, and a manual for AlphaOS or Agentic Discovery.</p>
+  <p><b>Left for later:</b> syncing Hausback's board and day records; which Bitazza areas join first; a local web app for the queue with keyboard and voice; how a lead records a video demo; whether a watch lead needs a timer.</p>
+  <p><b>Not in this change:</b> any file in the three repos, the merge agent or its guard, resuming Hausback, a manual for AlphaOS or Agentic Discovery, and setting up the personal MacBook.</p>
 </div>
 
 <div class="foot">Full spec: docs/specs/2026-11-18-cos-all-areas-design.md</div>

@@ -39,6 +39,8 @@ has a `cos/` folder with the same layout.
 
 Pull before reading. Commit and push at each report and at handoff, not at
 every tick. Stage by explicit path.
+Before a push, read `git log origin/<branch>..HEAD`; when it lists a commit
+this session did not make, stop and ask the owner.
 An area's rows, file and record lines stay in the brain that lists it.
 Nothing from one brain is copied into the other.
 

@@ -101,8 +101,10 @@ Do this before asking anything.
     sessions after two failures.
 - Also collect: open PRs waiting on the user (flagged for owner review,
   CONCERN or BLOCK findings), the area's owner to-do and ask lists (see the
-  area's manual), and earlier questions you asked the user that are still
-  unanswered in this session or in the session's own progress record.
+  area's manual), open PRs from a bot that nobody has touched for 7 days,
+  as one line per area with a count, and earlier questions you asked the
+  user that are still unanswered in this session or in the session's own
+  progress record.
 - Count what each source returned before you triage. A source that returns
   nothing (no threads, no to-dos, no PRs) is re-read once another way before
   you treat it as empty.

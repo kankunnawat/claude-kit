@@ -108,6 +108,8 @@ Do this before asking anything.
   as one line per area with a count, and earlier questions you asked the
   user that are still unanswered in this session or in the session's own
   progress record.
+- Also collect open PRs in an active area that no unsettled thread owns;
+  list each as ownerless.
 - Count what each source returned before you triage. A source that returns
   nothing (no threads, no to-dos, no PRs) is re-read once another way before
   you treat it as empty.

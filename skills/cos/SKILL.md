@@ -138,6 +138,8 @@ The owner has one queue, across every area.
 - Its home is one private status page, the roster's "Queue page" line,
   updated in place at every report, plus the same list in this thread. With
   no page yet, create one, private, and write its link into the roster.
+  Publish the page with the roster's link as `url`; a publish without it
+  makes a second page.
 - An item from a work area is one line like any other. The page and this
   thread never carry code, customer data or secrets from any area.
 - The owner clears it in batches here. Relay each answer to the lead that

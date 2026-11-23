@@ -130,9 +130,13 @@ As soon as the user answers:
   the next step. When a lead or another coordinating thread
   runs the workers, send to it, not to its workers. Tell it about
   anything you changed in its workers' threads (settles, closed to-dos).
+- An answer that needs no action ("keep", "leave it") still goes to the
+  thread that listed the item, so it stops listing it.
 - Include the user's words, the option text they picked, and any limit that
   still applies. When the user typed their own answer, quote it word for word.
   Read the returned status to confirm the thread started.
+  Never give the time of the user's answer unless you read the clock when it
+  arrived; otherwise write "in this pass".
 - Log each decision once in the area's decision record and give the
   lead its number, so it does not log it again.
 - Keep one area's content out of another area's record.

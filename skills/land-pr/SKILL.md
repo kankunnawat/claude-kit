@@ -104,6 +104,8 @@ You type every write yourself, so the merge guard judges it.
    Anything else, including a conflict with the base, is NOT YET with the blocking item.
    Record it as one PR comment in the template's verdict line shape: the result, the full head SHA, the tier, the reviewers and the finding counts.
 10. **Land.**
+    Merge only after a PASS at the PR's current head, from step 9 or in the format of the repo's guide (step 3).
+    A NOT YET stops here at merge-ready, with the blocking item, the PR link and the head SHA.
     Open the guardrails file at the lines the doctor reports, and read the whole rule.
     Where it lets an agent merge this PR, run `precheck <pr> --reviewed-head <full SHA>`, then type the pinned merge command the rule allows.
     In a repo with no gate guide, that covers low and medium PRs after a PASS.

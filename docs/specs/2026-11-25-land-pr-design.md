@@ -154,7 +154,7 @@ This spec moves that cleanup to the end of `land-pr`.
 6. **Triage.**
    Give every finding one label, and keep the reviewer's own severity (blocker, important or minor) beside it.
    A finding with no severity, or with one on another scale, counts as important.
-   So does a bot finding that states no lower severity.
+   A bot finding counts as important unless the bot itself calls it minor, low, nit, info or style in those words.
    - **Fix**: a confirmed bug or security hole, in code this PR changed or now calls differently. You can name the line and the input that breaks it.
    - **Note**: real, but outside this PR's change, or a preference. Listed for Kan only when he must decide or it needs a ticket.
    - **Dismiss**: wrong or not confirmable, with a one-line reason.
@@ -175,7 +175,7 @@ This spec moves that cleanup to the end of `land-pr`.
    With no Fix and no blocker or important finding in round 1, skip round 2.
    There is no round 3.
    A confirmed bug in the fix commits gets fixed, and the verdict is then NOT YET until Kan asks for one more review of that range.
-   A bot finding that arrives after round 2 follows the same rule: a Fix means a new commit, and a Note or Dismiss of it is disputed.
+   A bot finding that counts as important and arrives after the last review round follows the same rule: a Fix means a new commit, and a Note or Dismiss of it is disputed.
    Either way the verdict is NOT YET until the user asks for one more review.
 8. **Evidence.**
    Run the repo's tests and linters for the touched area, heavy ones through `verify-lane`.

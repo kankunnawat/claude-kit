@@ -131,7 +131,7 @@
 <main class="page">
 
 <header>
-  <div class="chips"><span>claude-kit</span><span>skills</span><span class="ask">Needs your approval</span></div>
+  <div class="chips"><span>claude-kit</span><span>skills</span><span class="ask">Decisions approved, not built</span></div>
   <h1>Approve: one verb, /land-pr, takes an open PR through review and fixes to merge-ready</h1>
   <p class="lede">It follows the repo's own PR playbook where one exists. Where none exists it offers to draft one, and reviews the PR by risk tier either way.</p>
 </header>
@@ -174,13 +174,13 @@
 <text class="" x="22" y="33">A PR opens</text>
 <text class="muted" x="22" y="54" style="font-size:12.5px">ship, file-pr or a worker stops here</text>
 <path class="edge" d="M170,68 V98" marker-end="url(#ah)"/>
-<rect class="node" x="8" y="102" width="324" height="62" rx="12"/>
-<text class="" x="22" y="129">/finish removes the worktree</text>
-<text class="muted" x="22" y="150" style="font-size:12.5px">the branch is kept</text>
+<rect class="node-fix" x="8" y="102" width="324" height="62" rx="12"/>
+<text class="fix" x="22" y="129">/finish keeps the worktree</text>
+<text class="muted" x="22" y="150" style="font-size:12.5px">while the PR is open</text>
 <path class="edge-new" d="M170,164 V194" marker-end="url(#ah-new)"/>
 <rect class="node-fix" x="8" y="198" width="324" height="62" rx="12"/>
 <text class="fix" x="22" y="225">/land-pr: tier, review, fix, verdict</text>
-<text class="muted" x="22" y="246" style="font-size:12.5px">follows the repo playbook, or offers to draft one</text>
+<text class="muted" x="22" y="246" style="font-size:12.5px">then it removes the worktree</text>
 <path class="edge-new" d="M170,260 V290" marker-end="url(#ah-new)"/>
 <rect class="node" x="8" y="294" width="324" height="62" rx="12"/>
 <text class="" x="22" y="321">Merge, or merge-ready</text>
@@ -188,7 +188,7 @@
 </svg>
     </div>
     <div class="words">
-      <p>The reviewer is always a session that did not write the change. The skill grants no merge right: your guardrails and the merge guard still decide.</p>
+      <p>It follows the repo playbook, or offers to draft one. The reviewer is always a session that did not write the change. The skill grants no merge right: your guardrails and the merge guard still decide.</p>
       <p class="small">Names: <code>skills/land-pr/SKILL.md</code>, reusing <code>merge-agent.py doctor</code> and <code>precheck</code></p>
     </div>
   </article>
@@ -197,27 +197,28 @@
     <div class="kicker">3 &middot; How it runs</div>
     <h2>Ten steps, three ways in</h2>
     <ol class="steps">
-      <li><span class="n">1</span><span>Find the PR. Rebuild the worktree from the kept branch if it is gone.</span></li>
+      <li><span class="n">1</span><span>Find the PR. The worktree is still there; rebuild it from the kept branch only if it is gone.</span></li>
       <li><span class="n">2</span><span>Check the repo. It has a playbook: follow it with its own tools, including any end-to-end run or TLA+ check it names. It has none: ask "Draft one now?" and go on. Not on GitHub: print the repo's own command and stop.</span></li>
       <li><span class="n">3</span><span>Set the risk tier from the diff: low, medium or high. A reviewer can raise it, never lower it.</span></li>
       <li><span class="n">4</span><span>Round 1: fresh review of the whole PR. A high PR gets a second reviewer for security.</span></li>
       <li><span class="n">5</span><span>Label every finding Fix, Note or Dismiss. Only Fix changes code. A new test that cannot fail is a Fix.</span></li>
       <li><span class="n">6</span><span>Commit the fixes, then one fresh review of the fix commits. No round 3.</span></li>
-      <li><span class="n">7</span><span>Proof by tier. Low: tests and green CI. Medium and high: also run the change the way a user would.</span></li>
+      <li><span class="n">7</span><span>Proof by tier. Low: tests and green CI. Medium and high: also run the change the way a user would. With no verification skill, the session runs it and shows the command and output.</span></li>
       <li><span class="n">8</span><span>Post the verdict. It names the tier and the last commit a reviewer read, so a later commit means "not yet".</span></li>
       <li><span class="n">9</span><span>Merge where your guardrails allow it, pinned to that commit. A high PR always stops for you.</span></li>
-      <li><span class="n">10</span><span>Close with <code>/finish</code>. If you said yes in step 2, the playbook PR is drafted now and waits for you.</span></li>
+      <li><span class="n">10</span><span>Close with <code>/finish</code>, which removes the worktree. If you said yes in step 2, the playbook PR is drafted now and waits for you.</span></li>
     </ol>
   </article>
 
   <article class="panel reach">
     <div class="kicker">4 &middot; Where it goes</div>
-    <h2>One new skill, one README row, nothing else</h2>
-    <div class="map" role="img" aria-label="One new skill, one changed README, and the skills and rules that stay as they are">
-      <div class="kind"><b>Skills<span>1 new</span></b><div class="blocks"><span class="blk new">land-pr</span></div></div>
+    <h2>One new skill, two skills and two rule lines changed</h2>
+    <div class="map" role="img" aria-label="One new skill, two changed skills, one changed README, two changed rule lines, and the skills and rules that stay as they are">
+      <div class="kind"><b>Skills<span>1 new, 2 changed</span></b><div class="blocks"><span class="blk new">land-pr</span><span class="blk hit">finish: worktree step</span><span class="blk hit">worktrees: cleanup</span></div></div>
       <div class="kind"><b>Docs<span>1 changed</span></b><div class="blocks"><span class="blk hit">README skill table</span></div></div>
-      <div class="kind"><b>Unchanged skills<span>6</span></b><div class="blocks"><span class="blk same">finish</span><span class="blk same">merge-agent and its script</span><span class="blk same">babysit-pr</span><span class="blk same">sol-loop</span><span class="blk same">full-send</span><span class="blk same">lead</span></div></div>
-      <div class="kind"><b>Unchanged rules<span>4</span></b><div class="blocks"><span class="blk same">tstack overrides</span><span class="blk same">pstack workflow</span><span class="blk same">hausback gate</span><span class="blk same">AlphaOS gate</span></div></div>
+      <div class="kind"><b>Rules<span>2 changed</span></b><div class="blocks"><span class="blk hit">tstack overrides</span><span class="blk hit">pstack workflow</span></div></div>
+      <div class="kind"><b>Unchanged skills<span>5</span></b><div class="blocks"><span class="blk same">merge-agent and its script</span><span class="blk same">babysit-pr</span><span class="blk same">sol-loop</span><span class="blk same">full-send</span><span class="blk same">lead</span></div></div>
+      <div class="kind"><b>Unchanged rules<span>2</span></b><div class="blocks"><span class="blk same">hausback gate</span><span class="blk same">AlphaOS gate</span></div></div>
       <div class="legend"><span>+ new</span><span>~ changed</span><span>&minus; removed</span><span>= unchanged</span></div>
     </div>
   </article>
@@ -229,20 +230,15 @@
   <div class="risk-row"><div>The loop never ends, and the PR grows one small fix at a time.</div><div>One review of the fix commits, no round 3. Only confirmed bugs change code; the rest is listed as a note.</div></div>
   <div class="risk-row"><div>A fix lands after the last review and merges unread.</div><div>The verdict names the last commit a reviewer read. Any later commit makes it "not yet".</div></div>
   <div class="risk-row"><div>It merges somewhere an agent should not.</div><div>It types the same pinned command the merge guard already judges, and stops at merge-ready when the guardrails do not name the repo.</div></div>
-  <div class="risk-row"><div>Worktrees pile up and fill the disk again.</div><div>Cleanup does not move. <code>/finish</code> removes the worktree when the PR opens, as today, and again when <code>/land-pr</code> ends.</div></div>
+  <div class="risk-row"><div>Worktrees pile up and fill the disk again.</div><div>The worktree stays only while the PR is open. <code>/land-pr</code> removes it when it ends, and the <code>worktrees</code> cleanup removes it for a PR merged or closed without <code>/land-pr</code>.</div></div>
   <div class="risk-row"><div>The session picks a low tier for its own risky change.</div><div>The tier table is read from one shared file, a reviewer can raise the tier, and nobody can lower it.</div></div>
   <div class="risk-row"><div>A repo never gets its own playbook.</div><div>Every run in a repo without one asks "Draft one now?". The draft opens as a PR that only you merge.</div></div>
   <div class="risk-row"><div>It overrides a repo's own gate.</div><div>A declared gate wins on every point. The round cap applies only where the repo sets none.</div></div>
 </section>
 
 <section class="card decide">
-  <h2>For you to decide</h2>
-  <ol class="qs">
-    <li><div><b>In a solo repo with no gate of its own, does it merge the PR after a pass, or stop at merge-ready?</b>I recommend it merges: your solo-repo rule already lets an agent merge its own PR after an independent review and green tests, and stopping would leave the last step to you every time. This covers low and medium PRs only.</div></li>
-    <li><div><b>Does /finish keep removing the worktree when the PR opens?</b>I recommend yes, which differs from what I first proposed: no existing skill or rule changes, and /land-pr rebuilds the worktree when it starts. The cost is a rebuild per PR, which means reinstalling dependencies in a large repo. Moving the cleanup later saves that, but leaves a worktree on disk for every PR that /land-pr never runs on.</div></li>
-    <li><div><b>A behavior change must be run the way a user would. What counts in a repo with no verification skill?</b>I recommend the session runs the change itself, such as the script or the command, and puts the command and its output in the verdict. Your solo repos have no verification skill today, so the other choice, stopping at merge-ready, would mean decision 1 never applies to a behavior change there.</div></li>
-  </ol>
-  <p class="reply">Reply "approved" to take the recommendation, or say what to change.</p>
+  <h2>Nothing left to decide</h2>
+  <p class="reply">Reply "build it" to start the build, or say what to change.</p>
   <h3>Already decided</h3>
   <ul class="done">
     <li>A new skill, not a fold into <code>/finish</code> or <code>merge-agent</code>.</li>
@@ -254,6 +250,9 @@
     <li>Three risk tiers, read from the playbook template <code>merge-agent</code> already ships.</li>
     <li>TLA+ and other formal checks run only where a repo's playbook names them.</li>
     <li>A high-risk PR always stops for you.</li>
+    <li>In a solo repo with no gate, it merges a low or medium PR after a pass.</li>
+    <li><code>/finish</code> keeps the worktree while the PR is open. You still type <code>/land-pr</code>.</li>
+    <li>With no verification skill, the session runs the change and shows the output. A change that needs the screen or a real account stops for you.</li>
   </ul>
 </section>
 

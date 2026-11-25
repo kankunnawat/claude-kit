@@ -1,7 +1,7 @@
 # Land PR skill: design
 
 Date: 2026-11-25.
-Status: needs Kan's approval.
+Status: decisions approved by Kan on 2026-11-25. Not built yet.
 Home: `skills/land-pr/` in this repo (claude-kit).
 
 ## Goal
@@ -30,7 +30,7 @@ PR: #123 "fix(sync): keep the cursor on retry", head 4f2a9c1
 Gate: none declared here. Draft a PR playbook for this repo? (asked once per run)
 Tier: medium (behavior change in src/sync/retry.ts)
 Landing: allowed by your guardrails (solo repo, merge commit, pinned to the commit)
-Worktree: recreated from the kept branch
+Worktree: in place
 ```
 
 What Kan sees at the end:
@@ -85,7 +85,7 @@ I ran `merge-agent.py doctor` on four repos on 2026-11-25.
 
 `/finish` step 7 removes the ticket worktree once the PR is pushed, and two rule files say every workflow closes with `/finish`.
 So the worktree is usually gone before the first review finding arrives.
-The branch is kept, so the worktree can be rebuilt from it.
+This spec moves that cleanup to the end of `land-pr`.
 
 ## Shapes considered
 
@@ -101,7 +101,8 @@ The branch is kept, so the worktree can be rebuilt from it.
 
 1. **Find the PR and its worktree.**
    Take the PR number, or the open PR of the current branch.
-   When the branch has no worktree, recreate one from the kept branch with the `worktrees` skill.
+   The worktree is normally still there, because `/finish` now keeps it while the PR is open.
+   When it is gone, recreate one from the kept branch with the `worktrees` skill.
    Stop when the PR belongs to another author, unless Kan says yes for that PR.
    Stop with the reason when there is no open PR, or when `merge-agent.py precheck <pr>` reports a draft, a closed PR or a hold label.
    When the branch is behind its base, merge the base into it before round 1, never rebase.
@@ -170,7 +171,8 @@ The branch is kept, so the worktree can be rebuilt from it.
    Run the repo's tests and linters for the touched area, heavy ones through `verify-lane`.
    Required CI checks must be green on the final head.
    For medium and high, run the change as a user with the verification skill the doctor found.
-   With no verification skill, see open decision 3.
+   With no verification skill, the session runs the change itself, such as the script or the command, and puts the command and its output in the verdict.
+   A change that cannot run headless, because it needs the screen or a real account, is not run: the verdict names what was not run, and the PR stops at merge-ready for Kan.
    The built-in loop has no formal check of its own.
    A model check such as TLA+ runs only where the repo's guide names one, which is step 3.
 9. **Verdict.**
@@ -186,19 +188,21 @@ The branch is kept, so the worktree can be rebuilt from it.
     Everywhere else, stop at merge-ready with the PR link, the head SHA and the exact command for Kan.
     Never `--auto`, never `--admin`, and never around a refusal from the merge guard.
 11. **Close out.**
-    Run `/finish` for the tracker, the worktree cleanup and the daily log.
-    Step 7 of `/finish` removes the worktree as it does today, whether the PR merged or waits for Kan.
+    Run `/finish` for the tracker and the daily log, and tell it to remove the worktree.
+    The worktree goes whether the PR merged or waits for Kan, and step 1 rebuilds it if a later run needs it.
 
 ## What changes outside the new skill
 
 | File | Change |
 |---|---|
 | `README.md` | One table row for `land-pr`. |
+| `skills/finish/SKILL.md` step 7 | Keep the worktree while the PR is open. Remove it when the PR is merged or closed, or when `land-pr`'s close-out asks. |
+| `skills/worktrees/` cleanup | Also remove a clean worktree whose PR is merged or closed, read from the PR state. Today it judges by commit ancestry and misses squash merges. |
+| Two rule lines in dotfiles (tstack overrides, pstack workflow) | "Removes the ticket worktree once the PR is pushed" becomes "keeps the ticket worktree until `land-pr` ends or the PR is merged or closed". |
 
-Nothing else changes.
-`/finish` keeps removing the worktree when the PR is pushed, and `land-pr` rebuilds it in step 1 when it is gone.
 The rule files keep "every workflow closes with `/finish`".
 `land-pr` runs only when Kan types it, so no workflow chains into it.
+A PR that never gets `land-pr` keeps its worktree until it is merged or closed, and the `worktrees` cleanup removes it then.
 
 `land-pr` needs no script of its own.
 It reads through `merge-agent.py doctor` and `precheck`, and the session types every write so the merge guard judges it.
@@ -234,13 +238,17 @@ A skill is prose, so the proof is behavior on real PRs.
 | The playbook question answered yes | A separate playbook PR opens and stays open, and the current PR still gets its review |
 | A docs-only PR | Tier low, one review, no user run |
 | A PR that touches a CI file | Tier high, a second reviewer runs, and it stops at merge-ready |
-| A behavior change in a repo with no verification skill | The outcome matches open decision 3 |
+| A behavior change in a repo with no verification skill | The verdict carries the command the session ran and its output |
+| A change that needs the screen or a real account | The verdict names what was not run, and the PR stops at merge-ready |
 | A reviewer session that times out | A fresh reviewer starts, and the author's session writes no review |
 | A branch behind its base | The base is merged in before round 1, with no force-push |
 | A new test that passes against the old code | It is labelled Fix |
 | A PR in AlphaOS | The skill runs `pnpm review tier` and posts an `AOS-REVIEW:` line, and writes no verdict format of its own |
 | A PR in hausback-core | The skill posts no verdict, runs the proof the guide names for the changed paths, and stops at merge-ready |
-| A branch whose worktree `/finish` removed | The worktree comes back from the kept branch before round 1 |
+| `/finish` on a branch with an open PR | The worktree stays |
+| `land-pr` ends, merged or merge-ready | The worktree is removed |
+| A PR squash-merged without `land-pr` | The `worktrees` cleanup removes its worktree |
+| A branch with no worktree | The worktree comes back from the kept branch before round 1 |
 | `precheck` on a PR in a repo with no gate guide | It returns `ok_to_proceed` with no error |
 | Round 2 finds a bug in a fix | The bug is fixed and the verdict is NOT YET, with no third review started |
 | A reviewer suggests a quick style fix | It is labelled Note and no code changes |
@@ -248,25 +256,19 @@ A skill is prose, so the proof is behavior on real PRs.
 The build follows pstack's skill-authoring playbook, and each case above is run once before the skill is linked by `install.sh`.
 The AlphaOS and hausback-core cases run on the next real PR in each repo, so each one posts a real verdict or review request there.
 
-## Open decisions
+## Decisions (Kan, 2026-11-25)
 
-1. In a solo repo with no gate guide, does `land-pr` merge the PR itself after a PASS, or stop at merge-ready?
-   The solo-repo rule in the guardrails already lets an agent merge its own PR after an independent review and green tests.
-   `merge-agent` takes the stricter line and merges nothing in a repo with no guide.
-   A yes covers low and medium PRs only, since high always stops for Kan.
-2. Does `/finish` keep removing the worktree when the PR opens?
-   Keeping it changes no existing skill or rule, and `land-pr` pays the cost of a rebuild, which means reinstalling dependencies in a large repo.
-   Moving the cleanup to after the verdict saves that rebuild.
-   It also leaves a worktree on disk for every PR that `land-pr` never runs on, such as a PR `ship` opened or a lead's worker PR.
-
-3. A medium or high PR needs the change run as a user. What counts when the repo has no verification skill?
-   The solo repos have none today, so this decides whether decision 1 ever applies to a behavior change there.
-   One answer is that the session runs the change itself, such as the script or the command, and puts the command and its output in the verdict.
-   The other is that the verdict names what was not run and the PR stops at merge-ready.
+1. In a solo repo with no gate guide, `land-pr` merges the PR itself after a PASS.
+   This covers low and medium PRs only, since high always stops for Kan.
+2. `/finish` stops removing the worktree when the PR opens, because the development flow now ends with `land-pr`.
+   `land-pr` removes it at close-out, and the `worktrees` cleanup removes it for a PR merged or closed without `land-pr`.
+   Kan still types `/land-pr`. No workflow starts it.
+3. With no verification skill, the session runs the change itself and puts the command and its output in the verdict.
+   A change that cannot run headless stops at merge-ready for Kan.
 
 ## Deviations
 
-- The approved default moved worktree cleanup to after the gate and edited two rule files. Review of the draft found that this strands a worktree for every PR `land-pr` never runs on, so the spec now recommends no change there and asks it as open decision 2.
+- The first revision kept `/finish` removing the worktree at PR open, because a PR that never gets `land-pr` would strand one. Kan chose to move the cleanup to the end of `land-pr` (decision 2), and the `worktrees` cleanup now covers the stranded case by PR state.
 - The first draft put tier rules out of scope and proved a change with tests and CI only. Kan asked about the playbook, risk tiers, end-to-end verification and TLA+, so the revision of 2026-11-25 adds the playbook offer, the built-in tier table, the user run and the "can this check fail" rule.
 - The spec lives in claude-kit beside the `merge-agent` spec, not in dotfiles `docs/` as first proposed. The skill ships from claude-kit, and the dotfiles checkout was behind its remote with an unrelated uncommitted file.
 - The hausback owner shared a newer developer page on 2026-11-23 that this session could not open. The hausback column above comes from `docs/runbooks/review.md` on `origin/dev`, last verified 2026-11-02.

@@ -46,7 +46,8 @@ You type every write yourself, so the merge guard judges it.
    Stop with the reason when there is no open PR, or when `precheck <pr>` reports a draft, a closed PR or a hold label.
    A branch behind its base gets the base merged into it before round 1, never a rebase.
 2. **Doctor.**
-   Run `doctor`. It reads the remote default branch, and its output picks the path.
+   Run `doctor`.
+   It reads the remote default branch, and its output picks the path.
    - A gate guide: step 3.
    - No gate guide: ask once, "This repo has no PR playbook. Draft one now?", then run the built-in loop, steps 4 to 10.
    - `review_rules_hint` true with no gate guide: show what was found and ask where the gate lives, in place of that question. A gate the user names is step 3; none is the built-in loop.

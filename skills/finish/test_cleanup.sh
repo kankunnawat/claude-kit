@@ -108,6 +108,21 @@ run git -C "$MAIN" push -q origin --delete "$BR"
 cleanup MERGED 0000000000000000000000000000000000000000
 if [ -d "$WT" ]; then ok "worktree stays"; else bad "worktree stays"; fi
 
+echo "case f: PR open, land-pr close-out, a commit not pushed"
+fixture f
+echo more > "$WT/more.txt"
+run git -C "$WT" add more.txt
+run git -C "$WT" commit -q -m more
+cleanup OPEN "$HEAD_SHA" LAND_PR_CLOSE_OUT=1
+if [ -d "$WT" ]; then ok "worktree stays"; else bad "worktree stays"; fi
+case "$OUT" in (*"push first"*) ok "output says push first";; (*) bad "output says push first";; esac
+
+echo "case g: no PR"
+fixture g
+cleanup none ""
+if [ -d "$WT" ]; then ok "worktree stays"; else bad "worktree stays"; fi
+case "$OUT" in (*"no PR for"*) ok "output says there is no PR";; (*) bad "output says there is no PR";; esac
+
 echo
 [ "$fails" -eq 0 ] && echo "all checks passed" || echo "$fails check(s) failed"
 exit "$fails"

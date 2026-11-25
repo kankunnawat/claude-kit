@@ -184,7 +184,7 @@ to force closure on unverified work.
    case "$STATE" in
      (OPEN) [ "${LAND_PR_CLOSE_OUT:-}" = 1 ] || skip "PR is open; the worktree stays until /land-pr ends or the PR is merged or closed"
        pushed ;;
-     (MERGED|CLOSED) [ "$OID" = "$H" ] || skip "PR head (${OID:-missing}) != HEAD ($H); push first" ;;
+     (MERGED|CLOSED) [ "$OID" = "$H" ] || skip "PR ended at ${OID:-missing}, not at HEAD ($H)" ;;
      ("") pushed; skip "no PR for $B" ;;
      (*) skip "PR state $STATE is not open, merged or closed" ;;
    esac

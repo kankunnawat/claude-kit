@@ -29,6 +29,10 @@ Put every ask in exactly one bucket:
    user only with the evidence attached. A review of a change the user can
    see, with no screenshots attached, is in this bucket: it goes back for
    the captures.
+   An action that sends the user to a page or a login is also in this
+   bucket until its thread has opened that page with that login and says
+   what the user will see there. When no login of the user's works there,
+   the thread asks for the yes it needs to run the check itself.
 
 Check live state before you keep an ask; an old message is not evidence:
 

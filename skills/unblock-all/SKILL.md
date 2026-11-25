@@ -110,6 +110,12 @@ Do this before asking anything.
   progress record.
 - Also collect open PRs in an active area that no unsettled thread owns;
   list each as ownerless.
+- A top-level thread settled since the last pass, not by this session:
+  read its last message once. Its open asks leave the queue and are
+  counted once in a "dropped with a settle: n" line that names each in a
+  few words. Three kinds stay, as ownerless items answered in the chief
+  of staff thread: a secret that may be exposed, an open PR, and anything
+  with a date.
 - Count what each source returned before you triage. A source that returns
   nothing (no threads, no to-dos, no PRs) is re-read once another way before
   you treat it as empty.

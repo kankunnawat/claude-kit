@@ -169,7 +169,9 @@ this thread. Each run:
 6. Add this machine's budget line from `../lead/scripts/capacity.sh`, and
    any work that has waited through a report as "waiting for the machine".
 7. In the evening, run the retro.
-8. Update the queue page in place.
+8. Update the queue page in place. Build the page and the record's CURRENT
+   STATE with scripts/queue_page.py and an items file; it refuses on a
+   banned string.
 9. Commit and push the record in each brain that changed.
 
 The report is the last message of the turn. A ping goes out only where an

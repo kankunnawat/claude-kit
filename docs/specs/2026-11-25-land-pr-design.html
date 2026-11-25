@@ -133,7 +133,7 @@
 <header>
   <div class="chips"><span>claude-kit</span><span>skills</span><span class="ask">Needs your approval</span></div>
   <h1>Approve: one verb, /land-pr, takes an open PR through review and fixes to merge-ready</h1>
-  <p class="lede">It follows the repo's own PR gate where one is declared, and runs one fresh review plus one check of the fixes everywhere else.</p>
+  <p class="lede">It follows the repo's own PR playbook where one exists. Where none exists it offers to draft one, and reviews the PR by risk tier either way.</p>
 </header>
 
 <section class="panels">
@@ -179,8 +179,8 @@
 <text class="muted" x="22" y="150" style="font-size:12.5px">the branch is kept</text>
 <path class="edge-new" d="M170,164 V194" marker-end="url(#ah-new)"/>
 <rect class="node-fix" x="8" y="198" width="324" height="62" rx="12"/>
-<text class="fix" x="22" y="225">/land-pr: review, fix, re-review, verdict</text>
-<text class="muted" x="22" y="246" style="font-size:12.5px">rebuilds the worktree, follows the repo gate</text>
+<text class="fix" x="22" y="225">/land-pr: tier, review, fix, verdict</text>
+<text class="muted" x="22" y="246" style="font-size:12.5px">follows the repo playbook, or offers to draft one</text>
 <path class="edge-new" d="M170,260 V290" marker-end="url(#ah-new)"/>
 <rect class="node" x="8" y="294" width="324" height="62" rx="12"/>
 <text class="" x="22" y="321">Merge, or merge-ready</text>
@@ -195,17 +195,18 @@
 
   <article class="panel flow">
     <div class="kicker">3 &middot; How it runs</div>
-    <h2>Nine steps, three ways in</h2>
+    <h2>Ten steps, three ways in</h2>
     <ol class="steps">
       <li><span class="n">1</span><span>Find the PR. Rebuild the worktree from the kept branch if it is gone.</span></li>
-      <li><span class="n">2</span><span>Check the repo. It declares a gate: follow it with its own tools. It declares none: run the built-in loop. Not on GitHub: print the repo's own command for you and stop.</span></li>
-      <li><span class="n">3</span><span>Round 1: one fresh review of the whole PR, plus CI and bot findings.</span></li>
-      <li><span class="n">4</span><span>Label every finding Fix, Note or Dismiss. Only Fix changes code.</span></li>
-      <li><span class="n">5</span><span>Commit the fixes, then one fresh review of the fix commits. No round 3.</span></li>
-      <li><span class="n">6</span><span>Run tests and wait for green CI on the final commit.</span></li>
-      <li><span class="n">7</span><span>Post the verdict. It names the last commit a reviewer read, so a later commit means "not yet".</span></li>
-      <li><span class="n">8</span><span>Merge where your guardrails allow it, pinned to that commit. Otherwise hand you the command.</span></li>
-      <li><span class="n">9</span><span>Close with <code>/finish</code> for the tracker, the worktree and the daily log.</span></li>
+      <li><span class="n">2</span><span>Check the repo. It has a playbook: follow it with its own tools, including any end-to-end run or TLA+ check it names. It has none: ask "Draft one now?" and go on. Not on GitHub: print the repo's own command and stop.</span></li>
+      <li><span class="n">3</span><span>Set the risk tier from the diff: low, medium or high. A reviewer can raise it, never lower it.</span></li>
+      <li><span class="n">4</span><span>Round 1: fresh review of the whole PR. A high PR gets a second reviewer for security.</span></li>
+      <li><span class="n">5</span><span>Label every finding Fix, Note or Dismiss. Only Fix changes code. A new test that cannot fail is a Fix.</span></li>
+      <li><span class="n">6</span><span>Commit the fixes, then one fresh review of the fix commits. No round 3.</span></li>
+      <li><span class="n">7</span><span>Proof by tier. Low: tests and green CI. Medium and high: also run the change the way a user would.</span></li>
+      <li><span class="n">8</span><span>Post the verdict. It names the tier and the last commit a reviewer read, so a later commit means "not yet".</span></li>
+      <li><span class="n">9</span><span>Merge where your guardrails allow it, pinned to that commit. A high PR always stops for you.</span></li>
+      <li><span class="n">10</span><span>Close with <code>/finish</code>. If you said yes in step 2, the playbook PR is drafted now and waits for you.</span></li>
     </ol>
   </article>
 
@@ -229,14 +230,17 @@
   <div class="risk-row"><div>A fix lands after the last review and merges unread.</div><div>The verdict names the last commit a reviewer read. Any later commit makes it "not yet".</div></div>
   <div class="risk-row"><div>It merges somewhere an agent should not.</div><div>It types the same pinned command the merge guard already judges, and stops at merge-ready when the guardrails do not name the repo.</div></div>
   <div class="risk-row"><div>Worktrees pile up and fill the disk again.</div><div>Cleanup does not move. <code>/finish</code> removes the worktree when the PR opens, as today, and again when <code>/land-pr</code> ends.</div></div>
+  <div class="risk-row"><div>The session picks a low tier for its own risky change.</div><div>The tier table is read from one shared file, a reviewer can raise the tier, and nobody can lower it.</div></div>
+  <div class="risk-row"><div>A repo never gets its own playbook.</div><div>Every run in a repo without one asks "Draft one now?". The draft opens as a PR that only you merge.</div></div>
   <div class="risk-row"><div>It overrides a repo's own gate.</div><div>A declared gate wins on every point. The round cap applies only where the repo sets none.</div></div>
 </section>
 
 <section class="card decide">
   <h2>For you to decide</h2>
   <ol class="qs">
-    <li><div><b>In a solo repo with no gate of its own, does it merge the PR after a pass, or stop at merge-ready?</b>I recommend it merges: your solo-repo rule already lets an agent merge its own PR after an independent review and green tests, and stopping would leave the last step to you every time.</div></li>
+    <li><div><b>In a solo repo with no gate of its own, does it merge the PR after a pass, or stop at merge-ready?</b>I recommend it merges: your solo-repo rule already lets an agent merge its own PR after an independent review and green tests, and stopping would leave the last step to you every time. This covers low and medium PRs only.</div></li>
     <li><div><b>Does /finish keep removing the worktree when the PR opens?</b>I recommend yes, which differs from what I first proposed: no existing skill or rule changes, and /land-pr rebuilds the worktree when it starts. The cost is a rebuild per PR, which means reinstalling dependencies in a large repo. Moving the cleanup later saves that, but leaves a worktree on disk for every PR that /land-pr never runs on.</div></li>
+    <li><div><b>A behavior change must be run the way a user would. What counts in a repo with no verification skill?</b>I recommend the session runs the change itself, such as the script or the command, and puts the command and its output in the verdict. Your solo repos have no verification skill today, so the other choice, stopping at merge-ready, would mean decision 1 never applies to a behavior change there.</div></li>
   </ol>
   <p class="reply">Reply "approved" to take the recommendation, or say what to change.</p>
   <h3>Already decided</h3>
@@ -246,12 +250,16 @@
     <li>One round of fixes, then one review of those fixes.</li>
     <li>No repo's gate, tier rule or verdict format changes.</li>
     <li>It runs only when you type it. No workflow chains into it.</li>
+    <li>A repo with no playbook is asked "Draft one now?" on every run, and the built-in tiers review the PR either way.</li>
+    <li>Three risk tiers, read from the playbook template <code>merge-agent</code> already ships.</li>
+    <li>TLA+ and other formal checks run only where a repo's playbook names them.</li>
+    <li>A high-risk PR always stops for you.</li>
   </ul>
 </section>
 
 <div class="out">
-  <p><b>Left for later:</b> what the author's session does in hausback while it waits for a signer; a bot finding that arrives after round 2; whether a repo with review rules but no gate guide should stop and ask.</p>
-  <p><b>Not in this change:</b> tier rules for repos that have none, chaining it onto other workflows, releases and deploys, stacked PRs, a queue of PRs, other people's PRs.</p>
+  <p><b>Left for later:</b> what the author's session does in hausback while it waits for a signer.</p>
+  <p><b>Not in this change:</b> a formal check in the built-in loop, writing the playbook inside this skill, remembering a "not now" answer, chaining it onto other workflows, releases and deploys, stacked PRs, a queue of PRs, other people's PRs.</p>
 </div>
 
 <div class="foot">Full spec: docs/specs/2026-11-25-land-pr-design.md</div>

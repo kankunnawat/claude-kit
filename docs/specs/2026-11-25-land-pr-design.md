@@ -12,7 +12,9 @@ The review, the follow-up fixes and the merge are then a second job that Kan sta
 Kan types `/land-pr` on a branch that has an open PR.
 The session takes that one PR to merge-ready, or to merged where his guardrails let an agent merge.
 It gets a review from a session that did not write the change, fixes what the review confirms, and gets the fixes reviewed once.
+How much review and proof a PR needs depends on its risk tier.
 In a repo that declares its own PR gate, it follows that gate and adds nothing to it.
+In a repo that declares none, it offers to draft one, and reviews the PR with a built-in tier table either way.
 
 ## Usage, written first
 
@@ -25,7 +27,8 @@ What Kan sees first:
 
 ```text
 PR: #123 "fix(sync): keep the cursor on retry", head 4f2a9c1
-Gate: none declared here, so the built-in loop runs
+Gate: none declared here. Draft a PR playbook for this repo? (asked once per run)
+Tier: medium (behavior change in src/sync/retry.ts)
 Landing: allowed by your guardrails (solo repo, merge commit, pinned to the commit)
 Worktree: recreated from the kept branch
 ```
@@ -35,8 +38,8 @@ What Kan sees at the end:
 ```text
 Round 1: 6 findings: fixed 2, noted 3, dismissed 1
 Round 2: 0 findings on the fix commits
-Evidence: tests pass, CI green on 9be0d77
-Verdict: PASS at 9be0d77, reviewed by a fresh session
+Evidence: tests pass, CI green on 9be0d77, retry flow run as a user with the repo's verification skill
+Verdict: PASS at 9be0d77, tier medium, reviewed by a fresh session
 Landed: merged into main as a1c3e55
 Open for you: 1 note that needs its own ticket
 ```
@@ -100,51 +103,89 @@ The branch is kept, so the worktree can be rebuilt from it.
    Take the PR number, or the open PR of the current branch.
    When the branch has no worktree, recreate one from the kept branch with the `worktrees` skill.
    Stop when the PR belongs to another author, unless Kan says yes for that PR.
+   Stop with the reason when there is no open PR, or when `merge-agent.py precheck <pr>` reports a draft, a closed PR or a hold label.
+   When the branch is behind its base, merge the base into it before round 1, never rebase.
+   A conflict with the base that appears after the verdict makes it NOT YET.
 2. **Doctor.**
    Run `merge-agent.py doctor`, which reads the remote default branch.
    Its output picks one of three paths, and no repo name appears in the skill.
    - A gate guide exists: follow the repo's gate (step 3).
-   - No gate guide: run the built-in loop (steps 4 to 8).
+   - No gate guide: offer a playbook, then run the built-in loop (steps 4 to 10).
    - The repo is not on GitHub, or the doctor cannot read it: print the repo's own gate command for Kan to type, and stop.
+
+   The playbook offer is one question, "This repo has no PR playbook. Draft one now?".
+   On yes, run `merge-agent draft-gate` after step 11, so one worktree is in use at a time.
+   It opens the playbook as its own PR and leaves it for Kan to merge.
+   On "not now" or no answer, change nothing, and the next run in that repo asks again.
+   Either way the current PR goes through the built-in loop, because the playbook does not exist until Kan merges it.
+   When `review_rules_hint` is true, the repo has review rules that the doctor could not match to a gate.
+   Then show what was found and ask where the gate lives, as `merge-agent` does, in place of the offer.
 3. **A repo with a gate guide.**
    Read the whole guide and every file it points to.
-   Do what the guide gives the author to do, with the repo's own tier command, reviews and verdict format.
+   Do what the guide gives the author to do, with the repo's own tier command, reviews, proof and verdict format.
+   That includes any end-to-end run or formal check the guide names for the changed paths, such as a TLA+ model run.
    - The guide lets a fresh reviewer session sign: run the tier's reviews with fresh reviewers, fix what blocks, and record the verdict in the repo's format.
    - The guide forbids the author's seat to sign: ask for the review the guide names, wait with the `babysit-pr` watcher, fix each blocking item, and push. The reviewer's seat signs.
-   Then go to step 9.
-   The cap in step 6 applies only where the guide sets none.
-4. **Round 1: one fresh review of the whole PR.**
-   The reviewer is a session that did not write the change.
+   Then go to step 10.
+   The cap in step 7 applies only where the guide sets none.
+4. **Tier.**
+   Set the tier from the diff.
+   The highest row that matches any file or behavior wins.
+   A tier stated in the PR body, or by a round-1 reviewer, can raise the result and never lower it.
+   A raised tier adds that tier's reviews and proof before the verdict.
+
+   | Tier | The diff has | Reviews | Proof |
+   |---|---|---|---|
+   | Low | Only docs, tests, comments or UI copy. No runtime behavior changes. | One fresh review | Tests and green CI |
+   | Medium | A behavior change that fits no high row | One fresh review | The low proof, and the change run the way a user would use it |
+   | High | A migration, a deploy or CI file, sign-in, sessions, roles, tokens or secrets, money, or code that writes or deletes user data | The medium review and a second fresh reviewer briefed for security | The medium proof |
+
+   The skill does not keep its own copy of this table.
+   It reads the low, medium and high rows from `merge-agent`'s gate-guide template and treats the template's repo-specific brackets as the general cases above.
+   The table here shows what that reading gives today.
+   A high PR always stops at merge-ready for Kan.
+5. **Round 1: the tier's reviews of the whole PR.**
+   Each reviewer is a session that did not write the change.
    It gets the diff range and the full head SHA, never the author's conclusions, and its brief forbids edits and merges.
    Read CI results and bot findings on the head in the same pass, under the `babysit-pr` rules.
-5. **Triage.**
+   A reviewer that fails or times out is no review: start a fresh one, and never review in the author's session.
+6. **Triage.**
    Give every finding one label.
    - **Fix**: a confirmed bug or security hole, in code this PR changed or now calls differently. You can name the line and the input that breaks it.
    - **Note**: real, but outside this PR's change, or a preference. Listed for Kan only when he must decide or it needs a ticket.
    - **Dismiss**: wrong or not confirmable. Counted, not listed.
    Only Fix changes code.
-6. **Fix, then round 2.**
+   A new test or guard that cannot fail is a Fix.
+   Show each new one failing once, against the old code or with the guard removed.
+7. **Fix, then round 2.**
    Save the head before the first fix commit.
    Commit each fix on the branch, never amend, never force-push.
    Push, then get one fresh review of the fix commits only.
+   For a high PR, that reviewer's brief also carries the security criteria.
+   With no Fix in round 1, skip round 2.
    There is no round 3.
    A confirmed bug in the fix commits gets fixed, and the verdict is then NOT YET until Kan asks for one more review of that range.
-7. **Evidence.**
+   A bot finding that arrives after round 2 follows the same rule: triage it, and a Fix means a new commit and NOT YET.
+8. **Evidence.**
    Run the repo's tests and linters for the touched area, heavy ones through `verify-lane`.
    Required CI checks must be green on the final head.
-8. **Verdict.**
+   For medium and high, run the change as a user with the verification skill the doctor found.
+   With no verification skill, see open decision 3.
+   The built-in loop has no formal check of its own.
+   A model check such as TLA+ runs only where the repo's guide names one, which is step 3.
+9. **Verdict.**
    The verdict names the last head a reviewer read.
-   PASS needs all of these: that head is the PR's current head, no Fix is open, and the evidence is green.
+   PASS needs all of these: that head is the PR's current head, no Fix is open, and the tier's proof is green.
    Anything else is NOT YET with the blocking item.
    Record it as one PR comment in the line shape of `merge-agent`'s gate-guide template.
-   The line gives the result, the full head SHA, the reviewer and the finding counts.
-9. **Land.**
-   Open the guardrails file at the lines the doctor reports and read the whole rule.
-   Where the rule lets an agent merge this PR, run `merge-agent.py precheck <pr> --reviewed-head <full SHA>`, then type the pinned merge command.
-   A repo with a gate guide lands through `merge-agent` or the lane skill its guide names.
-   Everywhere else, stop at merge-ready with the PR link, the head SHA and the exact command for Kan.
-   Never `--auto`, never `--admin`, and never around a refusal from the merge guard.
-10. **Close out.**
+   The line gives the result, the full head SHA, the tier, the reviewers and the finding counts.
+10. **Land.**
+    Open the guardrails file at the lines the doctor reports and read the whole rule.
+    Where the rule lets an agent merge this PR, run `merge-agent.py precheck <pr> --reviewed-head <full SHA>`, then type the pinned merge command.
+    A repo with a gate guide lands through `merge-agent` or the lane skill its guide names.
+    Everywhere else, stop at merge-ready with the PR link, the head SHA and the exact command for Kan.
+    Never `--auto`, never `--admin`, and never around a refusal from the merge guard.
+11. **Close out.**
     Run `/finish` for the tracker, the worktree cleanup and the daily log.
     Step 7 of `/finish` removes the worktree as it does today, whether the PR merged or waits for Kan.
 
@@ -163,6 +204,15 @@ The rule files keep "every workflow closes with `/finish`".
 It reads through `merge-agent.py doctor` and `precheck`, and the session types every write so the merge guard judges it.
 I read the script: `precheck` does not need a gate guide, but I have not run it on a PR in a repo without one.
 
+## Depends on
+
+- `merge-agent.py` and `references/gate-guide-template.md` from the `merge-agent` skill in this repo.
+- The `worktrees` and `finish` skills in this repo.
+- The `babysit-pr` watcher from tstack, which installs outside this repo.
+- `verify-lane`, the guardrails file and the merge guard from the dotfiles repo.
+- The `gh` CLI, signed in as Kan.
+- A reviewer that runs in a fresh session, such as the `reviewer` agent.
+
 ## Authority rules
 
 - This skill grants nothing. The guardrails file and the merge guard decide where an agent may merge.
@@ -170,6 +220,8 @@ I read the script: `precheck` does not need a gate guide, but I have not run it 
 - The author's session never signs where the repo's guide forbids it.
 - A verdict binds to one full head SHA. A commit after the last review means NOT YET.
 - A PR that changes a gate guide, `CLAUDE.md`, `AGENTS.md`, `.claude/`, `.agents/` or `.github/` stops at merge-ready for Kan.
+- A high-tier PR in the built-in loop stops at merge-ready for Kan.
+- The playbook PR that `draft-gate` opens waits for Kan, like every change to a gate.
 - Comments on another person's PR and tracker writes under Kan's name keep their own approval rule.
 
 ## Proof plan
@@ -178,42 +230,57 @@ A skill is prose, so the proof is behavior on real PRs.
 
 | Case | Passes when |
 |---|---|
-| A PR in claude-kit, no gate guide | The loop runs, the verdict comment names the final head, and the merge is pinned to that head |
+| A PR in claude-kit, no gate guide | The playbook question is asked once, the loop runs, the verdict comment names the final head and the tier, and the merge is pinned to that head |
+| The playbook question answered yes | A separate playbook PR opens and stays open, and the current PR still gets its review |
+| A docs-only PR | Tier low, one review, no user run |
+| A PR that touches a CI file | Tier high, a second reviewer runs, and it stops at merge-ready |
+| A behavior change in a repo with no verification skill | The outcome matches open decision 3 |
+| A reviewer session that times out | A fresh reviewer starts, and the author's session writes no review |
+| A branch behind its base | The base is merged in before round 1, with no force-push |
+| A new test that passes against the old code | It is labelled Fix |
 | A PR in AlphaOS | The skill runs `pnpm review tier` and posts an `AOS-REVIEW:` line, and writes no verdict format of its own |
-| A PR in hausback-core | The skill posts no verdict and stops at merge-ready |
+| A PR in hausback-core | The skill posts no verdict, runs the proof the guide names for the changed paths, and stops at merge-ready |
 | A branch whose worktree `/finish` removed | The worktree comes back from the kept branch before round 1 |
 | `precheck` on a PR in a repo with no gate guide | It returns `ok_to_proceed` with no error |
 | Round 2 finds a bug in a fix | The bug is fixed and the verdict is NOT YET, with no third review started |
 | A reviewer suggests a quick style fix | It is labelled Note and no code changes |
 
 The build follows pstack's skill-authoring playbook, and each case above is run once before the skill is linked by `install.sh`.
+The AlphaOS and hausback-core cases run on the next real PR in each repo, so each one posts a real verdict or review request there.
 
 ## Open decisions
 
 1. In a solo repo with no gate guide, does `land-pr` merge the PR itself after a PASS, or stop at merge-ready?
    The solo-repo rule in the guardrails already lets an agent merge its own PR after an independent review and green tests.
    `merge-agent` takes the stricter line and merges nothing in a repo with no guide.
+   A yes covers low and medium PRs only, since high always stops for Kan.
 2. Does `/finish` keep removing the worktree when the PR opens?
    Keeping it changes no existing skill or rule, and `land-pr` pays the cost of a rebuild, which means reinstalling dependencies in a large repo.
    Moving the cleanup to after the verdict saves that rebuild.
    It also leaves a worktree on disk for every PR that `land-pr` never runs on, such as a PR `ship` opened or a lead's worker PR.
 
+3. A medium or high PR needs the change run as a user. What counts when the repo has no verification skill?
+   The solo repos have none today, so this decides whether decision 1 ever applies to a behavior change there.
+   One answer is that the session runs the change itself, such as the script or the command, and puts the command and its output in the verdict.
+   The other is that the verdict names what was not run and the PR stops at merge-ready.
+
 ## Deviations
 
 - The approved default moved worktree cleanup to after the gate and edited two rule files. Review of the draft found that this strands a worktree for every PR `land-pr` never runs on, so the spec now recommends no change there and asks it as open decision 2.
+- The first draft put tier rules out of scope and proved a change with tests and CI only. Kan asked about the playbook, risk tiers, end-to-end verification and TLA+, so the revision of 2026-11-25 adds the playbook offer, the built-in tier table, the user run and the "can this check fail" rule.
 - The spec lives in claude-kit beside the `merge-agent` spec, not in dotfiles `docs/` as first proposed. The skill ships from claude-kit, and the dotfiles checkout was behind its remote with an unrelated uncommitted file.
 - The hausback owner shared a newer developer page on 2026-11-23 that this session could not open. The hausback column above comes from `docs/runbooks/review.md` on `origin/dev`, last verified 2026-11-02.
 
 ## Not yet specified
 
 - What the author's session does in hausback-core while it waits for a signer, once the 2026-11-23 page is read against the runbook.
-- How a bot finding that arrives after round 2 is handled without a third review.
-- Whether a repo with `review_rules_hint` true and no gate guide should stop and ask where its gate lives, as `merge-agent` does.
 
 ## Out of scope
 
 - Changing any repo's gate, tier rule or verdict format.
-- A tier rule for repos that have none. The built-in loop runs one review for every PR.
+- A formal check in the built-in loop. TLA+ and property tests run only where a repo's guide names them.
+- Writing a repo's playbook inside `land-pr`. That stays `merge-agent draft-gate`.
+- Remembering a "not now" answer. The skill keeps no state, so the playbook question returns on the next run.
 - Chaining `land-pr` onto `ship`, `file-pr` or any other workflow.
 - Releases, deploys and stacked PRs.
 - Working a queue of PRs. That is `merge-agent` and `lead`.

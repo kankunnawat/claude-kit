@@ -8,8 +8,10 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 command -v jq >/dev/null || { echo "jq is required (the mock gh applies -q with it)"; exit 2; }
 command -v git >/dev/null || { echo "git is required"; exit 2; }
 
-T="$(mktemp -d)"
-T="$(cd "$T" && pwd -P)"
+T="$(mktemp -d)" || exit 2
+T="$(cd "$T" && pwd -P)" || exit 2
+# An empty T would make the EXIT trap delete the directory the test started in.
+[ -n "$T" ] && [ -d "$T" ] || { echo "mktemp -d gave no usable directory"; exit 2; }
 trap 'find "$T" -depth -delete 2>/dev/null' EXIT
 
 BLOCK="$T/block.sh"
@@ -129,6 +131,13 @@ fixture h
 cleanup none "" LAND_PR_CLOSE_OUT=1
 if [ -d "$WT" ]; then ok "worktree stays"; else bad "worktree stays"; fi
 case "$OUT" in (*"no PR for"*) ok "output says there is no PR";; (*) bad "output says there is no PR";; esac
+
+echo "case i: PR merged, PR head is not HEAD, land-pr close-out"
+fixture i
+run git -C "$MAIN" push -q origin --delete "$BR"
+cleanup MERGED 0000000000000000000000000000000000000000 LAND_PR_CLOSE_OUT=1
+if [ -d "$WT" ]; then ok "worktree stays"; else bad "worktree stays"; fi
+case "$OUT" in (*"PR ended at"*) ok "output says the PR ended at another commit";; (*) bad "output says the PR ended at another commit";; esac
 
 echo
 [ "$fails" -eq 0 ] && echo "all checks passed" || echo "$fails check(s) failed"

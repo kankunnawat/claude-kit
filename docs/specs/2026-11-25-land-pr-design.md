@@ -167,7 +167,7 @@ This spec moves that cleanup to the end of `land-pr`.
    Round 2 runs when round 1 has any Fix or any disputed finding, with one fresh reviewer.
    For a high PR, that reviewer's brief also carries the security criteria.
    It gets the fix commits, if any, and round 1's raw findings.
-   It gets each dismissal reason only as a claim to check, never the author's reasoning as a conclusion.
+   It gets each Note or Dismiss reason only as a claim to check, never the author's reasoning as a conclusion.
    It reviews the fix commits and says for each round 1 finding: resolved, wrong, or still open.
    With no Fix and no blocker or important finding in round 1, skip round 2.
    There is no round 3.

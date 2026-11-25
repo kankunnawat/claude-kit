@@ -112,9 +112,15 @@ You type every write yourself, so the merge guard judges it.
     A repo with a gate guide lands through `merge-agent` or the lane skill its guide names.
     Everywhere else, stop at merge-ready with the PR link, the head SHA and the exact command for the user.
 11. **Close out.**
-    Run `/finish` for the tracker and the daily log, with `LAND_PR_CLOSE_OUT=1` exported in the same command as its step 7 block.
+    Run only three parts of `/finish`, in this order.
+    - The tracker update that its step 5 lists, under that step's approval rule.
+    - The daily log of its step 9.
+    - Its step 7 block, run from inside the worktree, with `LAND_PR_CLOSE_OUT=1` exported in the same command as the block.
+
+    This step makes no new commit on the PR branch, merges nothing and deploys nothing.
+    A new commit would move the head past the verdict, and after a merge step 7 would keep the worktree because HEAD no longer equals the PR head.
     The worktree goes whether the PR merged or waits for the user; step 1 rebuilds it for a later run.
-    After a yes in step 2, run `/merge-agent draft-gate` now.
+    After a yes in step 2, run `/merge-agent draft-gate` now from the main checkout, because step 7 has removed the worktree.
 
 ## Authority rules
 

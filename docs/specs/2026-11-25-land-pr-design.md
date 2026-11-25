@@ -197,7 +197,8 @@ This spec moves that cleanup to the end of `land-pr`.
 |---|---|
 | `README.md` | One table row for `land-pr`. |
 | `skills/finish/SKILL.md` step 7 | Keep the worktree while the PR is open. Remove it when the PR is merged or closed, or when `land-pr`'s close-out asks. |
-| `skills/worktrees/` cleanup | Also remove a clean worktree whose PR is merged or closed, read from the PR state. Today it judges by commit ancestry and misses squash merges. |
+| `skills/worktrees/SKILL.md` | Text only: the scheduled sweep now also reads the PR state. |
+| The worktree sweep script in dotfiles | Also removes a clean in-repo worktree whose HEAD is the head of a merged or closed PR, and keeps the branch. Today it judges by commit ancestry and misses squash merges. |
 | Two rule lines in dotfiles (tstack overrides, pstack workflow) | "Removes the ticket worktree once the PR is pushed" becomes "keeps the ticket worktree until `land-pr` ends or the PR is merged or closed". |
 
 The rule files keep "every workflow closes with `/finish`".
@@ -272,6 +273,7 @@ The AlphaOS and hausback-core cases run on the next real PR in each repo, so eac
 - The first draft put tier rules out of scope and proved a change with tests and CI only. Kan asked about the playbook, risk tiers, end-to-end verification and TLA+, so the revision of 2026-11-25 adds the playbook offer, the built-in tier table, the user run and the "can this check fail" rule.
 - The spec lives in claude-kit beside the `merge-agent` spec, not in dotfiles `docs/` as first proposed. The skill ships from claude-kit, and the dotfiles checkout was behind its remote with an unrelated uncommitted file.
 - The hausback owner shared a newer developer page on 2026-11-23 that this session could not open. The hausback column above comes from `docs/runbooks/review.md` on `origin/dev`, last verified 2026-11-02.
+- The scheduled worktree cleanup code lives in the dotfiles sweep script, not in the `worktrees` skill, so the cleanup change went there and the skill got a text update only.
 
 ## Not yet specified
 

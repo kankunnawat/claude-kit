@@ -21,6 +21,7 @@ you don't, most of them still stand alone.
 | `review-plan` | Adversarial rubric pass over a plan or spec. Finds the gaps before execution does. |
 | `finish` | Runs the repository's declared close-out ritual: commit, push, and whatever its `Close-out:` line specifies. |
 | `merge-agent` | Makes the session a repo's merge agent: finds the PR gate guide the repo declares and follows it to review, verify and merge your open PRs, or drafts a guide as a PR when there is none. |
+| `land-pr` | Takes one open PR of yours to merge-ready: a fresh review, fixes for what it confirms, one review of the fixes and proof by risk tier, then merges where your guardrails let an agent merge. Follows the repo's PR gate guide when it has one. |
 | `cos` | Makes the session the chief of staff over every area you work in: it keeps the roster, runs your one queue, relays your answers to the area leads and reports twice a day. It never implements, reviews, merges or starts workers. |
 | `lead` | Makes the session one area's lead: it starts workers and fresh reviewers as separate sessions within the machine budget and brings open PRs to merge-ready. A batch area's lead also picks up tickets. It never implements or merges. |
 | `night-mode` | Keeps agents working overnight while heavy checks wait for a cool Mac and run one at a time, so the fans stay low. Needs the `night-mode` and `verify-lane` commands from the dotfiles repo. |

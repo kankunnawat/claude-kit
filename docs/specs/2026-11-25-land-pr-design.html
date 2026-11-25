@@ -212,9 +212,10 @@
 
   <article class="panel reach">
     <div class="kicker">4 &middot; Where it goes</div>
-    <h2>One new skill, two skills and two rule lines changed</h2>
+    <h2>One new skill; two skills, one script and two rule lines changed</h2>
     <div class="map" role="img" aria-label="One new skill, two changed skills, one changed README, two changed rule lines, and the skills and rules that stay as they are">
-      <div class="kind"><b>Skills<span>1 new, 2 changed</span></b><div class="blocks"><span class="blk new">land-pr</span><span class="blk hit">finish: worktree step</span><span class="blk hit">worktrees: cleanup</span></div></div>
+      <div class="kind"><b>Skills<span>1 new, 2 changed</span></b><div class="blocks"><span class="blk new">land-pr</span><span class="blk hit">finish: worktree step</span><span class="blk hit">worktrees: text</span></div></div>
+      <div class="kind"><b>Scripts<span>1 changed</span></b><div class="blocks"><span class="blk hit">worktree sweep (dotfiles)</span></div></div>
       <div class="kind"><b>Docs<span>1 changed</span></b><div class="blocks"><span class="blk hit">README skill table</span></div></div>
       <div class="kind"><b>Rules<span>2 changed</span></b><div class="blocks"><span class="blk hit">tstack overrides</span><span class="blk hit">pstack workflow</span></div></div>
       <div class="kind"><b>Unchanged skills<span>5</span></b><div class="blocks"><span class="blk same">merge-agent and its script</span><span class="blk same">babysit-pr</span><span class="blk same">sol-loop</span><span class="blk same">full-send</span><span class="blk same">lead</span></div></div>
@@ -226,7 +227,7 @@
 
 <section class="card">
   <h2>Risk &rarr; answer</h2>
-  <div class="risk-row"><div>The session reviews its own fixes and passes them.</div><div>Every review comes from a fresh session that gets only the diff range and the commit. Where a repo forbids the author to sign, the skill posts no verdict.</div></div>
+  <div class="risk-row"><div>The session reviews its own fixes and passes them.</div><div>Every review comes from a fresh session that gets only the diff range and the commit. Where a repo forbids the author to sign, the skill posts no verdict. A finding the author's session dismisses is cleared by a fresh reviewer before a pass.</div></div>
   <div class="risk-row"><div>The loop never ends, and the PR grows one small fix at a time.</div><div>One review of the fix commits, no round 3. Only confirmed bugs change code; the rest is listed as a note.</div></div>
   <div class="risk-row"><div>A fix lands after the last review and merges unread.</div><div>The verdict names the last commit a reviewer read. Any later commit makes it "not yet".</div></div>
   <div class="risk-row"><div>It merges somewhere an agent should not.</div><div>It types the same pinned command the merge guard already judges, and stops at merge-ready when the guardrails do not name the repo.</div></div>

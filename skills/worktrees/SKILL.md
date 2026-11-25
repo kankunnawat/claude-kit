@@ -28,7 +28,7 @@ Move existing worktrees only when authorized, with `git worktree move` rather th
 Clean up completed worktrees in the same session unless explicitly parked.
 Before removal, verify a fresh worktree registry, clean status, no live owner or lease, and the approved target.
 Keep uncommitted or unretained work pending a decision.
-A finished ticket's worktree is removed by `/finish` step 7 (pushed, in a PR, backup of uncommitted work, no live users); use that rather than ad hoc removal.
+A finished ticket's worktree is removed by `/finish` step 7 once its PR is merged or closed, or when `/land-pr` ends (pushed, backup of uncommitted work, no live users); while the PR is open it stays. Use that rather than ad hoc removal.
 Branch deletion requires separate authority and proof that its tip is reachable from a ref you are keeping; `/finish` never deletes branches.
 Only after those checks (never `--force`; the branch line only with that separate authority):
 
@@ -43,14 +43,17 @@ explicitly parks.
 
 Safety net, not a substitute: if the machine runs a scheduled sweep job, it
 removes clean + fully-merged worktrees under `.claude/worktrees/` and
-`.worktrees/` and reports the rest, logging to its own configured path.
+`.worktrees/` and reports the rest, logging to its own configured path. It
+also removes a clean worktree there whose HEAD is the head commit of a merged
+or closed PR, and keeps its branch.
 
-**It is blind in squash-merging repos** — it judges "merged" by commit
-reachability (`rev-list --count HEAD --not --branches --remotes`), and a squash
-merge creates a new commit, so a fully-landed branch still reads as
-`keep — N unmerged commit(s)`. The failure is safe (it under-removes, never
-over-removes) but it means such repos silently accumulate gigabytes and need the
-manual audit below. It also leaves unregistered orphan dirs alone by design
+**Without a PR it is blind in squash-merging repos.** It judges "merged" by
+commit reachability (`rev-list --count HEAD --not --branches --remotes`), and a
+squash merge creates a new commit, so a fully-landed branch with no PR still
+reads as `keep — N unmerged commit(s)`. A branch with a merged PR is covered by
+the PR check above. The failure is safe (it under-removes, never over-removes)
+but such branches silently accumulate gigabytes and need the manual audit
+below. It also leaves unregistered orphan dirs alone by design
 (`orphan — inspect manually`).
 
 ## Auditing a pile of worktrees before a bulk cleanup

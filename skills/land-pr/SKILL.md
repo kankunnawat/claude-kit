@@ -91,7 +91,7 @@ You type every write yourself, so the merge guard judges it.
    Save the head before the first fix commit.
    Commit each fix on the branch; never amend, never force-push.
    Push any fix commits, then run round 2 when round 1 has any Fix or any disputed finding: one fresh reviewer, with the security brief added for a high PR.
-   It gets the fix commits, if any, and round 1's raw findings, with each dismissal reason given only as a claim to check.
+   It gets the fix commits, if any, and round 1's raw findings, with each Note or Dismiss reason given only as a claim to check.
    It reviews the fix commits and says for each round 1 finding: resolved, wrong, or still open.
    With no Fix and no blocker or important finding in round 1, skip round 2.
    There is no round 3: a confirmed bug in the fix commits gets fixed, and the verdict is NOT YET until the user asks for one more review of that range.
@@ -112,7 +112,8 @@ You type every write yourself, so the merge guard judges it.
    The same comment lists every dismissed finding with its one-line reason.
 10. **Land.**
     Merge only after a PASS at the PR's current head, from step 9 or in the format of the repo's guide (step 3).
-    A NOT YET stops here with no merge command for the user: report the blocking item, the PR link and the head SHA, then run step 11. That state is not merge-ready.
+    A NOT YET stops here with no merge command for the user: report the blocking item, the PR link and the head SHA, then run step 11.
+    That state is not merge-ready.
     Open the guardrails file at the lines the doctor reports, and read the whole rule.
     Where it lets an agent merge this PR, run `precheck <pr> --reviewed-head <full SHA>`.
     Merge only when it reports `ok_to_proceed` true and no warnings; any reason or warning it gives, such as failing or pending checks, held files, a moved head or no checks on the head, stops at merge-ready.

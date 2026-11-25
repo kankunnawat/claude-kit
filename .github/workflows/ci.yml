@@ -56,5 +56,8 @@ jobs:
       - name: Portability test
         run: python3 test-portability.py
 
+      - name: finish cleanup test
+        run: bash skills/finish/test_cleanup.sh
+
       - name: build-landing deploy test
         run: bash skills/build-landing/scripts/test-deploy.sh

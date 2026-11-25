@@ -141,50 +141,50 @@
     <div class="kicker">1 &middot; Today</div>
     <h2>Work stops when the PR opens</h2>
     <div class="pic">
-<svg viewBox="0 0 480 356" role="img" aria-label="Today: the worktree is removed when the PR opens, then review and fixes are started by hand">
-<rect class="node" x="8" y="6" width="464" height="62" rx="12"/>
-<text class="" x="26" y="33">A PR opens</text>
-<text class="muted" x="26" y="54" style="font-size:13px">ship, file-pr or a worker stops here</text>
-<path class="edge" d="M240,68 V98" marker-end="url(#ah)"/>
-<rect class="node-bad" x="8" y="102" width="464" height="62" rx="12"/>
-<text class="bad" x="26" y="129">/finish removes the worktree</text>
-<text class="muted" x="26" y="150" style="font-size:13px">it runs as soon as the PR is pushed</text>
-<path class="edge-bad" d="M240,164 V194" marker-end="url(#ah-bad)"/>
-<rect class="node-bad" x="8" y="198" width="464" height="62" rx="12"/>
-<text class="bad" x="26" y="225">Review and fixes, started by hand</text>
-<text class="muted" x="26" y="246" style="font-size:13px">a different verb in each repo; the worktree is rebuilt first</text>
-<path class="edge-bad" d="M240,260 V290" marker-end="url(#ah-bad)"/>
-<rect class="node" x="8" y="294" width="464" height="62" rx="12"/>
-<text class="" x="26" y="321">Merge</text>
-<text class="muted" x="26" y="342" style="font-size:13px">merge-agent, the repo lane, or you</text>
+<svg viewBox="0 0 340 356" role="img" aria-label="Today: after the PR opens, review and fixes are started by hand with a different verb in each repo">
+<rect class="node" x="8" y="6" width="324" height="62" rx="12"/>
+<text class="" x="22" y="33">A PR opens</text>
+<text class="muted" x="22" y="54" style="font-size:12.5px">ship, file-pr or a worker stops here</text>
+<path class="edge" d="M170,68 V98" marker-end="url(#ah)"/>
+<rect class="node" x="8" y="102" width="324" height="62" rx="12"/>
+<text class="" x="22" y="129">/finish removes the worktree</text>
+<text class="muted" x="22" y="150" style="font-size:12.5px">the branch is kept</text>
+<path class="edge-bad" d="M170,164 V194" marker-end="url(#ah-bad)"/>
+<rect class="node-bad" x="8" y="198" width="324" height="62" rx="12"/>
+<text class="bad" x="22" y="225">Review and fixes, started by hand</text>
+<text class="muted" x="22" y="246" style="font-size:12.5px">a different verb in each repo</text>
+<path class="edge-bad" d="M170,260 V290" marker-end="url(#ah-bad)"/>
+<rect class="node" x="8" y="294" width="324" height="62" rx="12"/>
+<text class="" x="22" y="321">Merge</text>
+<text class="muted" x="22" y="342" style="font-size:12.5px">merge-agent, the repo lane, or you</text>
 </svg>
     </div>
     <div class="words">
       <p>Every piece of the review loop exists, but no verb starts from an open PR and runs them in order. Each repo needs a different one.</p>
-      <p class="small">The worktree is gone before the first finding arrives, so each fix begins by rebuilding it.</p>
+      <p class="small">The worktree is usually gone by then, so each fix also begins by rebuilding it by hand.</p>
     </div>
   </article>
 
   <article class="panel fix">
     <div class="kicker">2 &middot; The change</div>
-    <h2>One verb runs the middle, cleanup moves last</h2>
+    <h2>One verb runs the middle</h2>
     <div class="pic">
-<svg viewBox="0 0 480 356" role="img" aria-label="After: land-pr runs the review and fixes, then finish removes the worktree">
-<rect class="node" x="8" y="6" width="464" height="62" rx="12"/>
-<text class="" x="26" y="33">A PR opens</text>
-<text class="muted" x="26" y="54" style="font-size:13px">ship, file-pr or a worker stops here</text>
-<path class="edge-new" d="M240,68 V98" marker-end="url(#ah-new)"/>
-<rect class="node-fix" x="8" y="102" width="464" height="62" rx="12"/>
-<text class="fix" x="26" y="129">/land-pr: review, fix, one re-review, verdict</text>
-<text class="muted" x="26" y="150" style="font-size:13px">the repo gate where one is declared, a built-in loop elsewhere</text>
-<path class="edge-new" d="M240,164 V194" marker-end="url(#ah-new)"/>
-<rect class="node" x="8" y="198" width="464" height="62" rx="12"/>
-<text class="" x="26" y="225">Merge, or merge-ready</text>
-<text class="muted" x="26" y="246" style="font-size:13px">merge-agent, the repo lane, or you</text>
-<path class="edge-new" d="M240,260 V290" marker-end="url(#ah-new)"/>
-<rect class="node-new" x="8" y="294" width="464" height="62" rx="12"/>
-<text class="good" x="26" y="321">/finish removes the worktree</text>
-<text class="muted" x="26" y="342" style="font-size:13px">after the verdict, so the fixes still have it</text>
+<svg viewBox="0 0 340 356" role="img" aria-label="After: one verb, land-pr, runs the review, the fixes and the verdict">
+<rect class="node" x="8" y="6" width="324" height="62" rx="12"/>
+<text class="" x="22" y="33">A PR opens</text>
+<text class="muted" x="22" y="54" style="font-size:12.5px">ship, file-pr or a worker stops here</text>
+<path class="edge" d="M170,68 V98" marker-end="url(#ah)"/>
+<rect class="node" x="8" y="102" width="324" height="62" rx="12"/>
+<text class="" x="22" y="129">/finish removes the worktree</text>
+<text class="muted" x="22" y="150" style="font-size:12.5px">the branch is kept</text>
+<path class="edge-new" d="M170,164 V194" marker-end="url(#ah-new)"/>
+<rect class="node-fix" x="8" y="198" width="324" height="62" rx="12"/>
+<text class="fix" x="22" y="225">/land-pr: review, fix, re-review, verdict</text>
+<text class="muted" x="22" y="246" style="font-size:12.5px">rebuilds the worktree, follows the repo gate</text>
+<path class="edge-new" d="M170,260 V290" marker-end="url(#ah-new)"/>
+<rect class="node" x="8" y="294" width="324" height="62" rx="12"/>
+<text class="" x="22" y="321">Merge, or merge-ready</text>
+<text class="muted" x="22" y="342" style="font-size:12.5px">merge-agent, the repo lane, or you</text>
 </svg>
     </div>
     <div class="words">
@@ -205,18 +205,18 @@
       <li><span class="n">6</span><span>Run tests and wait for green CI on the final commit.</span></li>
       <li><span class="n">7</span><span>Post the verdict. It names the last commit a reviewer read, so a later commit means "not yet".</span></li>
       <li><span class="n">8</span><span>Merge where your guardrails allow it, pinned to that commit. Otherwise hand you the command.</span></li>
-      <li><span class="n">9</span><span>Close with <code>/finish</code>: tracker, worktree, daily log.</span></li>
+      <li><span class="n">9</span><span>Close with <code>/finish</code> for the tracker, the worktree and the daily log.</span></li>
     </ol>
   </article>
 
   <article class="panel reach">
     <div class="kicker">4 &middot; Where it goes</div>
-    <h2>One new skill, four edited files, no repo gate touched</h2>
-    <div class="map" role="img" aria-label="One new skill, four changed files, and the parts that stay as they are">
-      <div class="kind"><b>Skills<span>1 new, 1 changed</span></b><div class="blocks"><span class="blk new">land-pr</span><span class="blk hit">finish step 7: cleanup after the verdict</span></div></div>
-      <div class="kind"><b>Rule files<span>2 changed</span></b><div class="blocks"><span class="blk hit">tstack overrides: workflows close with land-pr</span><span class="blk hit">pstack workflow: the same line</span></div></div>
+    <h2>One new skill, one README row, nothing else</h2>
+    <div class="map" role="img" aria-label="One new skill, one changed README, and the skills and rules that stay as they are">
+      <div class="kind"><b>Skills<span>1 new</span></b><div class="blocks"><span class="blk new">land-pr</span></div></div>
       <div class="kind"><b>Docs<span>1 changed</span></b><div class="blocks"><span class="blk hit">README skill table</span></div></div>
-      <div class="kind"><b>Unchanged<span>8</span></b><div class="blocks"><span class="blk same">merge-agent and its script</span><span class="blk same">babysit-pr</span><span class="blk same">sol-loop</span><span class="blk same">full-send</span><span class="blk same">lead</span><span class="blk same">hausback gate</span><span class="blk same">AlphaOS gate</span><span class="blk same">the work repo's gate skill</span></div></div>
+      <div class="kind"><b>Unchanged skills<span>6</span></b><div class="blocks"><span class="blk same">finish</span><span class="blk same">merge-agent and its script</span><span class="blk same">babysit-pr</span><span class="blk same">sol-loop</span><span class="blk same">full-send</span><span class="blk same">lead</span></div></div>
+      <div class="kind"><b>Unchanged rules<span>4</span></b><div class="blocks"><span class="blk same">tstack overrides</span><span class="blk same">pstack workflow</span><span class="blk same">hausback gate</span><span class="blk same">AlphaOS gate</span></div></div>
       <div class="legend"><span>+ new</span><span>~ changed</span><span>&minus; removed</span><span>= unchanged</span></div>
     </div>
   </article>
@@ -228,7 +228,7 @@
   <div class="risk-row"><div>The loop never ends, and the PR grows one small fix at a time.</div><div>One review of the fix commits, no round 3. Only confirmed bugs change code; the rest is listed as a note.</div></div>
   <div class="risk-row"><div>A fix lands after the last review and merges unread.</div><div>The verdict names the last commit a reviewer read. Any later commit makes it "not yet".</div></div>
   <div class="risk-row"><div>It merges somewhere an agent should not.</div><div>It types the same pinned command the merge guard already judges, and stops at merge-ready when the guardrails do not name the repo.</div></div>
-  <div class="risk-row"><div>Worktrees stay longer and fill the disk again.</div><div><code>/land-pr</code> runs in the same session right after the PR opens, and <code>/finish</code> still removes the worktree at the end.</div></div>
+  <div class="risk-row"><div>Worktrees pile up and fill the disk again.</div><div>Cleanup does not move. <code>/finish</code> removes the worktree when the PR opens, as today, and again when <code>/land-pr</code> ends.</div></div>
   <div class="risk-row"><div>It overrides a repo's own gate.</div><div>A declared gate wins on every point. The round cap applies only where the repo sets none.</div></div>
 </section>
 
@@ -236,7 +236,7 @@
   <h2>For you to decide</h2>
   <ol class="qs">
     <li><div><b>In a solo repo with no gate of its own, does it merge the PR after a pass, or stop at merge-ready?</b>I recommend it merges: your solo-repo rule already lets an agent merge its own PR after an independent review and green tests, and stopping would leave the last step to you every time.</div></li>
-    <li><div><b>Does the worktree get removed at the merge, or as soon as the verdict is a pass?</b>I recommend at the merge: a change you ask for while reading the PR then has its worktree ready. The cost is that a PR waiting on you keeps its worktree on disk until you merge it.</div></li>
+    <li><div><b>Does /finish keep removing the worktree when the PR opens?</b>I recommend yes, which differs from what I first proposed: no existing skill or rule changes, and /land-pr rebuilds the worktree when it starts. The cost is a rebuild per PR, which means reinstalling dependencies in a large repo. Moving the cleanup later saves that, but leaves a worktree on disk for every PR that /land-pr never runs on.</div></li>
   </ol>
   <p class="reply">Reply "approved" to take the recommendation, or say what to change.</p>
   <h3>Already decided</h3>
@@ -245,12 +245,13 @@
     <li>The name is <code>land-pr</code>, since <code>pr-gate</code> is taken by a repo's own skill.</li>
     <li>One round of fixes, then one review of those fixes.</li>
     <li>No repo's gate, tier rule or verdict format changes.</li>
+    <li>It runs only when you type it. No workflow chains into it.</li>
   </ul>
 </section>
 
 <div class="out">
   <p><b>Left for later:</b> what the author's session does in hausback while it waits for a signer; a bot finding that arrives after round 2; whether a repo with review rules but no gate guide should stop and ask.</p>
-  <p><b>Not in this change:</b> tier rules for repos that have none, releases and deploys, stacked PRs, a queue of PRs, other people's PRs.</p>
+  <p><b>Not in this change:</b> tier rules for repos that have none, chaining it onto other workflows, releases and deploys, stacked PRs, a queue of PRs, other people's PRs.</p>
 </div>
 
 <div class="foot">Full spec: docs/specs/2026-11-25-land-pr-design.md</div>

@@ -50,21 +50,24 @@ No single verb starts from an open PR and runs them in order.
 |---|---|---|
 | `sol-loop` (tstack) | Fresh reviewer, fix, re-review, three rounds | It does not push, watch CI or merge |
 | `babysit-pr` (tstack) | Fixes CI failures and bot findings on an open PR | It has no verdict from a fresh reviewer |
-| `merge-agent` | Checks the verdict at the exact head and merges under the guardrails | It never fixes: a fix would make it the author and void its own review |
+| `merge-agent` | Checks the verdict at the exact head and merges under the guardrails | It never fixes, because a fix would make it the author and void its own review |
 | `finish` | Commit, push, tracker, worktree cleanup | It runs only after Kan says the work is good |
 | `full-send` (tstack) | Chains all of it from the current state to merged | It also grants full autonomy and the testing permission |
 | `lead` | Review and two fix rounds across many worker sessions | It is built for a whole area, with separate sessions |
 
-Three repos already run the loop as their own gate.
-All three follow the same order: tier the diff, review by tier, triage, fix, re-review, verdict at one commit, land.
+Two repos on GitHub already run the loop as their own gate.
+Both follow the same order.
+They tier the diff, review by tier, fix, review again, record a verdict at one commit, and land.
 
-| | hausback-core | AlphaOS | a Bitbucket work repo |
-|---|---|---|---|
-| Tier | `lane-ops tier`, T0 to T3 | `pnpm review tier`, T0 to T3 | a `tier.sh` beside its gate skill, T0 to T3 |
-| Fix loop | BLOCK means a new head and a new verdict; CONCERN carries conditions | BLOCK means a new head and a new review | Fix, Note or Dismiss; one review of the fix commits; no round 3 |
-| Verdict | `HB-REVIEW:` comment written by a tool | `AOS-REVIEW:` comment, checked by `pnpm review check` | a block in the PR body |
-| Who signs | never the author's seat | a reviewer that did not write the change | the author's session, from fresh subagent reviews |
-| Landing | the merge lane | `alphaos-merge` | Kan |
+| | hausback-core | AlphaOS |
+|---|---|---|
+| Tier | `lane-ops tier`, T0 to T3 | `pnpm review tier`, T0 to T3 |
+| Fix loop | BLOCK means a new head and a new verdict; CONCERN carries conditions | BLOCK means a new head and a new review |
+| Verdict | `HB-REVIEW:` comment written by a tool | `AOS-REVIEW:` comment, checked by `pnpm review check` |
+| Who signs | never the author's seat | a reviewer that did not write the change |
+| Landing | the merge lane | `alphaos-merge` |
+
+The triage labels and the one-round cap in the built-in loop come from a gate Kan already runs in a third repo, which is not on GitHub.
 
 I ran `merge-agent.py doctor` on four repos on 2026-11-25.
 
@@ -75,11 +78,11 @@ I ran `merge-agent.py doctor` on four repos on 2026-11-25.
 | kankunnawat/dotfiles | none (`review_rules_hint` true) | yes, solo repo | built-in loop |
 | kankunnawat/claude-kit | none | yes, solo repo | built-in loop |
 
-The Bitbucket repo is not on GitHub, so `doctor` cannot read it.
+`doctor` cannot read a repo that is not on GitHub.
 
-`/finish` step 7 removes the ticket worktree once the PR is pushed.
-Two rule files say every workflow closes with `/finish`.
-So the worktree is gone before the first review finding arrives, and each follow-up fix starts by rebuilding it.
+`/finish` step 7 removes the ticket worktree once the PR is pushed, and two rule files say every workflow closes with `/finish`.
+So the worktree is usually gone before the first review finding arrives.
+The branch is kept, so the worktree can be rebuilt from it.
 
 ## Shapes considered
 
@@ -105,7 +108,7 @@ So the worktree is gone before the first review finding arrives, and each follow
    - The repo is not on GitHub, or the doctor cannot read it: print the repo's own gate command for Kan to type, and stop.
 3. **A repo with a gate guide.**
    Read the whole guide and every file it points to.
-   Do what the guide gives the author to do, with the repo's own tools: its tier command, its reviews, its verdict format.
+   Do what the guide gives the author to do, with the repo's own tier command, reviews and verdict format.
    - The guide lets a fresh reviewer session sign: run the tier's reviews with fresh reviewers, fix what blocks, and record the verdict in the repo's format.
    - The guide forbids the author's seat to sign: ask for the review the guide names, wait with the `babysit-pr` watcher, fix each blocking item, and push. The reviewer's seat signs.
    Then go to step 9.
@@ -133,7 +136,8 @@ So the worktree is gone before the first review finding arrives, and each follow
    The verdict names the last head a reviewer read.
    PASS needs all of these: that head is the PR's current head, no Fix is open, and the evidence is green.
    Anything else is NOT YET with the blocking item.
-   Record it as one PR comment in the line shape of `merge-agent`'s gate-guide template: result, full head SHA, reviewer, finding counts.
+   Record it as one PR comment in the line shape of `merge-agent`'s gate-guide template.
+   The line gives the result, the full head SHA, the reviewer and the finding counts.
 9. **Land.**
    Open the guardrails file at the lines the doctor reports and read the whole rule.
    Where the rule lets an agent merge this PR, run `merge-agent.py precheck <pr> --reviewed-head <full SHA>`, then type the pinned merge command.
@@ -142,20 +146,22 @@ So the worktree is gone before the first review finding arrives, and each follow
    Never `--auto`, never `--admin`, and never around a refusal from the merge guard.
 10. **Close out.**
     Run `/finish` for the tracker, the worktree cleanup and the daily log.
+    Step 7 of `/finish` removes the worktree as it does today, whether the PR merged or waits for Kan.
 
 ## What changes outside the new skill
 
-The worktree has to outlive the fixes, so cleanup moves from "PR pushed" to "the gate has a verdict".
-
 | File | Change |
 |---|---|
-| `skills/finish/SKILL.md` step 7 | Runs once the PR is merged, or has a PASS verdict at its head and waits for Kan. It no longer runs at PR push. |
-| dotfiles `claude/.claude/rules/tstack-overrides.md` line 8 | Every tstack workflow closes with `/land-pr`, which closes with `/finish`. |
-| dotfiles `workflows/pstack/pstack-workflow.md` line 5 | The same sentence for pstack workflows. |
 | `README.md` | One table row for `land-pr`. |
 
-`merge-agent.py` is reused as it is.
-`land-pr` needs no script of its own: it only reads through `doctor` and `precheck`, and every write is typed by the session so the merge guard judges it.
+Nothing else changes.
+`/finish` keeps removing the worktree when the PR is pushed, and `land-pr` rebuilds it in step 1 when it is gone.
+The rule files keep "every workflow closes with `/finish`".
+`land-pr` runs only when Kan types it, so no workflow chains into it.
+
+`land-pr` needs no script of its own.
+It reads through `merge-agent.py doctor` and `precheck`, and the session types every write so the merge guard judges it.
+I read the script: `precheck` does not need a gate guide, but I have not run it on a PR in a repo without one.
 
 ## Authority rules
 
@@ -176,6 +182,7 @@ A skill is prose, so the proof is behavior on real PRs.
 | A PR in AlphaOS | The skill runs `pnpm review tier` and posts an `AOS-REVIEW:` line, and writes no verdict format of its own |
 | A PR in hausback-core | The skill posts no verdict and stops at merge-ready |
 | A branch whose worktree `/finish` removed | The worktree comes back from the kept branch before round 1 |
+| `precheck` on a PR in a repo with no gate guide | It returns `ok_to_proceed` with no error |
 | Round 2 finds a bug in a fix | The bug is fixed and the verdict is NOT YET, with no third review started |
 | A reviewer suggests a quick style fix | It is labelled Note and no code changes |
 
@@ -186,12 +193,14 @@ The build follows pstack's skill-authoring playbook, and each case above is run 
 1. In a solo repo with no gate guide, does `land-pr` merge the PR itself after a PASS, or stop at merge-ready?
    The solo-repo rule in the guardrails already lets an agent merge its own PR after an independent review and green tests.
    `merge-agent` takes the stricter line and merges nothing in a repo with no guide.
-2. Does worktree cleanup wait for the merge, or run as soon as the verdict is PASS?
-   Waiting for the merge keeps the worktree for any change Kan asks for at review.
-   Running at PASS frees disk sooner, and the branch is kept, so the worktree can be rebuilt.
+2. Does `/finish` keep removing the worktree when the PR opens?
+   Keeping it changes no existing skill or rule, and `land-pr` pays the cost of a rebuild, which means reinstalling dependencies in a large repo.
+   Moving the cleanup to after the verdict saves that rebuild.
+   It also leaves a worktree on disk for every PR that `land-pr` never runs on, such as a PR `ship` opened or a lead's worker PR.
 
 ## Deviations
 
+- The approved default moved worktree cleanup to after the gate and edited two rule files. Review of the draft found that this strands a worktree for every PR `land-pr` never runs on, so the spec now recommends no change there and asks it as open decision 2.
 - The spec lives in claude-kit beside the `merge-agent` spec, not in dotfiles `docs/` as first proposed. The skill ships from claude-kit, and the dotfiles checkout was behind its remote with an unrelated uncommitted file.
 - The hausback owner shared a newer developer page on 2026-11-23 that this session could not open. The hausback column above comes from `docs/runbooks/review.md` on `origin/dev`, last verified 2026-11-02.
 
@@ -204,7 +213,8 @@ The build follows pstack's skill-authoring playbook, and each case above is run 
 ## Out of scope
 
 - Changing any repo's gate, tier rule or verdict format.
-- A tier rule for repos that have none: the built-in loop runs one review for every PR.
+- A tier rule for repos that have none. The built-in loop runs one review for every PR.
+- Chaining `land-pr` onto `ship`, `file-pr` or any other workflow.
 - Releases, deploys and stacked PRs.
 - Working a queue of PRs. That is `merge-agent` and `lead`.
 - Other people's PRs by default.

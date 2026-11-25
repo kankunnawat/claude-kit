@@ -9,9 +9,9 @@ command -v jq >/dev/null || { echo "jq is required (the mock gh applies -q with 
 command -v git >/dev/null || { echo "git is required"; exit 2; }
 
 T="$(mktemp -d)" || exit 2
-T="$(cd "$T" && pwd -P)" || exit 2
-# An empty T would make the EXIT trap delete the directory the test started in.
+# An empty T would make cd "" succeed and the EXIT trap delete the directory the test started in.
 [ -n "$T" ] && [ -d "$T" ] || { echo "mktemp -d gave no usable directory"; exit 2; }
+T="$(cd "$T" && pwd -P)" || exit 2
 trap 'find "$T" -depth -delete 2>/dev/null' EXIT
 
 BLOCK="$T/block.sh"

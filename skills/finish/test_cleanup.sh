@@ -107,6 +107,7 @@ fixture e
 run git -C "$MAIN" push -q origin --delete "$BR"
 cleanup MERGED 0000000000000000000000000000000000000000
 if [ -d "$WT" ]; then ok "worktree stays"; else bad "worktree stays"; fi
+case "$OUT" in (*"PR ended at"*) ok "output says the PR ended at another commit";; (*) bad "output says the PR ended at another commit";; esac
 
 echo "case f: PR open, land-pr close-out, a commit not pushed"
 fixture f
@@ -120,6 +121,12 @@ case "$OUT" in (*"push first"*) ok "output says push first";; (*) bad "output sa
 echo "case g: no PR"
 fixture g
 cleanup none ""
+if [ -d "$WT" ]; then ok "worktree stays"; else bad "worktree stays"; fi
+case "$OUT" in (*"no PR for"*) ok "output says there is no PR";; (*) bad "output says there is no PR";; esac
+
+echo "case h: no PR, land-pr close-out"
+fixture h
+cleanup none "" LAND_PR_CLOSE_OUT=1
 if [ -d "$WT" ]; then ok "worktree stays"; else bad "worktree stays"; fi
 case "$OUT" in (*"no PR for"*) ok "output says there is no PR";; (*) bad "output says there is no PR";; esac
 

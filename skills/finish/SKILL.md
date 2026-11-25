@@ -144,16 +144,22 @@ to force closure on unverified work.
    integrate until every required check passes. Resolve deployment authority
    through step 5; implementation approval alone does not grant it.
 
-7. **Clean up the ticket worktree.** Runs once the PR is open and the
-   branch is pushed, so a finished ticket stops costing disk (worktrees with
-   SPM checkouts and DerivedData filled the disk before). Every workflow ends
-   here: pstack arena/swarm and tstack full-send/file-pr/babysit-pr close with
-   /finish. Run the block below from inside the worktree. It is idempotent: a
-   re-run, or a run in the main checkout, only reports.
-   - Removes the worktree only when origin's branch tip equals local HEAD, a
-     PR exists, no gitignored file (`.env`, local config) exists only here,
-     and no process other than this session (herdr, t3, codex, cc, editors)
-     has files or cwd inside it.
+7. **Clean up the ticket worktree.** A finished ticket stops costing disk
+   (worktrees with SPM checkouts and DerivedData filled the disk before).
+   Every workflow ends here: pstack arena/swarm and tstack
+   full-send/file-pr/babysit-pr close with /finish. While the PR is open the
+   worktree stays, because `/land-pr` reviews and fixes the PR in it. The
+   worktree goes once the PR is merged or closed, or when `/land-pr`'s
+   close-out runs this step with `LAND_PR_CLOSE_OUT=1` exported in the same
+   command as the block. Run the block below from inside the worktree. It is
+   idempotent: a re-run, or a run in the main checkout, only reports.
+   - Removes the worktree only when a PR exists and is not open (or
+     `LAND_PR_CLOSE_OUT=1` is set), the commits are pushed, no gitignored file
+     (`.env`, local config) exists only here, and no process other than this
+     session (herdr, t3, codex, cc, editors) has files or cwd inside it.
+   - Pushed means origin's branch tip equals local HEAD for an open PR. For a
+     merged or closed PR it means the PR's head commit equals local HEAD,
+     because the host often deletes the branch on merge.
    - Uncommitted work is backed up first to `wip/backup-<name>` through a temp
      index, and the remote SHA is verified; removal then still waits, because
      `git worktree remove` refuses dirty trees and `--force` is never used.
@@ -170,11 +176,18 @@ to force closure on unverified work.
    [ "$WT" != "$MAIN" ] || skip "$WT is the main checkout, not a ticket worktree"
    B=$(git rev-parse --abbrev-ref HEAD); NAME=$(basename "$WT"); H=$(git rev-parse HEAD)
    [ "$B" != HEAD ] || skip "detached HEAD"
-   # 1. Pushed and in a PR: remote tip must equal local HEAD.
-   R=$(git ls-remote origin "refs/heads/$B" | cut -f1)
-   [ "$R" = "$H" ] || skip "origin/$B (${R:-missing}) != HEAD ($H); push first"
-   PR=$(gh pr view "$B" --json url -q .url 2>/dev/null) || PR=
-   [ -n "$PR" ] || skip "no PR for $B"
+   # 1. In a PR and pushed. An open PR keeps its worktree until /land-pr's close-out.
+   P=$(gh pr view "$B" --json url,state,headRefOid -q '[.url,.state,.headRefOid]|join(" ")' 2>/dev/null) || P=
+   PR=${P%% *}; P=${P#* }; STATE=${P%% *}; OID=${P#* }
+   pushed() { R=$(git ls-remote origin "refs/heads/$B" | cut -f1)
+     [ "$R" = "$H" ] || skip "origin/$B (${R:-missing}) != HEAD ($H); push first"; }
+   case "$STATE" in
+     (OPEN) [ "${LAND_PR_CLOSE_OUT:-}" = 1 ] || skip "PR is open; the worktree stays until /land-pr ends or the PR is merged or closed"
+       pushed ;;
+     (MERGED|CLOSED) [ "$OID" = "$H" ] || skip "PR head (${OID:-missing}) != HEAD ($H); push first" ;;
+     ("") pushed; skip "no PR for $B" ;;
+     (*) skip "PR state $STATE is not open, merged or closed" ;;
+   esac
    # 2. Gitignored files that exist nowhere else (.env, local config). Rebuildable caches are fine.
    REGEN='(^|/)(node_modules|\.build|build|DerivedData|SourcePackages|Pods|dist|\.next|\.turbo|\.swiftpm|__pycache__|\.venv|target|coverage|\.DS_Store)(/|$)'
    UNIQUE=$(git ls-files --others --ignored --exclude-standard --directory | grep -Ev "$REGEN" | while IFS= read -r f; do

@@ -34,11 +34,14 @@ So sessions were started faster than Kan could answer them, and leads on a secon
    The chief of staff's report names an active area with no lead that has two or more unsettled top-level threads or an open PR of Kan's: "busy with no lead: type /lead in its checkout".
    It names a lead with nothing in flight, no open PR and no open ask: "idle lead: stand it down?".
    Kan types the word; the chief of staff starts and stops no lead for these.
-   A lead stands down on his yes, and never while a PR it brought is open.
+   A lead is idle when nothing is in flight, no owner ask is open, and no PR is open that this lead, or the lead before it, brought or adopted.
+   An idle lead stands down on his yes, relayed to it; the lead clears its own roster cell.
+   A thread that a roster row names as the lead or the holder is never settled.
 3. **Limits set by what waits on Kan.**
    A lead starts no new item while three of its area's items wait on him.
-   It counts them from the area file's CURRENT STATE after the tick's Verify step.
-   At most three areas are active at once; an "add" or "resume" that would make a fourth asks which area to hold.
+   It counts the lines of "Open owner asks" in the area file's CURRENT STATE, one line per decision, which the lead adds and removes as asks are raised and answered.
+   An order Kan types in the lead's thread is started all the same.
+   At most three areas are active at once, across every roster; an "add" or "resume" that would make a fourth asks which area to hold.
 
 ## Decisions (Kan, 2026-11-27)
 
@@ -54,12 +57,14 @@ So sessions were started faster than Kan could answer them, and leads on a secon
 
 ## Deviations
 
-None yet.
+- The review of the first build found that the settle guard sat only in the lead skill, which the settling session does not read. It is now in the `unblock-all` never-settle list.
+- The same review found the ask count had no written source. CURRENT STATE now keeps the "Open owner asks" list.
 
 ## Not yet specified
 
 - What the retro reads to judge the two numbers, beyond the two it already tracks (asks open and the oldest age).
 - Whether an ask that blocks nothing running should count toward a lead's three.
+- The roster edit back to one holder line. It has to happen in the same sitting as the merge of this change, because the live roster still has the per-machine cells.
 
 ## Out of scope
 

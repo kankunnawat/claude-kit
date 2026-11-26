@@ -167,7 +167,8 @@ As soon as the user answers:
   only the ones they name, with `t3_thread_organize` action `settle`.
 - Never settle: a thread still running or waiting, a recurring loop (a cleanup
   or watch thread that ticks), a thread whose PR still needs its capture, fix
-  or report, a thread on hold for someone else, this thread, or a child thread
+  or report, a thread on hold for someone else, a thread a roster row names
+  as the lead or the holder, this thread, or a child thread
   whose parent is another session you do not own.
 - Re-list with `settled: false`, filter to top-level threads, and report the
   settled count from that list, not from memory.

@@ -72,11 +72,13 @@ because each run checks the holder line first.
 
 The owner changes the roster in plain words. Edit the row, read it back,
 commit and push. Start or stop nothing else.
-At most three areas are active. An "add" or "resume" that would make a
-fourth active asks which area to hold, and changes nothing until the owner
-answers.
+At most three areas are active, counted across every roster. An "add" or
+"resume" that would make a fourth active asks which area to hold, and
+changes nothing until the owner answers. A roster already over three gets
+one report line, "n areas active, over three: which to hold?".
 
-- **"add <area>"**: a new row, mode `watch` unless they say batch, no lead.
+- **"add <area>"**: a new row, state `active`, mode `watch` unless they say
+  batch, no lead.
   A batch area needs a manual first, because the manual holds its tracker
   rules, standing approvals and limits.
 - **"hold <area>"**: state `hold`. Tell the lead. The area's own hold file,
@@ -168,11 +170,14 @@ this thread. Each run:
 4. Write one line per area: state, lead thread and whether it runs, in
    flight, oldest ask. An area on hold gets "on hold since <date>" and
    nothing else. A batch area with its own report gets a link to it.
-   An active area with no lead that has two or more unsettled top-level
-   threads or an open PR of the owner's gets "busy with no lead: type /lead
-   in its checkout". An area whose lead has nothing in flight, no open PR
-   and no open ask gets "idle lead: stand it down?". Start and stop no
-   lead for these; the owner types the word.
+   An active area whose lead cell is empty or names a stopped thread, and
+   that has two or more unsettled top-level threads or an open PR of the
+   owner's, gets "busy with no lead: type /lead in its checkout". An
+   active area whose lead is idle, as the lead skill's "Stand down" says,
+   gets "idle lead: stand it down?". Relay a yes to the lead, quoted; the
+   lead clears its own cell. Never start a lead for these and never clear
+   a lead cell here. After a no, offer it again only once the lead has
+   finished another item.
 5. Add the queue.
 6. Add this machine's budget line from `../lead/scripts/capacity.sh`, and
    any work that has waited through a report as "waiting for the machine".

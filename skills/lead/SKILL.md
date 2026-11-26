@@ -63,11 +63,12 @@ A lead whose area is put on hold gives status only: no launches, no asks.
 1. **Take work.** From the owner, directly or relayed by the chief of
    staff, plus the open work the owner told you to adopt. An unclear item
    gets one read-only scout first.
-2. **Check the queue and the machine.** Count the area's open owner asks
-   from the area file's CURRENT STATE, after the tick's Verify step, never
-   from memory. With three or more, start no new item: review, fix and
-   hand over what already runs, and say "holding new work: n items wait on
-   you" in the report line.
+2. **Check the queue and the machine.** Count the lines of "Open owner
+   asks" in the area file's CURRENT STATE, never from memory. With three
+   or more, start no new item: review, fix and hand over what already
+   runs. A scout or a batch pick is a new item. An order the owner types
+   in this thread is started all the same. Say "holding new work: n items
+   wait on you" in the status and in the next report line.
    Then run `scripts/capacity.sh` with this machine's
    flags from the roster, plus `--quiet-hours` inside the roster's quiet
    hours and any stricter flags the area's manual names. Start at most the `slots` it prints at this
@@ -134,7 +135,10 @@ A lead keeps its state where a new session, on any machine, can pick it up.
   start when the area has none, with the sections CURRENT STATE and Log,
   Log last because the log script appends to the end of the file.
   The owner's rulings for the area and its declined proposals live here
-  too. Pull before reading; commit and push at handoff and whenever
+  too. CURRENT STATE keeps a list "Open owner asks", one line per
+  decision the owner must make, never folded. Add a line when this thread
+  or one of its workers raises an ask. Remove it when the answer arrives
+  or live state makes it stale. Pull before reading; commit and push at handoff and whenever
   CURRENT STATE changes, not at every tick.
 - **Local:** briefs, review reports, captures and the list of worker
   thread ids go in a folder on this machine, which the area file names.
@@ -155,12 +159,13 @@ Commit and push it. Then stop launching.
 
 ## Stand down
 
-When nothing is in flight, no open PR of the area still needs the lead and
-no owner ask is open, say so in the status. On the owner's yes, rewrite
-CURRENT STATE, clear the lead cell in the roster row, commit, push and
-stop.
-A lead never stands down, and its thread is never settled, while a PR it
-brought is open.
+A lead is idle when nothing is in flight, no owner ask is open, and no PR
+is open that this lead, or the lead before it, brought or adopted.
+An idle lead says so in the status. On the owner's yes, rewrite CURRENT
+STATE, delete this thread's timed wakes, clear the lead cell in the roster
+row, commit, push and stop.
+A lead that is not idle never stands down, and its thread is never
+settled.
 
 ## Scripts
 

@@ -2,10 +2,11 @@
 
 Date: 2026-11-26.
 Status: withdrawn by Kan on 2026-11-27, because he works on one Mac.
-Commit 10bd240 applied it on 2026-11-26; the commit "refactor(cos): return to one chief of staff" reverts it.
-The attention limits design of 2026-11-27 (`2026-11-27-cos-attention-limits-design.md`) replaces it.
+Commit 10bd240 applied it and commit 268f1ba reverted the skill text; the roster and record changes listed under "Deviations" are still to undo.
+The [attention limits design of 2026-11-27](2026-11-27-cos-attention-limits-design.md) replaces it.
+Before that: approved by Kan on 2026-11-26 ("approved", in the holder thread), with both recommendations of "Questions decided".
 Kan asked for this draft on 2026-11-26 (decision D38 in the chief of staff record).
-Nothing in a skill, a roster or a scheduled task changes before his yes to this file.
+Steps 1 to 3 of "Order of work" ran the same day; step 4 is his.
 Home: `skills/cos/`, `skills/unblock-all/` and `skills/lead/` in this repo, and `cos/roster.md` in the brain repos.
 It replaces one rule of the [design of 2026-11-18](2026-11-18-cos-all-areas-design.md): "There is one holder across all machines, never one per machine."
 
@@ -154,14 +155,14 @@ This session cannot reach that Mac, so Kan starts it there.
 
 `lead/SKILL.md` and `queue_page.py` do not change.
 
-## Open questions for Kan
+## Questions decided
 
-1. **One queue page per machine, or one merged page?**
-   Recommended: one per machine.
+Kan took both recommendations with "approved" on 2026-11-26.
+
+1. **One queue page per machine, not one merged page.**
    Each page has one writer, and it shows what he can clear from that Mac.
    A merged page needs both holders to write the same page, and a work-side line could not be built on the personal Mac.
-2. **Does the retro run on the home machine only, or on each?**
-   Recommended: home only.
+2. **The retro runs on the home machine only.**
    It reads both machines' records from the brain, so each proposal reaches him once.
 
 ## Risk
@@ -200,7 +201,17 @@ Step 4 is Kan's.
 
 ## Deviations
 
-None yet.
+- **The skip has a condition the table left out.**
+  The table says `unblock-all` skips an area whose lead runs on another machine.
+  The skills say: only while that machine's holder cell names a thread.
+  Without it, the home holder would drop two areas before the personal Mac has a holder; the Risk section already promised the fallback.
+- **Four sentences the table missed were also changed**, because they became false: the `cos` skill's description line, its Handoff sentence ("on any machine"), the `cos` row of the owner contract's table, and the work roster's sentence about "the holder line".
+- **The roster gained a "Home machine" line** in place of the `Holder:` line, so a holder can tell whether it is the home one.
+- **The count line has a source the spec did not name**: the "Numbers for <date>" line of the other machine's record, which every holder now writes.
+- **The `cos` skill says how a session names its machine** (`scutil --get LocalHostName`), so a `.local` suffix cannot hide the row.
+- **The home machine's record moved the same day**: `cos/records/BXTHMPLT034/2026-11-26.md` starts with the full state, and the old file of that date keeps its lines.
+- **`lead/SKILL.md` is unchanged, as approved.**
+  Its sentence "runs the owner's one queue" is now loose; it is left for Kan to call.
 
 ## Not yet specified
 

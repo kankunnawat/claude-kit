@@ -59,7 +59,7 @@ A rule that two of them need lives here, once.
   list.
 - **The owner's attention is the budget.** A lead starts no new item while
   three of its area's items wait on the owner. At most three areas are
-  active at once. Both numbers are a starting guess (2026-11-27); the retro
+  active at once, across every roster. Both numbers are a starting guess (2026-11-27); the retro
   proposes changes.
 - **Reports from other sessions go to the area's inbox**, when it has
   one, never into the thread the owner is talking in.

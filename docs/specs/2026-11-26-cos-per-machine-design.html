@@ -131,10 +131,10 @@
 <main class="page">
 
 <header>
-  <div class="chips"><span>D38</span><span>chief of staff skills</span><span>Withdrawn by Kan, 27 Nov</span></div>
+  <div class="chips"><span>D38</span><span>chief of staff skills</span><span class="ask">Withdrawn by Kan, 27 Nov</span></div>
   <h1>Withdrawn: one chief of staff on each Mac, each for the leads that run there</h1>
+  <p class="lede">Kan withdrew this on 27 Nov because he works on one Mac. Commit <code>10bd240</code> applied it and commit <code>268f1ba</code> reverted the skill text. The roster and record changes under Deviations are still to undo. The attention limits design of 27 Nov replaces it. The page below is the design as he approved it on 26 Nov.</p>
   <p class="lede">You answer an item on the Mac where its lead runs, so the answer is delivered in the same turn and no Mac gets to act on the other.</p>
-  <p class="lede" style="margin-top: 12px">Withdrawn on 27 Nov, because you work on one Mac. Commit 10bd240 applied it on 26 Nov; the commit "refactor(cos): return to one chief of staff" reverts it. The attention limits design of 27 Nov replaces it.</p>
 </header>
 
 <section class="panels">
@@ -203,7 +203,7 @@
     <div class="kicker">3 &middot; How it runs</div>
     <h2>Setting up the second one is yours to start</h2>
     <ol class="steps">
-      <li><span class="n">1</span><span>After your yes, the skills and both rosters change on the work Mac. The single holder line becomes two cells per machine.</span></li>
+      <li><span class="n">1</span><span>Done on 26 Nov: the skills and both rosters changed on the work Mac. The single holder line became two cells per machine.</span></li>
       <li><span class="n">2</span><span>On the personal Mac you pull the skills repo, run its install script, open a new thread and type <code>/cos</code>.</span></li>
       <li><span class="n">3</span><span>It takes the two areas whose leads run there, makes its own page and its own two daily reports.</span></li>
       <li><span class="n">4</span><span>Any answer still not delivered is its first ask: you confirm it there in a word, and it relays on that Mac.</span></li>
@@ -234,14 +234,10 @@
 </section>
 
 <section class="card decide">
-  <h2>For you to decide</h2>
-  <ol class="qs">
-    <li><div><b>One queue page per Mac, or one merged page?</b>I recommend one per Mac: each page has a single writer and shows what you can clear from that Mac. A merged page needs both to write the same page, and a work-side line could not be built on the personal Mac.</div></li>
-    <li><div><b>Does the evening retro run on the work Mac only, or on each Mac?</b>I recommend the work Mac only: it reads both Macs' records from the brain, so each proposal reaches you once.</div></li>
-  </ol>
-  <p class="reply">Reply "approved" to take the recommendation, or say what to change.</p>
-  <h3>Already decided</h3>
+  <h2>Decided</h2>
   <ul class="done">
+    <li>One queue page per Mac, not one merged page (you, 26 Nov).</li>
+    <li>The evening retro runs on the work Mac only (you, 26 Nov).</li>
     <li>No full-access link between the Macs (you, 25 Nov).</li>
     <li>One chief of staff per machine over pasting by hand (you, 26 Nov, D38).</li>
     <li>No answer travels through a synced file: the owner contract already rules that out.</li>
@@ -253,6 +249,8 @@
   <p><b>Left for later:</b> what the personal Mac's reports do when that Mac sleeps through a report time; whether the count line also names the oldest item.</p>
   <p><b>Not in this change:</b> any send path between the Macs, moving a lead, a merged app for both queues, any change to leads or merge rules.</p>
 </div>
+
+<div class="out"><p><b>Still yours:</b> the setup on the personal Mac (step 2 of panel 3).</p></div>
 
 <div class="foot">Full spec: docs/specs/2026-11-26-cos-per-machine-design.md</div>
 </main>

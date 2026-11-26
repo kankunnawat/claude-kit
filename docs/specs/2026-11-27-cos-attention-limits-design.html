@@ -61,16 +61,16 @@
     <h2>What changes</h2>
     <div class="chg del"><b>&minus;</b><div>One chief of staff per Mac. Back to one, on one Mac.</div></div>
     <div class="chg add"><b>+</b><div>A lead holds new work while three of its area's items wait on you, and says so: "holding new work: n items wait on you".</div></div>
-    <div class="chg add"><b>+</b><div>At most three areas active. A fourth "add" or "resume" asks which area to hold.</div></div>
+    <div class="chg add"><b>+</b><div>At most three areas active, across every roster. A fourth "add" or "resume" asks which area to hold.</div></div>
     <div class="chg add"><b>+</b><div>The report names a busy area with no lead, and an idle lead to stand down. You type the word.</div></div>
-    <div class="chg add"><b>+</b><div>A lead can stand down on your yes, never while a PR it brought is open.</div></div>
+    <div class="chg add"><b>+</b><div>An idle lead can stand down on your yes. A thread the roster names as lead or chief of staff is never settled.</div></div>
     <div class="chg same"><b>=</b><div>The machine budget: the Machines table and <code>capacity.sh</code>.</div></div>
   </div>
   <div class="card">
     <h2>Risk &rarr; answer</h2>
     <div class="risk-row"><div>Three is the wrong number.</div><div>Both numbers are a starting guess. The retro proposes a change; you say yes or no.</div></div>
-    <div class="risk-row"><div>A lead counts its asks from memory and starts too much.</div><div>It counts from the area file after its Verify step, never from memory.</div></div>
-    <div class="risk-row"><div>A lead stands down with a PR still open, and the PR loses its owner.</div><div>A lead never stands down, and its thread is never settled, while a PR it brought is open.</div></div>
+    <div class="risk-row"><div>A lead counts its asks from memory and starts too much.</div><div>It counts the "Open owner asks" lines in the area file, one per decision, never from memory.</div></div>
+    <div class="risk-row"><div>A lead stands down with a PR still open, and the PR loses its owner.</div><div>A lead is idle only when no PR is open that it, or the lead before it, brought or adopted. The unblock pass never settles a thread the roster names.</div></div>
     <div class="risk-row"><div>The chief of staff starts or stops leads behind your back.</div><div>It only names them in the report. You type /lead or the yes.</div></div>
   </div>
 </section>

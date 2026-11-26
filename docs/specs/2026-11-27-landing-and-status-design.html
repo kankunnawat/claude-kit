@@ -58,19 +58,21 @@
   <div class="card">
     <h2>What changes</h2>
     <div class="chg add"><b>+</b><div>Status replies: the first line is your next action, or "nothing needs you". At most six lines, plain words.</div></div>
-    <div class="chg add"><b>+</b><div>No merge agent open when a lead hands over a PR: it starts one where the area's manual allows it in writing, otherwise it asks you first.</div></div>
-    <div class="chg add"><b>+</b><div><code>land-pr</code> accepts a passing review already recorded at the PR's head, from a reviewer who did not write it.</div></div>
+    <div class="chg add"><b>+</b><div>No merge agent open when a lead hands over a PR: it starts one where the area's manual allows it in your own dated words, with a brief that names no PR. Otherwise it asks you first.</div></div>
+    <div class="chg add"><b>+</b><div><code>land-pr</code> accepts a passing review already recorded at the PR's head, only from a reviewer session it can read that did not write it.</div></div>
     <div class="chg add"><b>+</b><div>A close-out with its PR still open leaves the thread in view, unless a live lead owns that repo.</div></div>
     <div class="chg add"><b>+</b><div>The tier tool runs before any review. The hold file is one command, run first. Night mode shows in the machine budget.</div></div>
+    <div class="chg add"><b>+</b><div>A lead held at three asks may still use free slots on its own work that needs nothing from you. It starts nothing new.</div></div>
+    <div class="chg add"><b>+</b><div>A settle keeps an unanswered rule proposal in the queue.</div></div>
     <div class="chg add"><b>+</b><div>CI runs three more existing tests and two new ones. Area logs keep seven days; older lines go to a monthly file.</div></div>
-    <div class="chg same"><b>=</b><div>The merge guard, the hooks, <code>merge-agent.py</code> and every approval rule.</div></div>
+    <div class="chg same"><b>=</b><div>The merge guard, the hooks and <code>merge-agent.py</code>. Approval rules too, except one new path: a lead may start a merge agent under a standing approval you wrote in the area's manual.</div></div>
   </div>
   <div class="card">
     <h2>Risk &rarr; answer</h2>
     <div class="risk-row"><div>A lead starts a merge agent you did not want.</div><div>Only under a standing approval written in the area's manual, with its date and scope. Otherwise it asks.</div></div>
-    <div class="risk-row"><div><code>land-pr</code> trusts a review it should not.</div><div>Same four tests as the merge agent: a pass, this exact head, a named reviewer, not the author. Any doubt runs a fresh review.</div></div>
+    <div class="risk-row"><div><code>land-pr</code> trusts a review it should not.</div><div>Stricter than the merge agent: the repo's format, a pass, this exact head, and a reviewer session it can read that did not write the change. Anything else runs a fresh review.</div></div>
     <div class="risk-row"><div>A thread stays open forever.</div><div>It stays only while its PR is open. A live lead that owns the repo lets it settle.</div></div>
-    <div class="risk-row"><div>Rotating the log loses lines.</div><div>The archive is written and checked before the area file is rewritten. Nothing old means nothing changes.</div></div>
+    <div class="risk-row"><div>Rotating the log loses lines.</div><div>The archive is written and checked before the area file is rewritten, and a rerun adds no duplicate. Nothing old means nothing changes.</div></div>
   </div>
 </section>
 
@@ -79,7 +81,7 @@
   <ul class="done">
     <li>One status shape, kept in the owner contract (you, 27 Nov).</li>
     <li>A merge agent starts on its own only under a written standing approval (you, 27 Nov).</li>
-    <li><code>land-pr</code> accepts a recorded verdict on the merge agent's terms (you, 27 Nov).</li>
+    <li><code>land-pr</code> may accept a recorded verdict in place of its own first review (you, 27 Nov).</li>
     <li>No change to the merge guard, the hooks or <code>merge-agent.py</code> (you, 27 Nov).</li>
   </ul>
 </section>

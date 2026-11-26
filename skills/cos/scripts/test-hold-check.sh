@@ -19,5 +19,9 @@ t "a hold file is on with its first line" 3 '^hold=on since [0-9]{4}-[0-9]{2}-[0
 : > "$TMP/empty.md"
 t "an empty hold file is still on"       3 '^hold=on since [0-9-]+T[0-9:]+Z $' "$TMP/empty.md"
 t "no argument is a wrong call"          2 '^usage'
+t "an empty path is a wrong call"        2 'empty path' ""
+t "a missing folder is a wrong call"     2 'folder not found' "$TMP/nope/hold.md"
+# shellcheck disable=SC2088 # a literal, unexpanded tilde is the case under test
+t "a quoted tilde is a wrong call"     2 'folder not found' "~/nope-$$/hold.md"
 
 [ "$fails" -eq 0 ] && echo "all checks passed" || { echo "$fails failed"; exit 1; }

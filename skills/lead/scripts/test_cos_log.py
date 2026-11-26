@@ -20,6 +20,7 @@ RECORD = """# alpha
 
 - 2020-01-15 10:00Z January line.
 - 2020-02-03 11:00Z February line.
+
 a hand-written line without a time
 - 2020-02-25 12:00Z recent line.
 - 2020-02-26 08:00Z newest line.
@@ -72,6 +73,40 @@ class RotateTest(unittest.TestCase):
     def test_days_sets_the_cutoff(self):
         self.assertIn("rotated=3", self.rotate("1").stdout)
         self.assertIn("newest line.", self.record.read_text())
+
+    def test_archive_paths_are_printed(self):
+        out = self.rotate()
+        self.assertIn(f"archive={self.archive('2020-01')}", out.stdout)
+        self.assertIn(f"archive={self.archive('2020-02')}", out.stdout)
+
+    def test_a_line_under_a_moved_line_moves_with_it(self):
+        self.record.write_text(RECORD.replace("- 2020-01-15 10:00Z January line.\n",
+                                              "- 2020-01-15 10:00Z January line.\n  - its sub-line\n"))
+        out = self.rotate()
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertEqual(self.archive("2020-01").read_text(),
+                         "- 2020-01-15 10:00Z January line.\n  - its sub-line\n")
+        self.assertNotIn("its sub-line", self.record.read_text())
+
+    def test_a_stamped_line_under_a_later_heading_stays(self):
+        self.record.write_text(RECORD + "\n## Rulings\n\n- 2020-01-20 09:00Z a ruling under its own heading.\n")
+        out = self.rotate()
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertIn("a ruling under its own heading", self.record.read_text())
+        self.assertNotIn("a ruling", self.archive("2020-01").read_text())
+
+    def test_a_failed_archive_write_changes_nothing_and_a_rerun_adds_no_duplicate(self):
+        # A directory at the archive path fails the write for every user, root included.
+        self.archive("2020-02").mkdir()
+        out = self.rotate()
+        self.assertNotEqual(out.returncode, 0)
+        self.assertEqual(self.record.read_text(), RECORD)
+        self.archive("2020-02").rmdir()
+        out = self.rotate()
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertEqual(self.archive("2020-01").read_text(), "- 2020-01-15 10:00Z January line.\n")
+        self.assertEqual(self.archive("2020-02").read_text(), "- 2020-02-03 11:00Z February line.\n")
+        self.assertNotIn("January line", self.record.read_text())
 
     def test_a_record_without_a_log_heading_is_refused(self):
         self.record.write_text("# alpha\n\n- 2020-01-15 10:00Z January line.\n")

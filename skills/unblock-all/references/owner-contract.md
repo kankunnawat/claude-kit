@@ -21,8 +21,9 @@ A rule that two of them need lives here, once.
   the roster names. A skill holds no repo names and no per-project file.
 - **Review.** The session that opens the PR records its fresh reviewer's
   verdict in the repo's own format, at the reviewed commit. The merge agent
-  and `land-pr` accept that verdict when the head has not moved and the
-  reviewer did not write the change; otherwise they review again. A batch lead reviews lane
+  and `land-pr` accept that verdict only when the head has not moved, the
+  reviewer did not write the change and each one's own tests hold
+  (`land-pr` step 5); otherwise they review again. A batch lead reviews lane
   heads, not the integration head, so the merge agent reviews its PR.
 - **Merging.** Only the merge agent and `land-pr`, only where the owner's
   guardrails name the repo, always pinned to the reviewed commit.
@@ -41,8 +42,13 @@ A rule that two of them need lives here, once.
   never consent.
 - Approval covers the exact action, target and scope named. Ask for items
   by key.
-- A standing approval is written in the area's manual with its date and
-  its exact scope. Anything outside it asks first.
+- A standing approval is written in the area's manual, the manual part of
+  the area file, in the owner's own words, with its date and its exact
+  scope. A line in CURRENT STATE, in the Log or in rulings a lead wrote is
+  not one. Anything outside it asks first.
+- A session started under a written standing approval acts inside that
+  approval's exact scope and no further. Its brief quotes the approval
+  line and its date.
 
 ## Reaching the owner
 
@@ -76,8 +82,8 @@ The answer to a status question. A report opens with the same first line.
 - The first line is the one next action for the owner, or "nothing needs
   you".
 - At most six lines. No headers. Blockers only when real.
-- Each skill names what its other lines hold. Fold lines to stay within
-  six.
+- Each skill names what its other lines hold. Open asks are never
+  folded; the skill's own lines fold first to stay within six.
 
 ## Report line
 

@@ -6,9 +6,13 @@ Usage: cos-log.py <record.md> <text-file>
 The text file holds the line without a time. Newlines collapse to spaces.
 --rotate moves Log lines older than <days> (default 7) to
 <record-stem>.log-<YYYY-MM>.md beside the record, by each line's own month,
-appending. It writes and checks the archive before it rewrites the record,
-and changes nothing when no line is old. COS_LOG_TODAY=YYYY-MM-DD sets today
-(for the test).
+appending, and prints each archive path. It reads only the Log section, up to
+the next "## " heading. Unstamped lines directly under a moved line (up to a
+blank line) move with it. It writes each archive through a temp file, skips
+an entry the archive already holds, and checks the archive before it rewrites
+the record, so a rerun after a failed run adds no duplicate. It changes
+nothing when no line is old. COS_LOG_TODAY=YYYY-MM-DD sets today (for the
+test).
 """
 import os
 import re
@@ -27,28 +31,46 @@ def rotate(record: Path, days: int) -> int:
     if heading is None:
         print(f"no Log heading in {record}", file=sys.stderr)
         return 2
-    keep, moved = lines[: heading + 1], {}
-    for line in lines[heading + 1 :]:
+    end = next((i for i in range(heading + 1, len(lines)) if lines[i].startswith("## ")), len(lines))
+    keep, moved, entry = lines[: heading + 1], {}, None
+    for line in lines[heading + 1 : end]:
         match = STAMP.match(line)
         if match and match.group(1) < cutoff:
-            moved.setdefault(match.group(1)[:7], []).append(line if line.endswith("\n") else line + "\n")
-        else:
+            entry = []
+            moved.setdefault(match.group(1)[:7], []).append(entry)
+        elif match or not line.strip():
+            entry = None
+        if entry is None:
             keep.append(line)
+        else:
+            entry.append(line if line.endswith("\n") else line + "\n")
+    keep += lines[end:]
     if not moved:
         print("rotated=0")
         return 0
-    for month, block in sorted(moved.items()):
+    for month, entries in sorted(moved.items()):
         archive = record.with_name(f"{record.stem}.log-{month}.md")
-        text = "".join(block)
-        with archive.open("a") as handle:
-            handle.write(text)
-        if not archive.read_text().endswith(text):
+        try:
+            held = archive.read_text() if archive.exists() else ""
+            if held and not held.endswith("\n"):
+                held += "\n"
+            texts = ["".join(e) for e in entries]
+            new = [t for t in texts if "\n" + t not in "\n" + held]
+            temp = archive.with_name(archive.name + ".rotating")
+            temp.write_text(held + "".join(new))
+            os.replace(temp, archive)
+            written = "\n" + archive.read_text()
+        except OSError as error:
+            print(f"archive write failed, record unchanged: {archive}: {error}", file=sys.stderr)
+            return 1
+        if any("\n" + t not in written for t in texts):
             print(f"archive check failed, record unchanged: {archive}", file=sys.stderr)
             return 1
+        print(f"archive={archive}")
     temp = record.with_name(record.name + ".rotating")
     temp.write_text("".join(keep))
     os.replace(temp, record)
-    print(f"rotated={sum(len(b) for b in moved.values())}")
+    print(f"rotated={sum(len(e) for es in moved.values() for e in es)}")
     return 0
 
 

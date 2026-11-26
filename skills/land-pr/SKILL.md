@@ -73,10 +73,15 @@ You type every write yourself, so the merge guard judges it.
    The highest row that matches any file or behavior in the diff wins.
    A tier in the PR body or from a round-1 reviewer can raise it, never lower it, and a raised tier adds that tier's reviews and proof.
 5. **Round 1: the tier's reviews of the whole PR.**
-   First look for a verdict recorded on the PR in the repo's own format.
-   Accept it in place of the round 1 review only when all of these hold: it is a pass by the guide's own rule (by step 9's rule where there is no guide), it names this exact full head SHA, it names its reviewer, and that reviewer did not write the change.
-   A recorded verdict at this head that is not a pass: its findings are round 1's findings; go to step 6.
-   No verdict, a verdict at another commit, a verdict that names no reviewer, a reviewer who wrote the change, or any doubt about who recorded it: run round 1 as below.
+   First look for a verdict recorded on the PR.
+   Accept it in place of the round 1 review only when all of these hold:
+   - it is in the repo's own format; with no gate guide, in the verdict line of `../merge-agent/references/gate-guide-template.md`;
+   - it is a pass by the guide's own rule, or by step 9's rule with no guide;
+   - it names this exact full head SHA;
+   - it names its reviewer by a session id, a thread id or a ledger id, that this session can open and read;
+   - that session did not write the change, and its own last verdict is that pass at that head.
+
+   Anything else runs round 1 as below: no verdict, a verdict that is not a pass, a verdict at another commit, no reviewer id, an id this session cannot read, a reviewer who wrote the change, or any doubt.
    A review the tier asks for that the recorded verdict does not cover, such as the security brief of a high PR, still runs.
    The CI and bot findings read below, the evidence, `precheck` and every stop still run.
    Each reviewer is a session that did not write the change.
@@ -120,7 +125,8 @@ You type every write yourself, so the merge guard judges it.
    Anything else, including a conflict with the base, is NOT YET with the blocking item.
    Record it as one PR comment in the template's verdict line shape: the result, the full head SHA, the tier, the reviewers and the finding counts.
    The same comment lists every dismissed finding with its one-line reason.
-   An accepted verdict (step 5) with no review run here is not recorded again; the report names its reviewer.
+   An accepted pass (step 5) with no review run here is not recorded again; the report names its reviewer.
+   A NOT YET is always recorded, also after an accepted pass.
 10. **Land.**
     Merge only after a PASS at the PR's current head, from step 9 or in the format of the repo's guide (step 3).
     A NOT YET stops here with no merge command for the user: report the blocking item, the PR link and the head SHA, then run step 11.
@@ -160,7 +166,7 @@ You type every write yourself, so the merge guard judges it.
 ## Report
 
 ```text
-Round 1: <n> findings: fixed <a>, noted <b>, dismissed <c>; or a recorded verdict accepted (<reviewer>, <short SHA>)
+Round 1: <n> findings: fixed <a>, noted <b>, dismissed <c>; or a recorded verdict accepted (<reviewer session id>, <short SHA>)
 Round 2: <n> findings on the fix commits; round 1 resolved <a>, wrong <b>, still open <c>; or skipped (no Fix, no blocker or important finding)
 Dismissed: <each dismissed blocker or important finding and its reason>; minor ones counted, not listed
 Evidence: <tests, CI on <short SHA>, the user run and how>, and what was not run

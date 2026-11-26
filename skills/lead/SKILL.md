@@ -67,19 +67,20 @@ A lead whose area is put on hold gives status only: no launches, no asks.
    asks" in the area file's CURRENT STATE, never from memory. With three
    or more, start no new item: review, fix and hand over what already
    runs. A scout or a batch pick is a new item. Free slots may still go
-   to adopted work that needs nothing from the owner: re-running a failed
-   check, a fix round already allowed, evidence capture, or merging the
-   base into a branch the lead brought. An order the owner types
-   in this thread is outside this count; hold and the machine budget
-   still apply. Say "holding new work: n items
+   to work this lead brought or adopted that needs nothing from the
+   owner: re-running a failed check, a fix round already allowed,
+   evidence capture, or merging the base into its branch. An order the
+   owner types in this thread is started all the same, inside hold and
+   the machine budget. Say "holding new work: n items
    wait on you" in the status and in the next report line.
    Then run `scripts/capacity.sh` with this machine's
    flags from the roster, plus `--quiet-hours` inside the roster's quiet
    hours and any stricter flags the area's manual names. Start at most the `slots` it prints at this
    wake. With queued work and room for three, start three. With `slots=0`,
    start nothing; the next worker report is the wake that tries again.
-   With `night_mode=on`, hold owner asks for the morning and run heavy
-   checks once per head after the fix rounds, as
+   With `night_mode=on`, list each ask in "Open owner asks" as usual, so
+   it counts, but send no question and no ping until night mode is off.
+   Run heavy checks once per head after the fix rounds, as
    [night-mode](../night-mode/SKILL.md) says; the pace of other work is
    unchanged. The roster's quiet hours still set `--quiet-hours`.
 3. **Launch.** One worker per item, each a separate top-level session in
@@ -90,9 +91,12 @@ A lead whose area is put on hold gives status only: no launches, no asks.
 4. **Capture before review** for any change the owner can see. A text
    review passes defects a screenshot shows.
 5. **Review.** First run the repo's own tier tool, from its PR gate
-   guide, on the diff. Then start the reviews that tier asks for: a fresh
-   one-shot reviewer per review and per head. No reviewer wrote the
-   change.
+   guide, on the diff. With no gate guide or no tier tool, use the rows
+   of
+   [the gate-guide template](../merge-agent/references/gate-guide-template.md),
+   as `land-pr` step 4 does. Then start the reviews that tier asks for: a
+   fresh one-shot reviewer per review and per head, and at least one per
+   head whatever the tier says. No reviewer wrote the change.
 6. **Fix.** At most two rounds, each in a fresh context and each
    re-reviewed. A third needs the owner's go.
 7. **Hand over.** Record the reviewer's verdict on the PR in the repo's
@@ -100,12 +104,15 @@ A lead whose area is put on hold gives status only: no launches, no asks.
    for. Then hand the PR to the merge agent, which accepts that verdict
    while the head has not moved.
    When no merge agent session is live for this repo: where the area's
-   manual holds a standing approval to start one, written in the area's
-   manual with its date and its exact scope, start it through
+   manual holds a standing approval to start one (owner contract,
+   "Authority"), start it with the Merge agent brief through
    `scripts/cos-launch.sh` (bucket `review`) inside the machine budget.
-   Otherwise put "start the merge agent in <repo>", linked to the PR,
-   first in the area's open owner asks. Without that written approval the
-   lead only asks.
+   Otherwise, or when that merge agent stops for lack of a grant or ends
+   without its report, ask the owner "start the merge agent in <repo>",
+   linked to the PR: say it in this thread's last message, file it on
+   the area's to-do list when the manual names one, and add its line
+   first in "Open owner asks" for the count, linking that to-do or this
+   thread. Without that written approval the lead only asks.
 8. **Report.** One report line per finished unit, as the owner contract
    words it. Keep no private ask list: what waits on the owner reaches the
    one queue through `unblock-all`.
@@ -136,7 +143,9 @@ Every wake is a tick.
 
 1. **Hold.** When the area has a hold file, run
    `../cos/scripts/hold-check.sh` on it first. On `hold=on`, do nothing
-   else and reply one line. The owner's own message is still answered.
+   else and reply one line. The owner's own message is still answered;
+   on the owner's "resume", trash the hold file. A worker report that
+   arrives on hold gets one Log line and no reply to the worker.
 2. **Verify.** Fetch the trunk. Read the live state of the area's open PRs
    and running sessions. Never act on the record alone.
 3. **Act.** The smallest set of moves that unblocks the most, inside the
@@ -155,8 +164,8 @@ A lead keeps its state where a new session, on any machine, can pick it up.
   start when the area has none, with the sections CURRENT STATE and Log,
   Log last because the log script appends to the end of the file.
   At the first tick of a day, run
-  `scripts/cos-log.py --rotate <area-file>`, and stage the archive it
-  writes with the area file.
+  `scripts/cos-log.py --rotate <area-file>`, and stage each archive it
+  prints with the area file.
   The owner's rulings for the area and its declined proposals live here
   too. CURRENT STATE keeps a list "Open owner asks", one line per
   decision the owner must make, never folded. Add a line when this thread
@@ -191,7 +200,7 @@ An idle lead says so in the status. On the owner's yes, rewrite CURRENT
 STATE, delete this thread's timed wakes, clear the lead cell in the roster
 row, commit, push and stop.
 A lead that is not idle never stands down, and its thread is never
-settled, except a stopped thread the owner names.
+settled.
 
 ## Scripts
 

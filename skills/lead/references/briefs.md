@@ -28,7 +28,8 @@ id> "<fixed report line>"
 ```
 
 The Lane and Integration lane briefs are for batch mode only. A watch lead
-uses Scout, Worker, Reviewer and Fix round.
+uses Scout, Worker, Reviewer and Fix round. The Merge agent brief stands
+alone: it carries none of the lines above.
 
 ## Scout (read-only pre-screen)
 
@@ -166,6 +167,22 @@ in batch mode, a list for the integration lane.
 Report line: "review-<name>: <VERDICT> at <short sha>. Done-when <met | not
 met>. <one line per finding or none>. Flag <agree | disagree>. Report
 <path>"
+```
+
+## Merge agent (only under a standing approval, lead step 7)
+
+```
+You are the merge agent for <repo>, started by the <area> lead under this
+standing approval, quoted from the area's manual: "<the approval line,
+word for word>" (<its date>). Act inside its exact scope and no further.
+
+Run /merge-agent as written, in this checkout. This brief names no PR to
+merge and gives no merge instruction; the skill, the repo's gate guide
+and the merge guard decide each PR.
+
+End with exactly one message, then stop:
+~/.t3/bin/t3 thread send <the area's inbox thread id, or the lead's thread
+id> "merge-agent <repo>: <one line per PR, as the skill reports it>"
 ```
 
 ## Fix round

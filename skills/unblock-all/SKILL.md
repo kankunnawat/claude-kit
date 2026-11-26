@@ -33,7 +33,8 @@ nothing about it and list none of its items. Count its waiting threads in
 one "on hold: <area>, n waiting" line.
 Triage and question wording follow
 [the decision rules](references/decision-rules.md).
-The rules shared with `cos`, `lead` and `merge-agent` are in
+The rules shared with `cos`, `lead`, `merge-agent`, `land-pr` and
+`unblock-here` are in
 [references/owner-contract.md](references/owner-contract.md).
 
 ## Modes
@@ -54,8 +55,9 @@ The rules shared with `cos`, `lead` and `merge-agent` are in
   - send each bucket 6 item back to its thread; never file it as a to-do,
     and count them in one "sent back for evidence: n" line of the list
     (outside the 8 lines; left out when n is 0);
-  - count the threads that look finished, by the test of step 5, in one
-    "looks finished: n" line (outside the 8 lines); settle none of them;
+  - count the threads that look finished, by the test of step 5 minus its
+    never-settle list, in one "looks finished: n" line that names each in
+    a few words (outside the 8 lines); settle none of them;
   - ask nothing and never call `AskUserQuestion`;
   - end with one "Needs you" list across every area. It is the owner's one
     queue. Order: what blocks running work first, then reviews that are
@@ -171,8 +173,7 @@ As soon as the user answers:
 - Never settle: a thread still running or waiting, a recurring loop (a cleanup
   or watch thread that ticks), a thread whose PR still needs its capture, fix
   or report, a thread on hold for someone else, a thread a roster row names
-  as the lead or the holder (except a stopped lead thread the owner names
-  to settle), this thread, or a child thread
+  as the lead or the holder, this thread, or a child thread
   whose parent is another session you do not own.
 - Re-list with `settled: false`, filter to top-level threads, and report the
   settled count from that list, not from memory.

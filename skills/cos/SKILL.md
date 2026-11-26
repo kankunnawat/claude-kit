@@ -185,7 +185,12 @@ this thread. Each run:
    "Stand down") gets "idle lead: stand it down?". Relay a yes to the
    lead, quoted; the lead clears its own cell. Never start a lead for
    these, and never clear a lead cell on your own. A lead cell that names
-   a stopped thread is cleared here on the owner's word. After a no, keep
+   a thread that failed or was interrupted and cannot answer is cleared
+   here only when the owner's message names that thread by its title or
+   id. The same reply lists the area's open PRs as having no lead. Once
+   the cell is cleared, the thread is no longer roster-named, so the
+   normal settle rules apply. "Settle all" never names a lead thread.
+   After a no, keep
    it as a line of the record's CURRENT STATE (in each report's items
    file, so the page builder keeps it), and offer it again only once the
    lead has finished another item.

@@ -3,11 +3,13 @@
 # Usage: hold-check.sh <hold-file>
 # No file: prints hold=off and exits 0.
 # A file: prints "hold=on since <mtime, UTC> <first line>" and exits 3.
-# A wrong call exits 2.
+# A wrong call, an empty path or a path whose folder does not exist exits 2.
 set -euo pipefail
 
 [ $# -eq 1 ] || { echo "usage: hold-check.sh <hold-file>" >&2; exit 2; }
 file=$1
+[ -n "$file" ] || { echo "hold-check: empty path" >&2; exit 2; }
+[ -d "$(dirname -- "$file")" ] || { echo "hold-check: folder not found: $(dirname -- "$file")" >&2; exit 2; }
 if [ ! -e "$file" ]; then
   echo "hold=off"
   exit 0

@@ -49,6 +49,10 @@ Start or take over:
    wins.
 3. Re-verify every fact in the file's CURRENT STATE against live state.
 4. Write this thread's id and machine into the roster row, commit and push.
+   When the owner's order has a limit (one night, one batch), write the
+   limit in the row's state note in his words. When this machine has no
+   row in the Machines table, say so in the first status and ask the
+   owner for one.
 5. List the area's open PRs and threads and ask the owner which to adopt.
    Adopt none unasked.
 

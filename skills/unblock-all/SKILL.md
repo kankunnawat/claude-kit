@@ -60,6 +60,11 @@ The rules shared with `cos`, `lead` and `merge-agent` are in
     ready with their evidence, then the rest, oldest first. Each line: the
     area, the item in plain words, a link, a recommendation and the
     minutes it takes. Show at most 8 lines and count the rest;
+  - an item that has stood unchanged in the list for three days and
+    blocks nothing that runs moves to one "parked: n" line that names
+    each in a few words with its link. It comes back when its facts
+    change or the owner asks for it. A secret that may be exposed and
+    anything with a date are never parked;
   - send a ping only if the area's manual has a ping rule that allows one
     at this hour;
   - the chief of staff runs this mode at each scheduled report and uses

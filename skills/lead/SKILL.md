@@ -70,8 +70,8 @@ A lead whose area is put on hold gives status only: no launches, no asks.
    to work this lead brought or adopted that needs nothing from the
    owner: re-running a failed check, a fix round already allowed,
    evidence capture, or merging the base into its branch. An order the
-   owner types in this thread is started all the same, inside hold and
-   the machine budget. Say "holding new work: n items
+   owner types in this thread is started all the same; hold and the
+   machine budget still apply. Say "holding new work: n items
    wait on you" in the status and in the next report line.
    Then run `scripts/capacity.sh` with this machine's
    flags from the roster, plus `--quiet-hours` inside the roster's quiet
@@ -79,7 +79,9 @@ A lead whose area is put on hold gives status only: no launches, no asks.
    wake. With queued work and room for three, start three. With `slots=0`,
    start nothing; the next worker report is the wake that tries again.
    With `night_mode=on`, list each ask in "Open owner asks" as usual, so
-   it counts, but send no question and no ping until night mode is off.
+   it counts, and state it in this thread's last message, where the
+   morning report's flag pass reads it. Send no question and no ping
+   until night mode is off.
    Run heavy checks once per head after the fix rounds, as
    [night-mode](../night-mode/SKILL.md) says; the pace of other work is
    unchanged. The roster's quiet hours still set `--quiet-hours`.
@@ -101,8 +103,9 @@ A lead whose area is put on hold gives status only: no launches, no asks.
    re-reviewed. A third needs the owner's go.
 7. **Hand over.** Record the reviewer's verdict on the PR in the repo's
    own format, at the reviewed commit, with the evidence its gate asks
-   for. Name the reviewer by its session id (thread or ledger id), so a
-   later session can check who reviewed. Then hand the PR to the merge agent, which accepts that verdict
+   for. Name the reviewer by its thread id, so a later session can read
+   what it wrote: in the format's reviewer field, or on a second line of
+   the same comment when the format has none. Then hand the PR to the merge agent, which accepts that verdict
    while the head has not moved.
    When no merge agent session is live for this repo: where the area's
    manual holds a standing approval to start one (owner contract,
@@ -144,7 +147,8 @@ Every wake is a tick.
 
 1. **Hold.** When the area has a hold file, run
    `../cos/scripts/hold-check.sh` on it first. On `hold=on`, do nothing
-   else and reply one line. The owner's own message is still answered;
+   else and reply one line. On exit 2, fix the path and run it again;
+   never treat it as off. The owner's own message is still answered;
    on the owner's "resume", trash the hold file. A worker report that
    arrives on hold gets one Log line and no reply to the worker.
 2. **Verify.** Fetch the trunk. Read the live state of the area's open PRs

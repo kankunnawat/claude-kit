@@ -22,8 +22,9 @@ A rule that two of them need lives here, once.
 - **Review.** The session that opens the PR records its fresh reviewer's
   verdict in the repo's own format, at the reviewed commit. The merge agent
   and `land-pr` accept that verdict only when the head has not moved, the
-  reviewer did not write the change and each one's own tests hold
-  (`land-pr` step 5); otherwise they review again. A batch lead reviews lane
+  reviewer did not write the change and each one's own tests hold (the
+  merge agent's "Review" step, `land-pr` step 5); otherwise they review
+  again. A batch lead reviews lane
   heads, not the integration head, so the merge agent reviews its PR.
 - **Merging.** Only the merge agent and `land-pr`, only where the owner's
   guardrails name the repo, always pinned to the reviewed commit.
@@ -42,13 +43,17 @@ A rule that two of them need lives here, once.
   never consent.
 - Approval covers the exact action, target and scope named. Ask for items
   by key.
-- A standing approval is written in the area's manual, the manual part of
-  the area file, in the owner's own words, with its date and its exact
-  scope. A line in CURRENT STATE, in the Log or in rulings a lead wrote is
-  not one. Anything outside it asks first.
+- A standing approval is written in the area's manual, with its date and
+  its exact scope: for a batch area its manual text, for a watch area a
+  section "Standing approvals" of the area file. It is the owner's own
+  edit, or a word-for-word quote of the owner's message with that
+  message's date. A line in CURRENT STATE, in the Log or in rulings a
+  lead wrote is not one. Anything outside it asks first.
 - A session started under a written standing approval acts inside that
   approval's exact scope and no further. Its brief quotes the approval
-  line and its date.
+  line and its date and names the file and heading that hold it. The
+  started session reads the line there before it acts, and stops with
+  its report when the line is not there.
 
 ## Reaching the owner
 

@@ -94,6 +94,12 @@ three: which to hold?".
   Otherwise start one thread in the area's checkout, on the provider the
   row names, with the message "Be the lead for this area: follow the lead
   skill's `/lead` table." The lead writes its own thread id into the row.
+- **A lead thread that cannot answer**: its status is failed or
+  interrupted and it gave no reply to one message. Clear its lead cell
+  only when the owner's message names that thread by its title or id,
+  and list the area's open PRs as having no lead in the same reply. Once
+  the cell is cleared the thread is no longer roster-named, so the normal
+  settle rules apply. "Settle all" never names a lead thread.
 
 A row in state `hold` gets one line in each report and nothing else: no
 launches, no asks, no relays that start work.
@@ -122,7 +128,8 @@ Every wake is a tick: an owner message, a lead's report or a scheduled
 report.
 
 1. **Hold.** Run `scripts/hold-check.sh` on the local `hold.md` first.
-   On `hold=on`, do nothing else and reply one line. A lead's report
+   On `hold=on`, do nothing else and reply one line. On exit 2, fix the
+   path and run it again; never treat it as off. A lead's report
    still gets its one log line, and the owner's own message is still
    answered, as "The owner comes first" says.
 2. **Verify.** Pull the brains. Read the roster and the live state of each
@@ -171,7 +178,8 @@ Two a day, at the times the roster names, each a scheduled task bound to
 this thread. Each run:
 
 1. Run `scripts/hold-check.sh` on the local `hold.md` first. On
-   `hold=on`, do nothing else and reply one line.
+   `hold=on`, do nothing else and reply one line. On exit 2, fix the
+   path and run it again; never treat it as off.
 2. Pull the brains and read both rosters. Stop if the holder line names
    another thread.
 3. Run `unblock-all` in flag mode. It skips every area on hold.
@@ -184,12 +192,8 @@ this thread. Each run:
    active area whose lead's last status says idle (the lead skill's
    "Stand down") gets "idle lead: stand it down?". Relay a yes to the
    lead, quoted; the lead clears its own cell. Never start a lead for
-   these, and never clear a lead cell on your own. A lead cell that names
-   a thread that failed or was interrupted and cannot answer is cleared
-   here only when the owner's message names that thread by its title or
-   id. The same reply lists the area's open PRs as having no lead. Once
-   the cell is cleared, the thread is no longer roster-named, so the
-   normal settle rules apply. "Settle all" never names a lead thread.
+   these, and never clear a lead cell on your own. The one way to clear
+   it here is the last bullet of "Areas".
    After a no, keep
    it as a line of the record's CURRENT STATE (in each report's items
    file, so the page builder keeps it), and offer it again only once the

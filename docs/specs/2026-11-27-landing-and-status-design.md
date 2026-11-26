@@ -90,6 +90,7 @@ From the chief of staff records, 2026-11-18 to 2026-11-26.
 - `cos-log.py --rotate`: "directly under" means the unstamped lines after a moved line, up to a blank line, a stamped line or the next heading. `rotated=` counts lines, sub-lines included. A rerun skips an entry the archive already holds.
 - After the first review these Design lines were rewritten in place: open asks are never folded in a status reply (A.1); the tier step falls back to the gate guide template and keeps one fresh reviewer per head (A.5); the "looks finished" line leaves out the never-settle list and names the threads (A.7); the plain launch form runs the session default (A.8); the merge agent ask also fires when a started merge agent stops or does not report (B.1); night mode lists asks and sends none (C.1); `hold-check.sh` exits 2 on a bad path and a lead trashes its hold file on "resume" (C.2); free slots go to work the lead brought or adopted (D.1).
 - Whoever records a verdict names the reviewer by its session id (lead step 7, `land-pr` step 9). Without it `land-pr` step 5 could never accept a recorded verdict.
+- After the second review: `land-pr` accepts a reviewer named by a thread id or a subagent's transcript id only, never by a ledger row, which the sending session writes. A watch area keeps standing approvals in a section "Standing approvals" of its area file. A session started under one reads the line in the file before it acts. The way to clear a failed lead's cell moved to the "Areas" list of `cos`. `hold-check.sh` exit 2 is never read as off.
 
 ## Round 2 notes
 

@@ -174,7 +174,9 @@ met>. <one line per finding or none>. Flag <agree | disagree>. Report
 ```
 You are the merge agent for <repo>, started by the <area> lead under this
 standing approval, quoted from the area's manual: "<the approval line,
-word for word>" (<its date>). Act inside its exact scope and no further.
+word for word>" (<its date>), in <area file path>, under "<heading>".
+Read the line there first. If it is not there, report that and stop.
+Act inside its exact scope and no further.
 
 Run /merge-agent as written, in this checkout. This brief names no PR to
 merge and gives no merge instruction; the skill, the repo's gate guide

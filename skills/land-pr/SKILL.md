@@ -78,8 +78,10 @@ You type every write yourself, so the merge guard judges it.
    - it is in the repo's own format; with no gate guide, in the verdict line of `../merge-agent/references/gate-guide-template.md`;
    - it is a pass by the guide's own rule, or by step 9's rule with no guide;
    - it names this exact full head SHA;
-   - it names its reviewer by a session id, a thread id or a ledger id, that this session can open and read;
-   - that session did not write the change, and its own last verdict is that pass at that head.
+   - it names its reviewer by a session id, a thread id or a subagent's transcript id, whose own messages this session can read;
+   - that session did not write the change, and its own last message is that pass at that head.
+
+   A ledger row alone is not a reviewer's verdict: the session that sent the review writes it.
 
    Anything else runs round 1 as below: no verdict, a verdict that is not a pass, a verdict at another commit, no reviewer id, an id this session cannot read, a reviewer who wrote the change, or any doubt.
    A review the tier asks for that the recorded verdict does not cover, such as the security brief of a high PR, still runs.
@@ -123,7 +125,8 @@ You type every write yourself, so the merge guard judges it.
    PASS needs that head to be the PR's current head, no open Fix, the tier's proof green, and the last review round's own verdicts to leave zero blocker and zero important findings open at that head.
    The author's label never closes a finding; only a reviewer's verdict does.
    Anything else, including a conflict with the base, is NOT YET with the blocking item.
-   Record it as one PR comment in the template's verdict line shape: the result, the full head SHA, the tier, the reviewers, each by its session id (thread or ledger id), and the finding counts.
+   Record it as one PR comment in the template's verdict line shape: the result, the full head SHA, the tier, the reviewers, each by its session id (a thread id or a subagent's transcript id), and the finding counts.
+   Where the repo's format has a reviewer field, the id goes there; where it has none, it goes on a second line of the same comment.
    The same comment lists every dismissed finding with its one-line reason.
    An accepted pass (step 5) with no review run here is not recorded again; the report names its reviewer.
    A NOT YET is always recorded, also after an accepted pass.

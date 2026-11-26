@@ -58,7 +58,7 @@ whether that thread is running, then do the one thing that fits:
 |---|---|
 | No roster | **Start.** Draft each brain's roster from the repos where the owner has open threads or open PRs, show the drafts, write them on their yes. Bind the two reports to this thread. |
 | The holder stopped | **Take over.** Read the newest record's CURRENT STATE, re-verify each roster row against live state, bind the two reports to this thread, rewrite the holder line, log it. |
-| This thread is the holder | **Status.** One line per area (state, in flight, oldest ask), then the queue. No launches. |
+| This thread is the holder | **Status.** A status reply, as the owner contract shapes it: the next action, then one line per active area (state, in flight, oldest ask), then the queue count and the oldest age. Held areas fold into one line. No launches. |
 | Another live thread is the holder | Say which thread, and on which machine, and stop. Take over a running holder only when the owner says "take over". |
 
 There is one holder across all machines, never one per machine.
@@ -74,8 +74,9 @@ The owner changes the roster in plain words. Edit the row, read it back,
 commit and push. Start or stop nothing else.
 At most three areas are active, counted across every roster. An "add" or
 "resume" that would make a fourth active asks which area to hold, and
-changes nothing until the owner answers. A roster already over three gets
-one report line, "n areas active, over three: which to hold?".
+changes nothing until the owner answers. When more than three are active
+across the rosters, the report gets one line, "n areas active, over
+three: which to hold?".
 
 - **"add <area>"**: a new row, state `active`, mode `watch` unless they say
   batch, no lead.
@@ -173,11 +174,15 @@ this thread. Each run:
    An active area whose lead cell is empty or names a stopped thread, and
    that has two or more unsettled top-level threads or an open PR of the
    owner's, gets "busy with no lead: type /lead in its checkout". An
-   active area whose lead is idle, as the lead skill's "Stand down" says,
-   gets "idle lead: stand it down?". Relay a yes to the lead, quoted; the
-   lead clears its own cell. Never start a lead for these and never clear
-   a lead cell here. After a no, offer it again only once the lead has
-   finished another item.
+   active area whose lead's last status says idle (the lead skill's
+   "Stand down") gets "idle lead: stand it down?". Relay a yes to the
+   lead, quoted; the lead clears its own cell. Never start a lead for
+   these, and never clear a lead cell on your own. A lead cell that names
+   a stopped thread is cleared here on the owner's word. After a no, keep
+   it as a line of the record's CURRENT STATE (in each report's items
+   file, so the page builder keeps it), and offer it again only once the
+   lead has finished another item.
+   With more than three active areas, add the over-three line of "Areas".
 5. Add the queue.
 6. Add this machine's budget line from `../lead/scripts/capacity.sh`, and
    any work that has waited through a report as "waiting for the machine".
@@ -187,7 +192,8 @@ this thread. Each run:
    banned string.
 9. Commit and push the record in each brain that changed.
 
-The report is the last message of the turn. A ping goes out only where an
+The report is the last message of the turn. It opens with the next
+action for the owner, as the owner contract's "Status reply" says. A ping goes out only where an
 area's manual has a ping rule that allows one at this hour.
 
 ## Handoff

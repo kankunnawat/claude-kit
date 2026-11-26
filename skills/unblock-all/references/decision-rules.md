@@ -69,9 +69,9 @@ Keep every question and option short. The user reads them on a phone.
   for that action, target and scope only.
 - **Cut:** background the user already knows, a restated question, hedging,
   internal file names, and any option nobody would pick.
-- **Plain words:** if the user answers "I don't understand", the question
-  failed. Ask it again once in everyday words with a concrete example; it
-  is still unanswered, so this is not a re-ask.
+- **Plain words:** as "Reaching the owner" in
+  [the owner contract](owner-contract.md) says. A question asked again
+  that way is still unanswered, so it is not a re-ask.
 - Bundle many stale-looking old asks into one question ("close all as
   stale" or "review one by one").
 - Questions from an earlier pass that are still unanswered come first,

@@ -2,11 +2,13 @@
 
 Date: 2026-11-26.
 Status: withdrawn by Kan on 2026-11-27, because he works on one Mac.
-Commit 10bd240 applied it and commit 268f1ba reverted the skill text; the roster and record changes listed under "Deviations" are still to undo.
+Commit 10bd240 applied it and commit 268f1ba reverted the skill text.
+The roster and the two scheduled report prompts went back to one holder: done 2026-11-27 (kan-brain commit `0b275a7` for the roster).
+The record under `cos/records/BXTHMPLT034/` stays where it is; the next record is written at `cos/records/<date>.md`.
 The [attention limits design of 2026-11-27](2026-11-27-cos-attention-limits-design.md) replaces it.
 Before that: approved by Kan on 2026-11-26 ("approved", in the holder thread), with both recommendations of "Questions decided".
 Kan asked for this draft on 2026-11-26 (decision D38 in the chief of staff record).
-Steps 1 to 3 of "Order of work" ran the same day; step 4 is his.
+Steps 1 to 3 of "Order of work" ran the same day; ~~step 4 is his~~ step 4 was withdrawn with the design.
 Home: `skills/cos/`, `skills/unblock-all/` and `skills/lead/` in this repo, and `cos/roster.md` in the brain repos.
 It replaces one rule of the [design of 2026-11-18](2026-11-18-cos-all-areas-design.md): "There is one holder across all machines, never one per machine."
 

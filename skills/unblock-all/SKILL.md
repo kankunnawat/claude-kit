@@ -54,6 +54,8 @@ The rules shared with `cos`, `lead` and `merge-agent` are in
   - send each bucket 6 item back to its thread; never file it as a to-do,
     and count them in one "sent back for evidence: n" line of the list
     (outside the 8 lines; left out when n is 0);
+  - count the threads that look finished, by the test of step 5, in one
+    "looks finished: n" line (outside the 8 lines); settle none of them;
   - ask nothing and never call `AskUserQuestion`;
   - end with one "Needs you" list across every area. It is the owner's one
     queue. Order: what blocks running work first, then reviews that are
@@ -109,7 +111,8 @@ Do this before asking anything.
     sessions after two failures.
 - Also collect: open PRs waiting on the user (flagged for owner review,
   CONCERN or BLOCK findings), the area's owner to-do and ask lists (see the
-  area's manual), open PRs from a bot that nobody has touched for 7 days,
+  area's manual; a lead's "Open owner asks" list is a count, not a
+  source), open PRs from a bot that nobody has touched for 7 days,
   as one line per area with a count, and earlier questions you asked the
   user that are still unanswered in this session or in the session's own
   progress record.
@@ -118,9 +121,9 @@ Do this before asking anything.
 - A top-level thread settled since the last pass, not by this session:
   read its last message once. Its open asks leave the queue and are
   counted once in a "dropped with a settle: n" line that names each in a
-  few words. Three kinds stay, as ownerless items answered in the chief
-  of staff thread: a secret that may be exposed, an open PR, and anything
-  with a date.
+  few words. Four kinds stay, as ownerless items answered in the chief
+  of staff thread: a secret that may be exposed, an open PR, anything
+  with a date, and an unanswered rule proposal.
 - Count what each source returned before you triage. A source that returns
   nothing (no threads, no to-dos, no PRs) is re-read once another way before
   you treat it as empty.
@@ -168,7 +171,8 @@ As soon as the user answers:
 - Never settle: a thread still running or waiting, a recurring loop (a cleanup
   or watch thread that ticks), a thread whose PR still needs its capture, fix
   or report, a thread on hold for someone else, a thread a roster row names
-  as the lead or the holder, this thread, or a child thread
+  as the lead or the holder (except a stopped lead thread the owner names
+  to settle), this thread, or a child thread
   whose parent is another session you do not own.
 - Re-list with `settled: false`, filter to top-level threads, and report the
   settled count from that list, not from memory.

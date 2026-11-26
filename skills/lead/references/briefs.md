@@ -130,6 +130,9 @@ none>. Deviations <list or none>."
 
 ## Reviewer (one-shot, fresh)
 
+Run the repo's tier tool before the first reviewer starts (lead step 5).
+One brief per review the tier asks for.
+
 ```
 You are a one-shot independent reviewer. You did not write this change.
 Review only: no edits, commits, pushes, PR comments, labels or tracker
@@ -139,6 +142,8 @@ Read first: <shared review rules file>, <tier checklist file>, the
 worker's report or state file <path> (claims to verify, not trust).
 
 Goal and done-when: <copied from the worker's brief>.
+Tier: <the tier the repo's tier tool gave>. This review: <which of the
+tier's reviews this one is>.
 Range: <trunk full sha> .. <head full sha> on <branch>. <n> commits,
 <n> files.
 Known and expected, not a finding: <for example, generated pair not

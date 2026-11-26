@@ -37,7 +37,7 @@ From then on use only the brain that lists the area.
 | No row for this repo | Say so and stop. The owner adds an area through the chief of staff. |
 | Row in state `hold`, and this thread is not its lead | Say the area is on hold and since when, and stop. Take no role. |
 | Row, no lead or the lead stopped | **Start or take over.** Steps below. |
-| This thread is the lead | **Status.** Five lines: status, in flight, needs the owner, waiting on others, next. No launches. |
+| This thread is the lead | **Status.** A status reply, as the owner contract shapes it: the next action first, then in flight, waiting on others, and "holding new work" or "idle" when either holds. No launches. |
 | Another live thread is the lead | Say which thread, and on which machine, and stop. Take over a running lead only when the owner says "take over". |
 
 Start or take over:
@@ -67,7 +67,8 @@ A lead whose area is put on hold gives status only: no launches, no asks.
    asks" in the area file's CURRENT STATE, never from memory. With three
    or more, start no new item: review, fix and hand over what already
    runs. A scout or a batch pick is a new item. An order the owner types
-   in this thread is started all the same. Say "holding new work: n items
+   in this thread is outside this count; hold and the machine budget
+   still apply. Say "holding new work: n items
    wait on you" in the status and in the next report line.
    Then run `scripts/capacity.sh` with this machine's
    flags from the roster, plus `--quiet-hours` inside the roster's quiet
@@ -81,7 +82,9 @@ A lead whose area is put on hold gives status only: no launches, no asks.
    the PR the way the repo's own close-out says.
 4. **Capture before review** for any change the owner can see. A text
    review passes defects a screenshot shows.
-5. **Review.** A fresh one-shot reviewer per head. It did not write the
+5. **Review.** First run the repo's own tier tool, from its PR gate
+   guide, on the diff. Then start the reviews that tier asks for: a fresh
+   one-shot reviewer per review and per head. No reviewer wrote the
    change.
 6. **Fix.** At most two rounds, each in a fresh context and each
    re-reviewed. A third needs the owner's go.
@@ -137,8 +140,11 @@ A lead keeps its state where a new session, on any machine, can pick it up.
   The owner's rulings for the area and its declined proposals live here
   too. CURRENT STATE keeps a list "Open owner asks", one line per
   decision the owner must make, never folded. Add a line when this thread
-  or one of its workers raises an ask. Remove it when the answer arrives
-  or live state makes it stale. Pull before reading; commit and push at handoff and whenever
+  or one of its workers raises an ask, or when a relay or the report's
+  queue shows an ask of this area that is not listed. Remove it when the
+  answer arrives or live state makes it stale. This list is the count
+  only. Each line links the thread, PR or to-do that holds the ask; it is
+  never a source for the queue. Pull before reading; commit and push at handoff and whenever
   CURRENT STATE changes, not at every tick.
 - **Local:** briefs, review reports, captures and the list of worker
   thread ids go in a folder on this machine, which the area file names.
@@ -165,7 +171,7 @@ An idle lead says so in the status. On the owner's yes, rewrite CURRENT
 STATE, delete this thread's timed wakes, clear the lead cell in the roster
 row, commit, push and stop.
 A lead that is not idle never stands down, and its thread is never
-settled.
+settled, except a stopped thread the owner names.
 
 ## Scripts
 

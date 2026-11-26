@@ -1,6 +1,6 @@
 # Owner contract
 
-Shared by `cos`, `lead`, `merge-agent`, `unblock-all` and `unblock-here`.
+Shared by `cos`, `lead`, `merge-agent`, `land-pr`, `unblock-all` and `unblock-here`.
 Each skill reads this file and keeps only its own job in its `SKILL.md`.
 A rule that two of them need lives here, once.
 
@@ -11,6 +11,7 @@ A rule that two of them need lives here, once.
 | `cos` | Keeps the roster of areas and the owner's one queue | Each answer to the lead that owns the next step, and two reports a day |
 | `lead` | Turns one area's work into open PRs, each with a fresh review and its evidence | An open PR; the merge agent reviews its head |
 | `merge-agent` | Turns an open PR into a landed one | One line per PR: landed, merge-ready or held, with the reason |
+| `land-pr` | Takes one PR of the owner's through review and fixes to merge-ready | The PR merged where the guardrails let an agent merge; otherwise merge-ready, with the command for the owner |
 | `unblock-all` | Builds the queue and carries the owner's decisions | Answers to the session that owns the next step, and one "Needs you" list across every area |
 
 ## Who owns what
@@ -23,8 +24,8 @@ A rule that two of them need lives here, once.
   accepts that verdict when the head has not moved and the reviewer did not
   write the change; otherwise it reviews again. A batch lead reviews lane
   heads, not the integration head, so the merge agent reviews its PR.
-- **Merging.** Only the merge agent, only where the owner's guardrails name
-  the repo, always pinned to the reviewed commit.
+- **Merging.** Only the merge agent and `land-pr`, only where the owner's
+  guardrails name the repo, always pinned to the reviewed commit.
 - **Tracker writes after a merge.** The coordinator (the area's `lead`)
   makes them, only under a written standing approval; otherwise it asks by
   key. The merge agent reports the landing and writes nothing to the
@@ -53,7 +54,11 @@ A rule that two of them need lives here, once.
 - **Only the last message of a turn is visible.** Everything the owner
   needs is in it.
 - **Open asks lead.** At most three, oldest first, each answerable in a
-  word.
+  word. They follow the first line of a status reply.
+- **Plain words.** Write to the owner in everyday words, with plain words
+  next to every PR or ticket number. When the owner answers "I don't
+  understand", the message failed: say it again once in everyday words,
+  with a concrete example.
 - **One queue for the owner, across every area.** Every session's held
   items reach it through `unblock-all` flag mode. No session keeps a private ask
   list.
@@ -63,6 +68,16 @@ A rule that two of them need lives here, once.
   proposes changes.
 - **Reports from other sessions go to the area's inbox**, when it has
   one, never into the thread the owner is talking in.
+
+## Status reply
+
+The answer to a status question. A report opens with the same first line.
+
+- The first line is the one next action for the owner, or "nothing needs
+  you".
+- At most six lines. No headers. Blockers only when real.
+- Each skill names what its other lines hold. Fold lines to stay within
+  six.
 
 ## Report line
 

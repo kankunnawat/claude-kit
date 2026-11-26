@@ -32,7 +32,7 @@ So sessions were started faster than Kan could answer them, and leads on a secon
    Machine budgets (the Machines table, the `capacity.sh` flags) stay as they are.
 2. **A lead only while its area is busy.**
    The chief of staff's report names an active area with no lead that has two or more unsettled top-level threads or an open PR of Kan's: "busy with no lead: type /lead in its checkout".
-   It names a lead with nothing in flight, no open PR and no open ask: "idle lead: stand it down?".
+   It names an idle lead: "idle lead: stand it down?".
    Kan types the word; the chief of staff starts and stops no lead for these.
    A lead is idle when nothing is in flight, no owner ask is open, and no PR is open that this lead, or the lead before it, brought or adopted.
    An idle lead stands down on his yes, relayed to it; the lead clears its own roster cell.
@@ -52,8 +52,9 @@ So sessions were started faster than Kan could answer them, and leads on a secon
 
 ## Not in this change
 
-- The roster edit and moving the two leads to this Mac. The chief of staff thread does that when Kan resumes it.
-- The record written under `cos/records/BXTHMPLT034/` stays where it is.
+- The roster edit and the two scheduled report prompts, back to one holder: done 2026-11-27 (kan-brain commit `0b275a7` for the roster).
+- Moving the two leads to this Mac. The chief of staff thread does that when Kan resumes it.
+- The record written under `cos/records/BXTHMPLT034/` stays where it is; the next record is written at `cos/records/<date>.md`.
 
 ## Deviations
 
@@ -64,7 +65,7 @@ So sessions were started faster than Kan could answer them, and leads on a secon
 
 - What the retro reads to judge the two numbers, beyond the two it already tracks (asks open and the oldest age).
 - Whether an ask that blocks nothing running should count toward a lead's three.
-- The roster edit back to one holder line. It has to happen in the same sitting as the merge of this change, because the live roster still has the per-machine cells.
+- The roster edit back to one holder line, and the two scheduled report prompts: done 2026-11-27 (kan-brain commit `0b275a7` for the roster).
 
 ## Out of scope
 

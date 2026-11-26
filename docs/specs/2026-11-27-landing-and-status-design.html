@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decision card: landing path and status shape</title>
+<style>
+  :root {
+    /* Base: replace with the project's design tokens when it has them. */
+    --bg: #F7F6F3; --card: #FFFFFF; --line: #E4E1DB; --line2: #EEEBE6; --chip: #E8E6E1;
+    --ink: #1F1E1C; --ink2: #45423D; --muted: #6B6760; --faint: #8C877E;
+    --accent: #2F5FD0;
+    --sans: "IBM Plex Sans", -apple-system, "Helvetica Neue", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    /* Meaning: same in every project. Red = today/removed, green = new/decided, amber = open. */
+    --red: #B4412F; --green: #2E7D4F;
+    --amber: #8A4B0F; --amber-bg: #FDF4E8;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 var(--sans); }
+  .page { max-width: 1120px; margin: 0 auto; padding: 64px 24px 96px; display: flex; flex-direction: column; gap: 32px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; font: 13px var(--mono); color: var(--muted); }
+  .chips span { padding: 4px 10px; border-radius: 999px; background: var(--chip); }
+  h1 { margin: 14px 0 12px; font-size: clamp(30px, 4.2vw, 44px); line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; }
+  .lede { margin: 0; font-size: 20px; color: var(--ink2); max-width: 900px; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px; }
+  .card h2 { margin: 0 0 12px; font-size: 20px; font-weight: 600; }
+  .chg { display: flex; gap: 14px; align-items: baseline; padding: 6px 0; }
+  .chg b { flex: none; width: 20px; font: 600 17px var(--mono); }
+  .add b { color: var(--green); } .del b { color: var(--red); }
+  .same b { color: var(--faint); } .same { color: var(--muted); }
+  .risk-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line2); font-size: 16px; }
+  .risk-row:last-child { border-bottom: 0; }
+  .risk-row div:first-child { font-weight: 500; }
+  .risk-row div:last-child { color: var(--ink2); }
+  .decide { display: flex; flex-direction: column; gap: 20px; }
+  .done { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; max-width: 820px; gap: 6px; }
+  .done li { position: relative; padding-left: 25px; color: var(--ink2); }
+  .done li::before { content: "\2713"; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+  .out { display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--muted); }
+  .out p { margin: 0; }
+  .foot { font: 13px var(--mono); color: var(--faint); overflow-wrap: anywhere; }
+  code { font: 13.5px var(--mono); background: var(--chip); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+  @media (max-width: 820px) { .page { padding: 40px 16px 72px; } .grid { grid-template-columns: 1fr; } .risk-row { grid-template-columns: 1fr; gap: 4px; } }
+</style>
+</head>
+<body>
+<main class="page">
+
+<header>
+  <div class="chips"><span>claude-kit</span><span>lead, cos, land-pr and finish skills</span><span>Approved by the owner, 27 Nov</span></div>
+  <h1>Approved: close the gaps between review, merge and settle</h1>
+  <p class="lede">A ready PR gets a merge agent or a clear ask, a thread with an open PR stays in view, and every status reply starts with the one thing you should do.</p>
+</header>
+
+<section class="grid">
+  <div class="card">
+    <h2>What changes</h2>
+    <div class="chg add"><b>+</b><div>Status replies: the first line is your next action, or "nothing needs you". At most six lines, plain words.</div></div>
+    <div class="chg add"><b>+</b><div>No merge agent open when a lead hands over a PR: it starts one where the area's manual allows it in writing, otherwise it asks you first.</div></div>
+    <div class="chg add"><b>+</b><div><code>land-pr</code> accepts a passing review already recorded at the PR's head, from a reviewer who did not write it.</div></div>
+    <div class="chg add"><b>+</b><div>A close-out with its PR still open leaves the thread in view, unless a live lead owns that repo.</div></div>
+    <div class="chg add"><b>+</b><div>The tier tool runs before any review. The hold file is one command, run first. Night mode shows in the machine budget.</div></div>
+    <div class="chg add"><b>+</b><div>CI runs three more existing tests and two new ones. Area logs keep seven days; older lines go to a monthly file.</div></div>
+    <div class="chg same"><b>=</b><div>The merge guard, the hooks, <code>merge-agent.py</code> and every approval rule.</div></div>
+  </div>
+  <div class="card">
+    <h2>Risk &rarr; answer</h2>
+    <div class="risk-row"><div>A lead starts a merge agent you did not want.</div><div>Only under a standing approval written in the area's manual, with its date and scope. Otherwise it asks.</div></div>
+    <div class="risk-row"><div><code>land-pr</code> trusts a review it should not.</div><div>Same four tests as the merge agent: a pass, this exact head, a named reviewer, not the author. Any doubt runs a fresh review.</div></div>
+    <div class="risk-row"><div>A thread stays open forever.</div><div>It stays only while its PR is open. A live lead that owns the repo lets it settle.</div></div>
+    <div class="risk-row"><div>Rotating the log loses lines.</div><div>The archive is written and checked before the area file is rewritten. Nothing old means nothing changes.</div></div>
+  </div>
+</section>
+
+<section class="card decide">
+  <h2>Decided</h2>
+  <ul class="done">
+    <li>One status shape, kept in the owner contract (you, 27 Nov).</li>
+    <li>A merge agent starts on its own only under a written standing approval (you, 27 Nov).</li>
+    <li><code>land-pr</code> accepts a recorded verdict on the merge agent's terms (you, 27 Nov).</li>
+    <li>No change to the merge guard, the hooks or <code>merge-agent.py</code> (you, 27 Nov).</li>
+  </ul>
+</section>
+
+<div class="out">
+  <p><b>Left for later:</b> how a lead tells that a merge agent runs for its repo, beyond the thread list; whether the status shape also binds the <code>land-pr</code> and merge agent reports.</p>
+  <p><b>Not in this change:</b> a daily fresh thread; how many reviewers re-review a fix; a base freshness check; any change to the merge script, the merge guard, hooks, dotfiles or brain repos.</p>
+</div>
+
+<div class="foot">Full spec: docs/specs/2026-11-27-landing-and-status-design.md</div>
+</main>
+</body>
+</html>

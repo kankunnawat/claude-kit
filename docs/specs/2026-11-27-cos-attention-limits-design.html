@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decision card: attention limits for the chief of staff</title>
+<style>
+  :root {
+    /* Base: replace with the project's design tokens when it has them. */
+    --bg: #F7F6F3; --card: #FFFFFF; --line: #E4E1DB; --line2: #EEEBE6; --chip: #E8E6E1;
+    --ink: #1F1E1C; --ink2: #45423D; --muted: #6B6760; --faint: #8C877E;
+    --accent: #2F5FD0;
+    --sans: "IBM Plex Sans", -apple-system, "Helvetica Neue", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    /* Meaning: same in every project. Red = today/removed, green = new/decided, amber = open. */
+    --red: #B4412F; --green: #2E7D4F;
+    --amber: #8A4B0F; --amber-bg: #FDF4E8;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 var(--sans); }
+  .page { max-width: 1120px; margin: 0 auto; padding: 64px 24px 96px; display: flex; flex-direction: column; gap: 32px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; font: 13px var(--mono); color: var(--muted); }
+  .chips span { padding: 4px 10px; border-radius: 999px; background: var(--chip); }
+  .chips .ask { background: var(--amber-bg); color: var(--amber); }
+  h1 { margin: 14px 0 12px; font-size: clamp(30px, 4.2vw, 44px); line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; }
+  .lede { margin: 0; font-size: 20px; color: var(--ink2); max-width: 900px; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px; }
+  .card h2 { margin: 0 0 12px; font-size: 20px; font-weight: 600; }
+  .chg { display: flex; gap: 14px; align-items: baseline; padding: 6px 0; }
+  .chg b { flex: none; width: 20px; font: 600 17px var(--mono); }
+  .add b { color: var(--green); } .del b { color: var(--red); }
+  .same b { color: var(--faint); } .same { color: var(--muted); }
+  .risk-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line2); font-size: 16px; }
+  .risk-row:last-child { border-bottom: 0; }
+  .risk-row div:first-child { font-weight: 500; }
+  .risk-row div:last-child { color: var(--ink2); }
+  .decide { display: flex; flex-direction: column; gap: 20px; }
+  .decide h3 { margin: 4px 0 0; font-size: 16px; font-weight: 600; color: var(--green); }
+  .done { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; max-width: 820px; gap: 6px; }
+  .done li { position: relative; padding-left: 25px; color: var(--ink2); }
+  .done li::before { content: "\2713"; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+  .out { display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--muted); }
+  .out p { margin: 0; }
+  .foot { font: 13px var(--mono); color: var(--faint); overflow-wrap: anywhere; }
+  code { font: 13.5px var(--mono); background: var(--chip); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+  @media (max-width: 820px) { .page { padding: 40px 16px 72px; } .grid { grid-template-columns: 1fr; } .risk-row { grid-template-columns: 1fr; gap: 4px; } }
+</style>
+</head>
+<body>
+<main class="page">
+
+<header>
+  <div class="chips"><span>claude-kit</span><span>cos and lead skills</span><span>Approved by Kan, 27 Nov</span></div>
+  <h1>Approved: limit work by what waits on you</h1>
+  <p class="lede">One chief of staff, and a lead only while its area (a project you work in) is busy. A lead starts nothing new while three of its items wait on you, and at most three areas are active at once.</p>
+</header>
+
+<section class="grid">
+  <div class="card">
+    <h2>What changes</h2>
+    <div class="chg del"><b>&minus;</b><div>One chief of staff per Mac. Back to one, on one Mac.</div></div>
+    <div class="chg add"><b>+</b><div>A lead holds new work while three of its area's items wait on you, and says so: "holding new work: n items wait on you".</div></div>
+    <div class="chg add"><b>+</b><div>At most three areas active. A fourth "add" or "resume" asks which area to hold.</div></div>
+    <div class="chg add"><b>+</b><div>The report names a busy area with no lead, and an idle lead to stand down. You type the word.</div></div>
+    <div class="chg add"><b>+</b><div>A lead can stand down on your yes, never while a PR it brought is open.</div></div>
+    <div class="chg same"><b>=</b><div>The machine budget: the Machines table and <code>capacity.sh</code>.</div></div>
+  </div>
+  <div class="card">
+    <h2>Risk &rarr; answer</h2>
+    <div class="risk-row"><div>Three is the wrong number.</div><div>Both numbers are a starting guess. The retro proposes a change; you say yes or no.</div></div>
+    <div class="risk-row"><div>A lead counts its asks from memory and starts too much.</div><div>It counts from the area file after its Verify step, never from memory.</div></div>
+    <div class="risk-row"><div>A lead stands down with a PR still open, and the PR loses its owner.</div><div>A lead never stands down, and its thread is never settled, while a PR it brought is open.</div></div>
+    <div class="risk-row"><div>The chief of staff starts or stops leads behind your back.</div><div>It only names them in the report. You type /lead or the yes.</div></div>
+  </div>
+</section>
+
+<section class="card decide">
+  <h2>Decided</h2>
+  <ul class="done">
+    <li>One chief of staff on one Mac (you, 27 Nov).</li>
+    <li>A lead only while a project is busy (you, 27 Nov).</li>
+    <li>Three owner asks per area, three active areas (you, 27 Nov).</li>
+    <li>Both numbers are a starting guess the retro may propose to change (you, 27 Nov).</li>
+  </ul>
+</section>
+
+<div class="out">
+  <p><b>Left for later:</b> what the retro reads to judge the two numbers; whether an ask that blocks nothing running counts toward the three.</p>
+  <p><b>Not in this change:</b> the roster edit and moving the two leads to this Mac (the chief of staff does that when you resume it); moving the record under <code>cos/records/BXTHMPLT034/</code>; config flags or new scripts; any change to the machine budget.</p>
+</div>
+
+<div class="foot">Full spec: docs/specs/2026-11-27-cos-attention-limits-design.md</div>
+</main>
+</body>
+</html>

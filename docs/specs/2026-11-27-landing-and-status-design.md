@@ -66,7 +66,16 @@ From the chief of staff records, 2026-11-18 to 2026-11-26.
 
 ## Deviations
 
-- None yet.
+- The work is five commits (this pair, then A to D). This list is updated in commit D, not in the commit that added the pair.
+- `cos-launch.sh` keeps its model default. The value is not only a ledger label: with `--provider` it goes to the thread start. Only the sessions reference was reworded.
+- "Rebasing a branch the lead brought" became "merging the base into" it. A rebase of a pushed branch needs a force-push, which the briefs and the merge agent forbid.
+- `hold-check.sh` stops everything on `hold=on` except the owner's own message, which is still answered, and a lead's report, which still gets its one log line. Without that, "resume" could never clear a hold.
+- The chief of staff keeps a "no" to "stand it down?" in the report's items file, because `queue_page.py` rebuilds CURRENT STATE at every report.
+- The older spec's roster item stays in "Not yet specified" with the words "done 2026-11-27", so notes N1 and N3 agree.
+- The `cos` records are one file per day, so the rotation sentence there covers only a record still written to after its day.
+- `land-pr` does not record an accepted verdict a second time; its report names that verdict's reviewer. The contract's "Review" bullet names `land-pr` beside the merge agent.
+- The "looks finished" count sits outside the 8 lines of the "Needs you" list, like the other count lines.
+- The stopped-lead exception of note N6 is also in the lead skill's "Stand down", so the three skills agree.
 
 ## Not yet specified
 

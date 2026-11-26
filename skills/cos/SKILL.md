@@ -35,7 +35,9 @@ has a `cos/` folder with the same layout.
 - `cos/areas/<area>.md` is the area's file: its manual, when it has one,
   and its lead's CURRENT STATE.
 - `cos/records/<date>.md` is the chief of staff's record, with CURRENT
-  STATE and a Log.
+  STATE and a Log. A record still written to after its day is rotated at
+  the first tick of a day with `../lead/scripts/cos-log.py --rotate`, and
+  the archive is staged with it.
 
 Pull before reading. Commit and push at each report and at handoff, not at
 every tick. Stage by explicit path.

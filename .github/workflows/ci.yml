@@ -73,3 +73,6 @@ jobs:
 
       - name: hold check test
         run: bash skills/cos/scripts/test-hold-check.sh
+
+      - name: log rotation test
+        run: python3 skills/lead/scripts/test_cos_log.py

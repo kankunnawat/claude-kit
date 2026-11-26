@@ -66,7 +66,10 @@ A lead whose area is put on hold gives status only: no launches, no asks.
 2. **Check the queue and the machine.** Count the lines of "Open owner
    asks" in the area file's CURRENT STATE, never from memory. With three
    or more, start no new item: review, fix and hand over what already
-   runs. A scout or a batch pick is a new item. An order the owner types
+   runs. A scout or a batch pick is a new item. Free slots may still go
+   to adopted work that needs nothing from the owner: re-running a failed
+   check, a fix round already allowed, evidence capture, or merging the
+   base into a branch the lead brought. An order the owner types
    in this thread is outside this count; hold and the machine budget
    still apply. Say "holding new work: n items
    wait on you" in the status and in the next report line.
@@ -151,6 +154,9 @@ A lead keeps its state where a new session, on any machine, can pick it up.
 - **Area file:** `cos/areas/<area>.md` in the area's brain. Create it on
   start when the area has none, with the sections CURRENT STATE and Log,
   Log last because the log script appends to the end of the file.
+  At the first tick of a day, run
+  `scripts/cos-log.py --rotate <area-file>`, and stage the archive it
+  writes with the area file.
   The owner's rulings for the area and its declined proposals live here
   too. CURRENT STATE keeps a list "Open owner asks", one line per
   decision the owner must make, never folded. Add a line when this thread
@@ -197,6 +203,9 @@ settled, except a stopped thread the owner names.
   refuses when there is no room. Run it with `--dry-run` first when the
   brief or the machine state is new.
 - `scripts/cos-log.py <record> <text-file>` appends one timed Log line.
+  `--rotate <record> [days]` moves Log lines older than seven days, or
+  `days`, to a monthly archive beside the record.
+  `scripts/test_cos_log.py` checks the rotation.
 
 They avoid shell redirects into home paths and guard text the hooks
 misread; do not replace them with one-liners.

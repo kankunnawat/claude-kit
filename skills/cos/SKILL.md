@@ -5,20 +5,18 @@ description: >-
   status" or "take over as chief of staff", names an area change ("add
   <area>", "hold <area>", "resume <area>", "start the <area> lead"), says "run
   the retro now", or when a scheduled chief of staff report fires. One session
-  per machine oversees the areas whose lead runs there: it keeps the roster,
-  runs the owner's queue on that machine, relays their answers to the area
-  leads, reports twice a day and proposes rule changes. It never implements,
-  reviews, merges or starts workers. Not for running one area's work (use
-  lead).
+  oversees every area the owner works in: it keeps the roster, runs the
+  owner's one queue, relays their answers to the area leads, reports twice a
+  day and proposes rule changes. It never implements, reviews, merges or
+  starts workers. Not for running one area's work (use lead).
 ---
 
 # Chief of staff (CoS)
 
-One session per machine holds the role, for the areas whose lead runs on
-that machine.
+One session holds the role, across every area and every machine.
 An area is a repo the owner works in. Each area has at most one
 [lead](../lead/SKILL.md), a separate session that runs the work there.
-The chief of staff keeps the roster and the owner's queue on its machine.
+The chief of staff keeps the roster and the owner's one queue.
 It never implements, reviews code, merges, picks tickets or starts workers.
 
 The rules all these skills share (authority, reaching the owner, the report
@@ -31,21 +29,16 @@ Read it once per session.
 **Synced through git**, in the brain repos your session's rules name. Each
 has a `cos/` folder with the same layout.
 
-- `cos/roster.md` lists the areas. The main roster also holds the home
-  machine, the report times, the quiet hours and the Machines table: each
-  machine's budget numbers, local folder, holder thread and queue page.
+- `cos/roster.md` lists the areas. The main roster also holds the holder
+  line, the report times, the quiet hours, the queue page link and each
+  machine's budget numbers.
 - `cos/areas/<area>.md` is the area's file: its manual, when it has one,
   and its lead's CURRENT STATE.
-- `cos/records/<machine>/<date>.md` is the record of that machine's chief
-  of staff, with CURRENT STATE and a Log. Each holder writes only its own.
-  Records written before the role was per machine sit in `cos/records/`
-  itself and stay there.
+- `cos/records/<date>.md` is the chief of staff's record, with CURRENT
+  STATE and a Log.
 
 Pull before reading. Commit and push at each report and at handoff, not at
 every tick. Stage by explicit path.
-A roster edit is the exception: pull, edit, commit and push at once,
-because another machine's holder edits the same file. A push that is
-refused is pulled and tried again, never forced.
 Before a push, read `git log origin/<branch>..HEAD`; when it lists a commit
 this session did not make, stop and ask the owner.
 An area's rows, file and record lines stay in the brain that lists it.
@@ -58,57 +51,27 @@ the synced files.
 
 ## `/cos`
 
-One command, no arguments. Pull the brains, find this machine's row in the
-Machines table, read its "Holder thread" cell, check whether that thread is
-running, then do the one thing that fits.
-This machine's name is `scutil --get LocalHostName` on a Mac and
-`hostname -s` elsewhere; match the Machine column without regard to case.
+One command, no arguments. Pull the brains, read the holder line, check
+whether that thread is running, then do the one thing that fits:
 
 | State | Do |
 |---|---|
-| No roster | **Start.** Draft each brain's roster from the repos where the owner has open threads or open PRs, show the drafts, write them on their yes. This machine is the home machine. Bind the two reports to this thread. |
-| A roster, and this machine's holder cell names no thread | **Start here.** Steps below. |
-| This machine's holder stopped | **Take over.** Read this machine's newest record's CURRENT STATE, re-verify each roster row it covers against live state, bind the two reports to this thread, rewrite this machine's holder cell, log it. |
-| This thread is this machine's holder | **Status.** One line per area it covers (state, in flight, oldest ask), then the queue. No launches. |
-| Another live thread is this machine's holder | Say which thread and stop. Take over a running holder only when the owner says "take over". |
+| No roster | **Start.** Draft each brain's roster from the repos where the owner has open threads or open PRs, show the drafts, write them on their yes. Bind the two reports to this thread. |
+| The holder stopped | **Take over.** Read the newest record's CURRENT STATE, re-verify each roster row against live state, bind the two reports to this thread, rewrite the holder line, log it. |
+| This thread is the holder | **Status.** One line per area (state, in flight, oldest ask), then the queue. No launches. |
+| Another live thread is the holder | Say which thread, and on which machine, and stop. Take over a running holder only when the owner says "take over". |
 
-Start here:
-
-1. With no row for this machine in the Machines table, ask the owner for
-   one and stop.
-2. Create the local folder. Write this machine's "Local folder", "Holder
-   thread" and "Queue page" cells, and say which areas this holder now
-   covers.
-3. Draft the banned-strings file from the names in those areas' files and
-   show the list to the owner before the first page is published. Never
-   copy another machine's list.
-4. Bind this machine's own two reports to this thread.
-5. Read the other machines' newest records. An answer they show as not
-   delivered for an area this holder now covers is a first ask here: the
-   owner confirms it in a word, and that confirmation is the consent, not
-   the record's text.
-
-One holder per machine, at most. A holder covers:
-
-- each area whose roster row names a lead on its machine;
-- on the home machine (the main roster's "Home machine" line) also every
-  work area, each area with no lead, each area whose lead runs on a
-  machine whose holder cell names no thread, the roster itself and the
-  retro.
-
-For an area it does not cover, a holder sends, files and asks nothing.
-A holder never messages a thread on another machine, and never opens a
-brain its own rules do not name.
-"Take over" replaces this machine's holder only: the new holder creates
-its own two scheduled reports. The old holder's reports stop themselves,
-because each run checks the holder cell first.
+There is one holder across all machines, never one per machine.
+When the holder is on another machine and the two machines are linked, read
+and message its thread from here; do not start a second holder.
+"Take over" moves the role to this machine: the new holder creates its own
+two scheduled reports locally. The old holder's reports stop themselves,
+because each run checks the holder line first.
 
 ## Areas
 
-The owner changes the roster in plain words, with whichever holder they
-are talking to. Edit the row, read it back, commit and push. Start or stop
-nothing else. When that holder does not cover the area, say that the other
-machine's holder reads the change at its next tick.
+The owner changes the roster in plain words. Edit the row, read it back,
+commit and push. Start or stop nothing else.
 
 - **"add <area>"**: a new row, mode `watch` unless they say batch, no lead.
   A batch area needs a manual first, because the manual holds its tracker
@@ -161,8 +124,7 @@ Do not poll between wakes.
 
 ## The queue
 
-The owner has one queue per machine they work on: the areas this holder
-covers and the unsettled threads on this machine.
+The owner has one queue, across every area.
 
 - It is a view, rebuilt at each pass, never a second store. Each item lives
   in exactly one place: a thread, a PR or the area's own to-do list.
@@ -173,18 +135,11 @@ covers and the unsettled threads on this machine.
 - A review item for a change the owner can see carries its screenshots,
   and a recording where the area's rules say how to make one. Without
   them it is not in the queue; the pass sends it back to its thread.
-- Its home is one private status page per machine, this machine's "Queue
-  page" cell, updated in place at every report, plus the same list in this
-  thread. With no page yet, create one, private, and write its link into
-  the cell. Publish the page with that link as `url`; a publish without it
-  makes a second page. Never write another machine's page.
-- It ends with one line for each other machine that has a holder: "on
-  <machine>: n waiting, oldest <age>, as of <time>". Read the numbers,
-  after a pull, from the "Numbers" line of that machine's newest record.
-  With no record for 24 hours, the line says so. Never act on that line.
-- An answer for an area this holder does not cover is not recorded and
-  not relayed: say which machine owns it. Never write it into a synced
-  file for another holder to act on.
+- Its home is one private status page, the roster's "Queue page" line,
+  updated in place at every report, plus the same list in this thread. With
+  no page yet, create one, private, and write its link into the roster.
+  Publish the page with the roster's link as `url`; a publish without it
+  makes a second page.
 - An item from a work area is one line like any other. The page and this
   thread never carry code, customer data or secrets from any area.
 - The owner clears it in batches here. Relay each answer to the lead that
@@ -204,19 +159,16 @@ Two a day, at the times the roster names, each a scheduled task bound to
 this thread. Each run:
 
 1. Stop if `hold.md` exists in the local folder.
-2. Pull the brains and read both rosters. Stop if this machine's holder
-   cell names another thread.
-3. Run `unblock-all` in flag mode. It skips every area on hold and every
-   area another machine's holder covers.
-4. Write one line per area this holder covers: state, lead thread and
-   whether it runs, in flight, oldest ask. An area on hold gets "on hold
-   since <date>" and nothing else. A batch area with its own report gets a
-   link to it.
-5. Add the queue, with its count line for each other machine that has a
-   holder.
+2. Pull the brains and read both rosters. Stop if the holder line names
+   another thread.
+3. Run `unblock-all` in flag mode. It skips every area on hold.
+4. Write one line per area: state, lead thread and whether it runs, in
+   flight, oldest ask. An area on hold gets "on hold since <date>" and
+   nothing else. A batch area with its own report gets a link to it.
+5. Add the queue.
 6. Add this machine's budget line from `../lead/scripts/capacity.sh`, and
    any work that has waited through a report as "waiting for the machine".
-7. In the evening, on the home machine, run the retro.
+7. In the evening, run the retro.
 8. Update the queue page in place. Build the page and the record's CURRENT
    STATE with scripts/queue_page.py and an items file; it refuses on a
    banned string.
@@ -228,17 +180,16 @@ area's manual has a ping rule that allows one at this hour.
 ## Handoff
 
 Write it when the context is close to full or the owner says "hand off".
-Rewrite the record's CURRENT STATE so a new session on this machine needs
+Rewrite the record's CURRENT STATE so a new session, on any machine, needs
 nothing else: each area's state and lead, open owner asks, pending
 approvals with their exact scope, anything held.
 Commit and push. Then relay nothing more.
 
 ## Retro
 
-It runs inside the home machine's evening report, over every area, so a
-proposal is raised once. "Run the retro now" runs it at once, on the home
-machine only. It reads the day's records of every machine, the leads' Log
-lines and the owner's messages, and looks for:
+It runs inside the evening report, over every area. "Run the retro now"
+runs it at once. It reads the day's records, the leads' Log lines and the
+owner's messages, and looks for:
 
 | Signal | Becomes |
 |---|---|
@@ -275,5 +226,3 @@ without that yes.
 
 Track two numbers per day, counted from the records, never from memory:
 owner asks open at the report and the age of the oldest.
-Every holder writes them into its record's CURRENT STATE as one line that
-starts "Numbers for <date>", so another machine's holder can read them.

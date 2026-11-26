@@ -31,12 +31,6 @@ or its ticket, whichever thread reports it.
 send nothing to its threads, write nothing to its to-do list or board, ask
 nothing about it and list none of its items. Count its waiting threads in
 one "on hold: <area>, n waiting" line.
-**An area that another machine's chief of staff covers is skipped the same
-way.** That is an area whose lead runs on another machine, when that
-machine's "Holder thread" cell in the roster names a thread. Send, file and
-ask nothing for it; the list ends with that machine's count line, as the
-`cos` skill's "The queue" says. While that cell names no thread, the area
-is not skipped.
 Triage and question wording follow
 [the decision rules](references/decision-rules.md).
 The rules shared with `cos`, `lead` and `merge-agent` are in

@@ -8,7 +8,7 @@ A rule that two of them need lives here, once.
 
 | Skill | Job | Hands off |
 |---|---|---|
-| `cos` | Keeps the roster of areas and the owner's queue on its machine | Each answer to the lead that owns the next step, and two reports a day |
+| `cos` | Keeps the roster of areas and the owner's one queue | Each answer to the lead that owns the next step, and two reports a day |
 | `lead` | Turns one area's work into open PRs, each with a fresh review and its evidence | An open PR; the merge agent reviews its head |
 | `merge-agent` | Turns an open PR into a landed one | One line per PR: landed, merge-ready or held, with the reason |
 | `unblock-all` | Builds the queue and carries the owner's decisions | Answers to the session that owns the next step, and one "Needs you" list across every area |
@@ -54,10 +54,9 @@ A rule that two of them need lives here, once.
   needs is in it.
 - **Open asks lead.** At most three, oldest first, each answerable in a
   word.
-- **One queue per machine the owner works on, across the areas whose lead
-  runs there.** Each queue names what waits on the other machines. Every
-  session's held items reach it through `unblock-all` flag mode. No session
-  keeps a private ask list.
+- **One queue for the owner, across every area.** Every session's held
+  items reach it through `unblock-all` flag mode. No session keeps a private ask
+  list.
 - **Reports from other sessions go to the area's inbox**, when it has
   one, never into the thread the owner is talking in.
 

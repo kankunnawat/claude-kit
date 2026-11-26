@@ -92,6 +92,13 @@ A lead whose area is put on hold gives status only: no launches, no asks.
    own format, at the reviewed commit, with the evidence its gate asks
    for. Then hand the PR to the merge agent, which accepts that verdict
    while the head has not moved.
+   When no merge agent session is live for this repo: where the area's
+   manual holds a standing approval to start one, written in the area's
+   manual with its date and its exact scope, start it through
+   `scripts/cos-launch.sh` (bucket `review`) inside the machine budget.
+   Otherwise put "start the merge agent in <repo>", linked to the PR,
+   first in the area's open owner asks. Without that written approval the
+   lead only asks.
 8. **Report.** One report line per finished unit, as the owner contract
    words it. Keep no private ask list: what waits on the owner reaches the
    one queue through `unblock-all`.

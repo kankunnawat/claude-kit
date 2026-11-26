@@ -21,8 +21,8 @@ A rule that two of them need lives here, once.
   the roster names. A skill holds no repo names and no per-project file.
 - **Review.** The session that opens the PR records its fresh reviewer's
   verdict in the repo's own format, at the reviewed commit. The merge agent
-  accepts that verdict when the head has not moved and the reviewer did not
-  write the change; otherwise it reviews again. A batch lead reviews lane
+  and `land-pr` accept that verdict when the head has not moved and the
+  reviewer did not write the change; otherwise they review again. A batch lead reviews lane
   heads, not the integration head, so the merge agent reviews its PR.
 - **Merging.** Only the merge agent and `land-pr`, only where the owner's
   guardrails name the repo, always pinned to the reviewed commit.

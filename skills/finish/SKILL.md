@@ -230,7 +230,14 @@ to force closure on unverified work.
 
 10. **Settle the thread.** Last, after the report, and only when the report
     shows nothing outstanding. A close-out stopped at steps 3, 5 or 6 leaves
-    the thread active so it stays in view. When `T3CODE_THREAD_ID` is set and
+    the thread active so it stays in view. A PR this close-out opened or
+    pushed to that is still open is outstanding too: leave the thread
+    active and say so in one line. The one exception: a roster row for
+    this repo (`cos/roster.md` in each brain repo the session's rules name)
+    names a live lead thread other than this one; then the lead owns the
+    PR and the thread may settle. No roster, no row, no lead, or any doubt:
+    do not settle. Never settle a thread a roster row names as the lead or
+    the holder. When `T3CODE_THREAD_ID` is set and
     a `t3_thread_organize` tool exists (load its schema first if it is
     deferred), call it with action `"settle"` on this thread (omit
     `threadId`). No such variable or tool, or a failed call → skip silently.

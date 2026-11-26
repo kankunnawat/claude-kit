@@ -123,7 +123,7 @@ You type every write yourself, so the merge guard judges it.
    PASS needs that head to be the PR's current head, no open Fix, the tier's proof green, and the last review round's own verdicts to leave zero blocker and zero important findings open at that head.
    The author's label never closes a finding; only a reviewer's verdict does.
    Anything else, including a conflict with the base, is NOT YET with the blocking item.
-   Record it as one PR comment in the template's verdict line shape: the result, the full head SHA, the tier, the reviewers and the finding counts.
+   Record it as one PR comment in the template's verdict line shape: the result, the full head SHA, the tier, the reviewers, each by its session id (thread or ledger id), and the finding counts.
    The same comment lists every dismissed finding with its one-line reason.
    An accepted pass (step 5) with no review run here is not recorded again; the report names its reviewer.
    A NOT YET is always recorded, also after an accepted pass.

@@ -71,7 +71,7 @@ From the chief of staff records, 2026-11-18 to 2026-11-26.
 
 ## Deviations
 
-- The work is five commits (this pair, then A to D). This list is updated in commit D, not in the commit that added the pair.
+- The work is five commits (this pair, then A to D) and two fix commits after review. This list was updated in commit D and in each fix commit, not in the commit that added the pair.
 - `cos-launch.sh` keeps its model default. The value is not only a ledger label: with `--provider` it goes to the thread start. Only the sessions reference was reworded.
 - "Rebasing a branch the lead brought" became "merging the base into" it. A rebase of a pushed branch needs a force-push, which the briefs and the merge agent forbid.
 - `hold-check.sh` stops everything on `hold=on` except the owner's own message, which is still answered, and a lead's report, which still gets its one log line. Without that, "resume" could never clear a hold.
@@ -88,6 +88,8 @@ From the chief of staff records, 2026-11-18 to 2026-11-26.
 - A worker report that arrives while a lead is on hold gets one Log line and no reply to the worker. The chief of staff's own hold still gives a lead's report a one-line reply.
 - The Merge agent brief stands alone. The lines every other brief carries forbid PR comments, which a merge agent records as verdicts.
 - `cos-log.py --rotate`: "directly under" means the unstamped lines after a moved line, up to a blank line, a stamped line or the next heading. `rotated=` counts lines, sub-lines included. A rerun skips an entry the archive already holds.
+- After the first review these Design lines were rewritten in place: open asks are never folded in a status reply (A.1); the tier step falls back to the gate guide template and keeps one fresh reviewer per head (A.5); the "looks finished" line leaves out the never-settle list and names the threads (A.7); the plain launch form runs the session default (A.8); the merge agent ask also fires when a started merge agent stops or does not report (B.1); night mode lists asks and sends none (C.1); `hold-check.sh` exits 2 on a bad path and a lead trashes its hold file on "resume" (C.2); free slots go to work the lead brought or adopted (D.1).
+- Whoever records a verdict names the reviewer by its session id (lead step 7, `land-pr` step 9). Without it `land-pr` step 5 could never accept a recorded verdict.
 
 ## Round 2 notes
 

@@ -101,7 +101,8 @@ A lead whose area is put on hold gives status only: no launches, no asks.
    re-reviewed. A third needs the owner's go.
 7. **Hand over.** Record the reviewer's verdict on the PR in the repo's
    own format, at the reviewed commit, with the evidence its gate asks
-   for. Then hand the PR to the merge agent, which accepts that verdict
+   for. Name the reviewer by its session id (thread or ledger id), so a
+   later session can check who reviewed. Then hand the PR to the merge agent, which accepts that verdict
    while the head has not moved.
    When no merge agent session is live for this repo: where the area's
    manual holds a standing approval to start one (owner contract,

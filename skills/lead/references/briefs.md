@@ -132,7 +132,7 @@ none>. Deviations <list or none>."
 ## Reviewer (one-shot, fresh)
 
 Run the repo's tier tool before the first reviewer starts (lead step 5).
-One brief per review the tier asks for.
+One brief per review the tier asks for, and at least one per head.
 
 ```
 You are a one-shot independent reviewer. You did not write this change.

@@ -75,6 +75,10 @@ A lead whose area is put on hold gives status only: no launches, no asks.
    hours and any stricter flags the area's manual names. Start at most the `slots` it prints at this
    wake. With queued work and room for three, start three. With `slots=0`,
    start nothing; the next worker report is the wake that tries again.
+   With `night_mode=on`, hold owner asks for the morning and run heavy
+   checks once per head after the fix rounds, as
+   [night-mode](../night-mode/SKILL.md) says; the pace of other work is
+   unchanged. The roster's quiet hours still set `--quiet-hours`.
 3. **Launch.** One worker per item, each a separate top-level session in
    its own worktree, through `scripts/cos-launch.sh` (budget, thread,
    ledger row and log line in one command). An area whose roster row names
@@ -127,13 +131,16 @@ The roster row names the mode.
 
 Every wake is a tick.
 
-1. **Verify.** Fetch the trunk. Read the live state of the area's open PRs
+1. **Hold.** When the area has a hold file, run
+   `../cos/scripts/hold-check.sh` on it first. On `hold=on`, do nothing
+   else and reply one line. The owner's own message is still answered.
+2. **Verify.** Fetch the trunk. Read the live state of the area's open PRs
    and running sessions. Never act on the record alone.
-2. **Act.** The smallest set of moves that unblocks the most, inside the
+3. **Act.** The smallest set of moves that unblocks the most, inside the
    machine budget.
-3. **Write.** Append one Log line, with the budget line when you
+4. **Write.** Append one Log line, with the budget line when you
    considered a launch. Rewrite CURRENT STATE when it changed.
-4. **Reply.** If nothing changed, one line.
+5. **Reply.** If nothing changed, one line.
 
 Do not poll between wakes.
 
@@ -182,8 +189,9 @@ settled, except a stopped thread the owner names.
 
 ## Scripts
 
-- `scripts/capacity.sh` prints `slots=N` and the readings behind it. It
-  reads the whole machine, so every area shares one budget.
+- `scripts/capacity.sh` prints `slots=N`, the readings behind it and
+  `night_mode=on|off`. It reads the whole machine, so every area shares
+  one budget.
   `scripts/test-capacity.sh` checks it against recorded readings.
 - `scripts/cos-launch.sh` starts a session. It calls `capacity.sh` and
   refuses when there is no room. Run it with `--dry-run` first when the

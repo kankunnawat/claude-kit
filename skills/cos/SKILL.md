@@ -119,12 +119,16 @@ launches, no asks, no relays that start work.
 Every wake is a tick: an owner message, a lead's report or a scheduled
 report.
 
-1. **Verify.** Pull the brains. Read the roster and the live state of each
+1. **Hold.** Run `scripts/hold-check.sh` on the local `hold.md` first.
+   On `hold=on`, do nothing else and reply one line. A lead's report
+   still gets its one log line, and the owner's own message is still
+   answered, as "The owner comes first" says.
+2. **Verify.** Pull the brains. Read the roster and the live state of each
    lead thread. Never act on the record alone.
-2. **Act.** Relay an answer, change a row, or build a report. Nothing else.
-3. **Write.** Append one Log line to today's record. Rewrite CURRENT STATE
+3. **Act.** Relay an answer, change a row, or build a report. Nothing else.
+4. **Write.** Append one Log line to today's record. Rewrite CURRENT STATE
    when it changed.
-4. **Reply.** If nothing changed, one line.
+5. **Reply.** If nothing changed, one line.
 
 Do not poll between wakes.
 
@@ -164,7 +168,8 @@ The owner has one queue, across every area.
 Two a day, at the times the roster names, each a scheduled task bound to
 this thread. Each run:
 
-1. Stop if `hold.md` exists in the local folder.
+1. Run `scripts/hold-check.sh` on the local `hold.md` first. On
+   `hold=on`, do nothing else and reply one line.
 2. Pull the brains and read both rosters. Stop if the holder line names
    another thread.
 3. Run `unblock-all` in flag mode. It skips every area on hold.

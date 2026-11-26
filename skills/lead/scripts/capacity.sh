@@ -10,7 +10,11 @@
 #           free disk < --min-free-gib, or load >= --max-load (an area's own
 #           stricter ceiling; off unless given)
 # It reads the whole machine, so every area shares one budget.
-# Output is one line: slots=N followed by the readings and the reason.
+# Output is one line: slots=N followed by the readings, the night-mode switch
+# and the reason. night_mode=on when the file verify-lane reads
+# (${VERIFY_LANE_NIGHT:-~/.local/state/night-mode/until}) holds an epoch later
+# than now, the same test as `night-mode status`; otherwise off. It changes no
+# slot number.
 # CAPACITY_READINGS="cores load swap_pct mem_free_pct free_gib" replaces the
 # live readings (for the test).
 set -euo pipefail
@@ -62,4 +66,8 @@ if [ "$swap_pct" -ge "$swap_max" ]; then slots=0; reason="swap ${swap_pct}% used
 if [ "$mem_free" -lt "$mem_min" ]; then slots=0; reason="memory ${mem_free}% free"; fi
 if [ "$free" -lt "$min_free" ]; then slots=0; reason="disk ${free} GiB free"; fi
 
-echo "slots=$slots load=$load cores=$cores swap=${swap_pct}% mem_free=${mem_free}% free=${free}GiB verify_lane_busy=$busy reason=\"$reason\""
+night_mode=off
+night_until=$(cat "${VERIFY_LANE_NIGHT:-$HOME/.local/state/night-mode/until}" 2> /dev/null || true)
+if [[ "$night_until" =~ ^[0-9]+$ ]] && [ "$(date +%s)" -lt "$night_until" ]; then night_mode=on; fi
+
+echo "slots=$slots load=$load cores=$cores swap=${swap_pct}% mem_free=${mem_free}% free=${free}GiB verify_lane_busy=$busy night_mode=$night_mode reason=\"$reason\""

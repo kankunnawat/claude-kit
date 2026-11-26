@@ -61,3 +61,15 @@ jobs:
 
       - name: build-landing deploy test
         run: bash skills/build-landing/scripts/test-deploy.sh
+
+      - name: merge-agent test
+        run: python3 skills/merge-agent/test_merge_agent.py
+
+      - name: queue page test
+        run: python3 skills/cos/scripts/test_queue_page.py
+
+      - name: capacity test
+        run: bash skills/lead/scripts/test-capacity.sh
+
+      - name: hold check test
+        run: bash skills/cos/scripts/test-hold-check.sh

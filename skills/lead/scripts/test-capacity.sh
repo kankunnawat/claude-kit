@@ -3,6 +3,10 @@
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 fails=0
+# Every case reads a night-mode file under a temp dir, never the live one.
+NIGHT_DIR="$(mktemp -d)"
+trap 'rm -r "$NIGHT_DIR" 2>/dev/null' EXIT
+export VERIFY_LANE_NIGHT="$NIGHT_DIR/until"
 # t <name> <expected slots> <"cores load swap% mem_free% free_gib"> [flags...]
 t() {
   local name="$1" want="$2" readings="$3"; shift 3
@@ -29,5 +33,20 @@ if CAPACITY_READINGS="10 abc 10 60 60" "$HERE/capacity.sh" > /dev/null 2>&1; the
 else
   echo "  ok   an unreadable load exits non-zero"
 fi
+
+# n <name> <expected night_mode> <file content, or "missing">
+n() {
+  local name="$1" want="$2" content="$3" out got
+  rm -f "$VERIFY_LANE_NIGHT"
+  [ "$content" = missing ] || printf '%s\n' "$content" > "$VERIFY_LANE_NIGHT"
+  out=$(CAPACITY_READINGS="10 1.5 10 60 60" "$HERE/capacity.sh" 2>&1)
+  got=$(printf '%s' "$out" | sed -n 's/.* night_mode=\([a-z]*\) .*/\1/p')
+  if [ "$got" = "$want" ] && [ "${out%% *}" = "slots=4" ]; then echo "  ok   $name"; else echo "  FAIL $name: want night_mode=$want and slots=4, got: $out"; fails=$((fails+1)); fi
+}
+now=$(date +%s)
+n "no night-mode file is off"            off missing
+n "an end time ahead is on, same slots"  on  "$((now + 3600))"
+n "an end time passed is off"            off "$((now - 60))"
+n "an unreadable file is off"            off "soon"
 
 [ "$fails" -eq 0 ] && echo "all checks passed" || { echo "$fails failed"; exit 1; }

@@ -72,6 +72,9 @@ because each run checks the holder line first.
 
 The owner changes the roster in plain words. Edit the row, read it back,
 commit and push. Start or stop nothing else.
+At most three areas are active. An "add" or "resume" that would make a
+fourth active asks which area to hold, and changes nothing until the owner
+answers.
 
 - **"add <area>"**: a new row, mode `watch` unless they say batch, no lead.
   A batch area needs a manual first, because the manual holds its tracker
@@ -165,6 +168,11 @@ this thread. Each run:
 4. Write one line per area: state, lead thread and whether it runs, in
    flight, oldest ask. An area on hold gets "on hold since <date>" and
    nothing else. A batch area with its own report gets a link to it.
+   An active area with no lead that has two or more unsettled top-level
+   threads or an open PR of the owner's gets "busy with no lead: type /lead
+   in its checkout". An area whose lead has nothing in flight, no open PR
+   and no open ask gets "idle lead: stand it down?". Start and stop no
+   lead for these; the owner types the word.
 5. Add the queue.
 6. Add this machine's budget line from `../lead/scripts/capacity.sh`, and
    any work that has waited through a report as "waiting for the machine".

@@ -57,6 +57,10 @@ A rule that two of them need lives here, once.
 - **One queue for the owner, across every area.** Every session's held
   items reach it through `unblock-all` flag mode. No session keeps a private ask
   list.
+- **The owner's attention is the budget.** A lead starts no new item while
+  three of its area's items wait on the owner. At most three areas are
+  active at once. Both numbers are a starting guess (2026-11-27); the retro
+  proposes changes.
 - **Reports from other sessions go to the area's inbox**, when it has
   one, never into the thread the owner is talking in.
 

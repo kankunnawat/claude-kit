@@ -63,7 +63,12 @@ A lead whose area is put on hold gives status only: no launches, no asks.
 1. **Take work.** From the owner, directly or relayed by the chief of
    staff, plus the open work the owner told you to adopt. An unclear item
    gets one read-only scout first.
-2. **Check the machine.** Run `scripts/capacity.sh` with this machine's
+2. **Check the queue and the machine.** Count the area's open owner asks
+   from the area file's CURRENT STATE, after the tick's Verify step, never
+   from memory. With three or more, start no new item: review, fix and
+   hand over what already runs, and say "holding new work: n items wait on
+   you" in the report line.
+   Then run `scripts/capacity.sh` with this machine's
    flags from the roster, plus `--quiet-hours` inside the roster's quiet
    hours and any stricter flags the area's manual names. Start at most the `slots` it prints at this
    wake. With queued work and room for three, start three. With `slots=0`,
@@ -147,6 +152,15 @@ Rewrite CURRENT STATE so a new session needs nothing else: each worker's
 name, branch, head, fix rounds used and next step; open owner asks; pending
 approvals with their exact scope; anything held.
 Commit and push it. Then stop launching.
+
+## Stand down
+
+When nothing is in flight, no open PR of the area still needs the lead and
+no owner ask is open, say so in the status. On the owner's yes, rewrite
+CURRENT STATE, clear the lead cell in the roster row, commit, push and
+stop.
+A lead never stands down, and its thread is never settled, while a PR it
+brought is open.
 
 ## Scripts
 

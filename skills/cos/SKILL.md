@@ -90,7 +90,10 @@ three: which to hold?".
   the area's manual, when it has them.
 - **"start the <area> lead"**: needs the owner's yes for that area and room
   on the machine. Run `../lead/scripts/capacity.sh` with the machine's
-  flags from the roster; with `slots=0`, say so and start nothing.
+  flags from the roster; with `slots=0`, say so and start nothing yet:
+  run one background wait that reads capacity every 5 minutes, for at
+  most 60 minutes, start the lead when there is room and report either
+  way. The owner's yes stands; do not ask for it again.
   Otherwise start one thread in the area's checkout, on the provider the
   row names, with the message "Be the lead for this area: follow the lead
   skill's `/lead` table." The lead writes its own thread id into the row.
@@ -119,6 +122,13 @@ launches, no asks, no relays that start work.
 - **Open asks lead every reply.** After the "▶ YOU:" line, list at most
   three things still waiting on the owner, from the top of the queue, each
   answerable in a word. An ask buried in a long reply is an ask not made.
+- **An ask is asked at once while the owner is here.** The owner talks to
+  the other sessions through this thread. When a lead reports an ask and
+  the owner's newest message in this thread is under 15 minutes old, ask
+  it here in the same turn with the question tool, each with a
+  recommendation, and relay the answer with the question and option text.
+  Never hold it for the morning; "hold for the morning" is for an owner
+  who has gone quiet.
 - **Approval covers the exact action, target and scope named.** Ask for
   items by key.
 

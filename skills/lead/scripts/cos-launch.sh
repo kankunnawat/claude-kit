@@ -72,6 +72,13 @@ fi
 load=$(printf '%s' "$budget" | sed -n 's/.* load=\([0-9.]*\) .*/\1/p')
 free=$(printf '%s' "$budget" | sed -n 's/.* free=\([0-9]*\)GiB .*/\1/p')
 
+# The plain form runs the t3 default model; refuse when it is not the model
+# the ledger row will name, so no session starts on a model nobody chose.
+if [ -z "$provider" ]; then
+  t3_default=$(jq -r '.defaultModelSelection.model // empty' "$HOME/.t3/userdata/settings.json" 2> /dev/null || true)
+  [ "$t3_default" = "$model" ] || fail "t3 default model is '${t3_default:-unreadable}', not $model; set the t3 default or pass --provider and --model"
+fi
+
 args=(thread start --title "$title")
 [ -n "$worktree" ] && args+=(--worktree "$worktree")
 [ -n "$provider" ] && args+=(--provider "$provider" --model "$model")

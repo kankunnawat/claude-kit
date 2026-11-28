@@ -95,7 +95,9 @@ three: which to hold?".
   most 60 minutes, start the lead when there is room and report either
   way. The owner's yes stands; do not ask for it again.
   Otherwise start one thread in the area's checkout, on the provider the
-  row names, with the message "Be the lead for this area: follow the lead
+  row names, with the model and effort named in the launch (Claude Opus
+  5.5, effort high, unless the owner names another), never the session
+  default, and read the setting back before reporting. Send the message "Be the lead for this area: follow the lead
   skill's `/lead` table." The lead writes its own thread id into the row.
 - **A lead thread that cannot answer**: its status is failed or
   interrupted and it gave no reply to one message. Clear its lead cell
@@ -131,6 +133,9 @@ launches, no asks, no relays that start work.
   who has gone quiet.
 - **Approval covers the exact action, target and scope named.** Ask for
   items by key.
+- **Spend is the owner's.** Relay an ask for a fix round past the lead
+  skill's two with the recommendation "no, it stays at BLOCK", whatever
+  the lead recommends, and say how many reviews the round would start.
 
 ## Tick
 

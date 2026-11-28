@@ -101,6 +101,9 @@ A lead whose area is put on hold gives status only: no launches, no asks.
    head whatever the tier says. No reviewer wrote the change.
 6. **Fix.** At most two rounds, each in a fresh context and each
    re-reviewed. A third needs the owner's go.
+   When asking for it, recommend no: the PR stays a draft at BLOCK with
+   its open findings listed, and the owner decides whether it is worth
+   another round of reviews.
 7. **Hand over.** Record the reviewer's verdict on the PR in the repo's
    own format, at the reviewed commit, with the evidence its gate asks
    for. Name the reviewer by its thread id, so a later session can read
